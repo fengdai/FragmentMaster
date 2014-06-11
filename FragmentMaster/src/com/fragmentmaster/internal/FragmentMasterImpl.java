@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fragmentmaster.R;
+import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.MasterActivity;
 import com.fragmentmaster.app.MasterFragment;
-import com.fragmentmaster.app.FragmentMaster;
 
 public class FragmentMasterImpl extends FragmentMaster {
 
