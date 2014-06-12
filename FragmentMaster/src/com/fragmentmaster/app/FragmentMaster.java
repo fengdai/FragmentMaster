@@ -29,6 +29,7 @@ public abstract class FragmentMaster {
 	private ViewGroup mContainer;
 	private boolean mIsSlideEnable = true;
 	private boolean mIsInstalled = false;
+	private boolean mSticky = false;
 
 	private boolean mReverseDrawingOrder = false;
 	private PageTransformer mPageTransformer;
@@ -116,6 +117,11 @@ public abstract class FragmentMaster {
 					+ "} not currently in FragmentMaster.");
 		}
 
+		if (index == 0 && mSticky) {
+			mActivity.finish();
+			return;
+		}
+
 		mFragments.remove(index);
 		MasterFragment f = null;
 		for (int i = index; i < mFragments.size(); i++) {
@@ -168,7 +174,8 @@ public abstract class FragmentMaster {
 		return mReverseDrawingOrder;
 	}
 
-	public final void install(int containerResID, Request homeRequest) {
+	public final void install(int containerResID, Request homeRequest,
+			boolean sticky) {
 		if (isInstalled()) {
 			throw new IllegalStateException("Already installed!");
 		} else {
@@ -177,8 +184,11 @@ public abstract class FragmentMaster {
 			performInstall(mContainer);
 			mIsInstalled = true;
 
-			if (homeRequest != null && getFragments().size() == 0) {
-				startFragmentForResult(null, homeRequest, -1);
+			if (homeRequest != null) {
+				mSticky = sticky;
+				if (getFragments().size() == 0) {
+					startFragmentForResult(null, homeRequest, -1);
+				}
 			}
 		}
 	}
@@ -237,20 +247,22 @@ public abstract class FragmentMaster {
 
 			mFragments.clear();
 			Bundle fragments = fms.mFragments;
-			Iterable<String> keys = fragments.keySet();
-			for (String key : keys) {
-				if (key.startsWith("f")) {
-					int index = Integer.parseInt(key.substring(1));
-					MasterFragment f = (MasterFragment) mFragmentManager
-							.getFragment(fragments, key);
-					if (f != null) {
-						while (mFragments.size() <= index) {
-							mFragments.add(null);
+			if (fragments != null) {
+				Iterable<String> keys = fragments.keySet();
+				for (String key : keys) {
+					if (key.startsWith("f")) {
+						int index = Integer.parseInt(key.substring(1));
+						MasterFragment f = (MasterFragment) mFragmentManager
+								.getFragment(fragments, key);
+						if (f != null) {
+							while (mFragments.size() <= index) {
+								mFragments.add(null);
+							}
+							f.setMenuVisibility(false);
+							mFragments.set(index, f);
+						} else {
+							Log.w(TAG, "Bad fragment at key " + key);
 						}
-						f.setMenuVisibility(false);
-						mFragments.set(index, f);
-					} else {
-						Log.w(TAG, "Bad fragment at key " + key);
 					}
 				}
 			}

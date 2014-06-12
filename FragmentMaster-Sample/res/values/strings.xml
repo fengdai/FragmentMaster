@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">FragmentMaster Demos</string>
+    <string name="receive_result_discription">Click "Pick" button to get a result, which will be diplayed here:</string>
+    <string name="pick_your_number">Pick</string>
+    <string name="next_button_string">Next</string>
+
+</resources>
