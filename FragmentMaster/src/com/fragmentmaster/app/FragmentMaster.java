@@ -23,6 +23,7 @@ public abstract class FragmentMaster {
 
 	private static final String TAG = "FragmentMaster";
 
+	// The host activity.
 	private final MasterActivity mActivity;
 	private final FragmentManager mFragmentManager;
 	private int mContainerResID = 0;
@@ -30,12 +31,15 @@ public abstract class FragmentMaster {
 	private boolean mIsSlideEnable = true;
 	private boolean mIsInstalled = false;
 	private boolean mSticky = false;
+	private boolean mHomeFragmentApplied = false;
 
 	private boolean mReverseDrawingOrder = false;
 	private PageTransformer mPageTransformer;
 
+	// Fragments started by FragmentMaster.
 	private ArrayList<MasterFragment> mFragments = new ArrayList<MasterFragment>();
 
+	// Events callback
 	private Callback mCallback = null;
 
 	/**
@@ -185,11 +189,16 @@ public abstract class FragmentMaster {
 			mIsInstalled = true;
 
 			if (homeRequest != null) {
-				mSticky = sticky;
-				if (getFragments().size() == 0) {
-					startFragmentForResult(null, homeRequest, -1);
-				}
+				applyHomeFragment(homeRequest, sticky);
 			}
+		}
+	}
+
+	private void applyHomeFragment(Request homeRequest, boolean sticky) {
+		mSticky = sticky;
+		if (!mHomeFragmentApplied) {
+			startFragmentForResult(null, homeRequest, -1);
+			mHomeFragmentApplied = true;
 		}
 	}
 
@@ -238,6 +247,7 @@ public abstract class FragmentMaster {
 		}
 		state.mFragments = fragments;
 		state.mIsSlideEnable = mIsSlideEnable;
+		state.mHomeFragmemtApplied = mHomeFragmentApplied;
 		return state;
 	}
 
@@ -268,6 +278,7 @@ public abstract class FragmentMaster {
 			}
 
 			setSlideEnable(fms.mIsSlideEnable);
+			mHomeFragmentApplied = fms.mHomeFragmemtApplied;
 		}
 	}
 
@@ -393,6 +404,7 @@ final class FragmentMasterState implements Parcelable {
 
 	Bundle mFragments;
 	boolean mIsSlideEnable;
+	boolean mHomeFragmemtApplied;
 
 	public FragmentMasterState() {
 	}
@@ -400,6 +412,7 @@ final class FragmentMasterState implements Parcelable {
 	public FragmentMasterState(Parcel in) {
 		mFragments = in.readBundle();
 		mIsSlideEnable = in.readInt() == 0;
+		mHomeFragmemtApplied = in.readInt() == 0;
 	}
 
 	@Override
@@ -411,6 +424,7 @@ final class FragmentMasterState implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeBundle(mFragments);
 		dest.writeInt(mIsSlideEnable ? 0 : 1);
+		dest.writeInt(mHomeFragmemtApplied ? 0 : 1);
 	}
 
 	public static final Parcelable.Creator<FragmentMasterState> CREATOR = new Parcelable.Creator<FragmentMasterState>() {
