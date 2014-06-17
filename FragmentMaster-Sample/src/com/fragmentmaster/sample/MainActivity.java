@@ -5,7 +5,6 @@ import android.os.Bundle;
 import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.MasterActivity;
 import com.fragmentmaster.app.Request;
-import com.fragmentmaster.sample.R;
 import com.fragmentmaster.transformer.DepthPageTransformer;
 
 public class MainActivity extends MasterActivity {
@@ -17,7 +16,7 @@ public class MainActivity extends MasterActivity {
 
 		FragmentMaster fragmentMaster = getFragmentMaster();
 		fragmentMaster.setPageTransformer(false, new DepthPageTransformer());
-		fragmentMaster.install(R.id.container, new Request(Home.class),
-				true);
+		fragmentMaster.install(R.id.container, new Request(Home.class), true);
 	}
+
 }

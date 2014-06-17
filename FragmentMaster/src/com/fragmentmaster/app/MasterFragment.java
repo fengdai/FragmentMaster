@@ -28,6 +28,7 @@ public class MasterFragment extends Fragment
 
 	private static final String BUNDLE_KEY_REQUEST = "FragmentMaster:REQUEST";
 	private static final String BUNDLE_KEY_TARGET_CHILD_FRAGMENT = "FragmentMaster:TARGET_CHILD_FRAGMENT";
+	private static final String BUNDLE_KEY_SOFT_INPUT_MODE = "FragmentMaster:SOFT_INPUT_MODE";
 
 	private MasterActivity mActivity;
 	private boolean mStateSaved = false;
@@ -205,6 +206,7 @@ public class MasterFragment extends Fragment
 			getChildFragmentManager().putFragment(outState,
 					BUNDLE_KEY_TARGET_CHILD_FRAGMENT, mTargetChildFragment);
 		}
+		outState.putInt(BUNDLE_KEY_SOFT_INPUT_MODE, mSoftInputMode);
 		mStateSaved = true;
 	}
 
@@ -212,16 +214,15 @@ public class MasterFragment extends Fragment
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mStateSaved = false;
+		if (savedInstanceState != null) {
+			mSoftInputMode = savedInstanceState
+					.getInt(BUNDLE_KEY_SOFT_INPUT_MODE);
+		}
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		if (savedInstanceState != null) {
-			mTargetChildFragment = (MasterFragment) getChildFragmentManager()
-					.getFragment(savedInstanceState,
-							BUNDLE_KEY_TARGET_CHILD_FRAGMENT);
-		}
 		// Set the fragmentRootView's "clickable" to true to avoid
 		// touch events to be passed to the views behind the fragment.
 		view.setClickable(true);
@@ -231,6 +232,11 @@ public class MasterFragment extends Fragment
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		mStateSaved = false;
+		if (savedInstanceState != null) {
+			mTargetChildFragment = (MasterFragment) getChildFragmentManager()
+					.getFragment(savedInstanceState,
+							BUNDLE_KEY_TARGET_CHILD_FRAGMENT);
+		}
 	}
 
 	@Override
