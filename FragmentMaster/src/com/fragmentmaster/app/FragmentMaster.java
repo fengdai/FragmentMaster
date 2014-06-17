@@ -112,9 +112,15 @@ public abstract class FragmentMaster {
 		}
 	}
 
-	public void finishFragment(MasterFragment fragment) {
+	public void finishFragment(MasterFragment fragment, int resultCode,
+			Request data) {
 		ensureInstalled();
 
+		doFinishFragment(fragment);
+		deliverFragmentResult(fragment, resultCode, data);
+	}
+
+	protected void doFinishFragment(MasterFragment fragment) {
 		int index = mFragments.indexOf(fragment);
 		if (index < 0) {
 			throw new IllegalStateException("Fragment {" + fragment
@@ -137,6 +143,27 @@ public abstract class FragmentMaster {
 		}
 
 		performFinishFragment(fragment);
+	}
+
+	protected void deliverFragmentResult(MasterFragment fragment,
+			int resultCode, Request data) {
+		Fragment targetFragment = fragment.getTargetFragment();
+		int requestCode = fragment.getTargetRequestCode();
+		if (requestCode != -1 && targetFragment instanceof MasterFragment) {
+			dispatchFragmentResult((MasterFragment) targetFragment,
+					fragment.getTargetRequestCode(), resultCode, data);
+		}
+	}
+
+	void dispatchFragmentResult(MasterFragment who, int requestCode,
+			int resultCode, Request data) {
+		if (who.mTargetChildFragment == null) {
+			who.onFragmentResult(requestCode, resultCode, data);
+		} else {
+			dispatchFragmentResult(who.mTargetChildFragment, requestCode,
+					resultCode, data);
+		}
+		who.mTargetChildFragment = null;
 	}
 
 	private void ensureInstalled() {

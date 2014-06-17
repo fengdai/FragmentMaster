@@ -10,6 +10,7 @@ import com.fragmentmaster.R;
 import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.MasterActivity;
 import com.fragmentmaster.app.MasterFragment;
+import com.fragmentmaster.app.Request;
 
 public class FragmentMasterImpl extends FragmentMaster {
 
@@ -69,17 +70,15 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
-	public void finishFragment(MasterFragment fragment) {
+	public void finishFragment(MasterFragment fragment, int resultCode,
+			Request data) {
 		int index = getFragments().indexOf(fragment);
 		if (index != 0 && mViewPager.getCurrentItem() == index) {
 			mViewPager.setCurrentItem(index - 1);
+			deliverFragmentResult(fragment, resultCode, data);
 		} else {
-			doRealFinishFragment(fragment);
+			super.finishFragment(fragment, resultCode, data);
 		}
-	}
-
-	private void doRealFinishFragment(MasterFragment fragment) {
-		super.finishFragment(fragment);
 	}
 
 	@Override
@@ -92,7 +91,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 		while (currentItem < mAdapter.getCount() - 1) {
 			MasterFragment f = getActiveFragment();
 			if (f.isFinishing()) {
-				doRealFinishFragment(f);
+				doFinishFragment(f);
 			} else {
 				f.finish();
 			}

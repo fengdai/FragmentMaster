@@ -30,6 +30,8 @@ public class MasterFragment extends Fragment
 	private static final String BUNDLE_KEY_TARGET_CHILD_FRAGMENT = "FragmentMaster:TARGET_CHILD_FRAGMENT";
 	private static final String BUNDLE_KEY_SOFT_INPUT_MODE = "FragmentMaster:SOFT_INPUT_MODE";
 
+	MasterFragment mTargetChildFragment;
+
 	private MasterActivity mActivity;
 	private boolean mStateSaved = false;
 
@@ -38,8 +40,6 @@ public class MasterFragment extends Fragment
 
 	// SoftInputMode, SOFT_INPUT_ADJUST_UNSPECIFIED is default.
 	private int mSoftInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED;
-
-	private MasterFragment mTargetChildFragment;
 
 	private boolean mIsUserActive = false;
 
@@ -150,31 +150,8 @@ public class MasterFragment extends Fragment
 			resultCode = mResultCode;
 			resultData = mResultData;
 		}
-		FragmentMaster fragmentMaster = getFragmentMaster();
-		fragmentMaster.finishFragment(this);
-		deliverFragmentResult(this, resultCode, resultData);
+		getFragmentMaster().finishFragment(this, resultCode, resultData);
 		mFinished = true;
-	}
-
-	private void deliverFragmentResult(MasterFragment fragment, int resultCode,
-			Request data) {
-		Fragment targetFragment = fragment.getTargetFragment();
-		int requestCode = fragment.getTargetRequestCode();
-		if (requestCode != -1 && targetFragment instanceof MasterFragment) {
-			MasterFragment who = (MasterFragment) targetFragment;
-			who.dispatchFragmentResult(fragment.getTargetRequestCode(),
-					resultCode, data);
-		}
-	}
-
-	void dispatchFragmentResult(int requestCode, int resultCode, Request data) {
-		if (mTargetChildFragment == null) {
-			onFragmentResult(requestCode, resultCode, data);
-		} else {
-			mTargetChildFragment.dispatchFragmentResult(requestCode,
-					resultCode, data);
-		}
-		mTargetChildFragment = null;
 	}
 
 	public boolean isFinishing() {
