@@ -1,12 +1,14 @@
 package com.fragmentmaster.app;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.KeyEventCompat;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +21,6 @@ public class MasterFragment extends Fragment
 		implements
 			KeyEvent.Callback,
 			FragmentMaster.Callback {
-	private static final String TAG = "MasterFragment";
 
 	/** Standard fragment result: operation canceled. */
 	public static final int RESULT_CANCELED = 0;
@@ -32,6 +33,22 @@ public class MasterFragment extends Fragment
 
 	MasterFragment mTargetChildFragment;
 
+	private static final int MSG_ON_USER_ACTIVE = 1;
+	@SuppressLint("HandlerLeak")
+	private final Handler mHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+				case MSG_ON_USER_ACTIVE :
+					performUserActive();
+					break;
+				default :
+					super.handleMessage(msg);
+			}
+		}
+
+	};
+
 	private MasterActivity mActivity;
 	private boolean mStateSaved = false;
 
@@ -42,6 +59,7 @@ public class MasterFragment extends Fragment
 	private int mSoftInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED;
 
 	private boolean mIsUserActive = false;
+	private boolean mIsPrimary = false;
 
 	private boolean mFinished = false;
 
@@ -226,6 +244,23 @@ public class MasterFragment extends Fragment
 	public void onResume() {
 		super.onResume();
 		mStateSaved = false;
+		if (isPrimary()) {
+			mHandler.sendEmptyMessage(MSG_ON_USER_ACTIVE);
+		}
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+
+		if (mHandler.hasMessages(MSG_ON_USER_ACTIVE)) {
+			mHandler.removeMessages(MSG_ON_USER_ACTIVE);
+			this.performUserActive();
+		}
+
+		if (isPrimary()) {
+			performUserLeave();
+		}
 	}
 
 	/**
@@ -249,13 +284,27 @@ public class MasterFragment extends Fragment
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
-		if (!mIsUserActive && isVisibleToUser) {
+		if (!mIsPrimary && isVisibleToUser) {
 			invalidateWindowConfiguration();
-			onUserActive();
-		} else if (mIsUserActive && !isVisibleToUser) {
-			onUserLeave();
+			if (isResumed()) {
+				performUserActive();
+			}
+		} else if (mIsPrimary && !isVisibleToUser) {
+			if (isResumed()) {
+				performUserLeave();
+			}
 		}
-		mIsUserActive = isVisibleToUser;
+		mIsPrimary = isVisibleToUser;
+	}
+
+	private void performUserActive() {
+		mIsUserActive = true;
+		onUserActive();
+	}
+
+	private void performUserLeave() {
+		mIsUserActive = false;
+		onUserLeave();
 	}
 
 	public void invalidateWindowConfiguration() {
@@ -268,18 +317,20 @@ public class MasterFragment extends Fragment
 		return mIsUserActive;
 	}
 
+	public boolean isPrimary() {
+		return mIsPrimary;
+	}
+
 	/**
 	 * Called when user has come to this fragment.
 	 */
 	public void onUserActive() {
-		Log.d(TAG, "onUserActive: " + this.toString());
 	}
 
 	/**
 	 * Called when user has left this fragment.
 	 */
 	public void onUserLeave() {
-		Log.d(TAG, "onUserLeave: " + this.toString());
 	}
 
 	public void setSlideEnable(boolean enable) {
