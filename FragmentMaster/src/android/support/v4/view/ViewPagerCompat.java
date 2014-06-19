@@ -45,7 +45,7 @@ import android.view.animation.Interpolator;
 import android.widget.Scroller;
 
 public class ViewPagerCompat extends ViewGroup {
-	private static final String TAG = "ViewPager";
+	private static final String TAG = "ViewPagerCompat";
 	private static final boolean DEBUG = false;
 
 	private static final boolean USE_CACHE = false;

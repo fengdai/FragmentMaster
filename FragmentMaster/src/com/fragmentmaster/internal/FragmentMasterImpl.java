@@ -64,6 +64,11 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
+	protected int getFragmentContainerId() {
+		return R.id.fragment_container;
+	}
+
+	@Override
 	protected void performStartFragmentForResult(MasterFragment fragment) {
 		mAdapter.notifyDataSetChanged();
 		mViewPager.setCurrentItem(mAdapter.getCount() - 1);

@@ -87,6 +87,10 @@ public abstract class FragmentMaster {
 		return mContainerResID;
 	}
 
+	protected int getFragmentContainerId() {
+		return getContainerResID();
+	}
+
 	public void startFragmentForResult(MasterFragment target, Request request,
 			int requestCode) {
 		ensureInstalled();
@@ -94,6 +98,10 @@ public abstract class FragmentMaster {
 		MasterFragment fragment = newFragment(request.getClassName());
 		fragment.setRequest(request);
 		fragment.setTargetFragment(target, requestCode);
+		mFragmentManager.beginTransaction()
+				.add(getFragmentContainerId(), fragment)
+				.commitAllowingStateLoss();
+		mFragmentManager.executePendingTransactions();
 		mFragments.add(fragment);
 
 		performStartFragmentForResult(fragment);
@@ -132,7 +140,11 @@ public abstract class FragmentMaster {
 			return;
 		}
 
+		mFragmentManager.beginTransaction().remove(fragment)
+				.commitAllowingStateLoss();
+		mFragmentManager.executePendingTransactions();
 		mFragments.remove(index);
+
 		MasterFragment f = null;
 		for (int i = index; i < mFragments.size(); i++) {
 			f = mFragments.get(i);
@@ -275,7 +287,21 @@ public abstract class FragmentMaster {
 		state.mFragments = fragments;
 		state.mIsSlideEnable = mIsSlideEnable;
 		state.mHomeFragmemtApplied = mHomeFragmentApplied;
+
+		logState();
 		return state;
+	}
+
+	private void logState() {
+		int fragmentsInManagerCount = 0;
+		for (Fragment f : mFragmentManager.getFragments()) {
+			if (f != null)
+				fragmentsInManagerCount++;
+		}
+		Log.d(TAG, "STATE FragmentMaster[" + mFragments.size()
+				+ "], FragmentManager[" + fragmentsInManagerCount
+				+ "], mIsSlideEnable[" + mIsSlideEnable
+				+ "], mHomeFragmemtApplied[" + mHomeFragmentApplied + "]");
 	}
 
 	void restoreAllState(Parcelable state) {

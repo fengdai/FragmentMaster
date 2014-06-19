@@ -6,18 +6,16 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 abstract class FmPagerAdapter extends PagerAdapter {
-	private static final String TAG = "FragmentPagerAdapter";
+	private static final String TAG = "FmPagerAdapter";
 	private static final boolean DEBUG = false;
 
 	private final FragmentManager mFragmentManager;
-	private FragmentTransaction mCurTransaction = null;
 
 	private ArrayList<Fragment> mFragments = new ArrayList<Fragment>();
 	private Fragment mCurrentPrimaryItem = null;
@@ -37,19 +35,11 @@ abstract class FmPagerAdapter extends PagerAdapter {
 
 	@Override
 	public Object instantiateItem(ViewGroup container, int position) {
-		// If we already have this item instantiated, there is nothing
-		// to do. This can happen when we are restoring the entire pager
-		// from its saved state, where the fragment manager has already
-		// taken care of restoring the fragments we previously had instantiated.
 		if (mFragments.size() > position) {
 			Fragment f = mFragments.get(position);
 			if (f != null) {
 				return f;
 			}
-		}
-
-		if (mCurTransaction == null) {
-			mCurTransaction = mFragmentManager.beginTransaction();
 		}
 
 		Fragment fragment = getItem(position);
@@ -62,8 +52,6 @@ abstract class FmPagerAdapter extends PagerAdapter {
 		fragment.setUserVisibleHint(false);
 		mFragments.set(position, fragment);
 
-		mCurTransaction.add(container.getId(), fragment);
-
 		return fragment;
 	}
 
@@ -71,15 +59,10 @@ abstract class FmPagerAdapter extends PagerAdapter {
 	public void destroyItem(ViewGroup container, int position, Object object) {
 		Fragment fragment = (Fragment) object;
 
-		if (mCurTransaction == null) {
-			mCurTransaction = mFragmentManager.beginTransaction();
-		}
 		if (DEBUG)
 			Log.v(TAG, "Removing item #" + position + ": f=" + object + " v="
 					+ ((Fragment) object).getView());
 		mFragments.remove(fragment);
-
-		mCurTransaction.remove(fragment);
 	}
 
 	@Override
@@ -102,15 +85,6 @@ abstract class FmPagerAdapter extends PagerAdapter {
 
 	protected void onPrimaryItemChanged(ViewGroup container, int position,
 			Object object) {
-	}
-
-	@Override
-	public void finishUpdate(ViewGroup container) {
-		if (mCurTransaction != null) {
-			mCurTransaction.commitAllowingStateLoss();
-			mCurTransaction = null;
-			mFragmentManager.executePendingTransactions();
-		}
 	}
 
 	@Override
