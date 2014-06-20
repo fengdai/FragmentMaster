@@ -284,17 +284,18 @@ public class MasterFragment extends Fragment
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
 		super.setUserVisibleHint(isVisibleToUser);
-		if (!mIsPrimary && isVisibleToUser) {
+		boolean oldPrimaryState = mIsPrimary;
+		mIsPrimary = isVisibleToUser;
+		if (!oldPrimaryState && isVisibleToUser) {
 			invalidateWindowConfiguration();
 			if (isResumed()) {
 				performUserActive();
 			}
-		} else if (mIsPrimary && !isVisibleToUser) {
+		} else if (oldPrimaryState && !isVisibleToUser) {
 			if (isResumed()) {
 				performUserLeave();
 			}
 		}
-		mIsPrimary = isVisibleToUser;
 	}
 
 	private void performUserActive() {

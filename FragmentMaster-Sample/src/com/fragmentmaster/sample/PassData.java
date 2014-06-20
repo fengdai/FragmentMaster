@@ -1,6 +1,7 @@
 package com.fragmentmaster.sample;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +13,7 @@ import com.fragmentmaster.app.MasterFragment;
 import com.fragmentmaster.app.Request;
 
 public class PassData extends MasterFragment {
+	private static final String TAG = "PassData";
 	public static final String EXTRA_KEY_INDEX = "index";
 	private int mIndex = 0;
 
@@ -38,6 +40,34 @@ public class PassData extends MasterFragment {
 				startFragment(request);
 			}
 		});
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (BuildConfig.DEBUG)
+			Log.d(TAG, "[onResume] " + this.toString());
+	}
+
+	@Override
+	public void onUserActive() {
+		super.onUserActive();
+		if (BuildConfig.DEBUG)
+			Log.d(TAG, "[onUserActive] " + this.toString());
+	}
+
+	@Override
+	public void onUserLeave() {
+		super.onUserLeave();
+		if (BuildConfig.DEBUG)
+			Log.d(TAG, "[onUserLeave] " + this.toString());
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		if (BuildConfig.DEBUG)
+			Log.d(TAG, "[onPause] " + this.toString());
 	}
 
 	@Override

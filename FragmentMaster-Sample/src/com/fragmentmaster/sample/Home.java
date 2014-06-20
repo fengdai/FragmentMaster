@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.fragmentmaster.app.MasterFragment;
 import com.fragmentmaster.app.Request;
 
 public class Home extends MasterFragment {
+
+	private static final String TAG = "Home";
 
 	static class Entry {
 
@@ -66,4 +69,36 @@ public class Home extends MasterFragment {
 		});
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		if (BuildConfig.DEBUG)
+			Log.d(TAG, "[onResume] " + this.toString());
+	}
+
+	@Override
+	public void onUserActive() {
+		super.onUserActive();
+		if (BuildConfig.DEBUG)
+			Log.d(TAG, "[onUserActive] " + this.toString());
+	}
+
+	@Override
+	public void onUserLeave() {
+		super.onUserLeave();
+		if (BuildConfig.DEBUG)
+			Log.d(TAG, "[onUserLeave] " + this.toString());
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		if (BuildConfig.DEBUG)
+			Log.d(TAG, "[onPause] " + this.toString());
+	}
+
+	@Override
+	public String toString() {
+		return "Home";
+	}
 }

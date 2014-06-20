@@ -100,8 +100,7 @@ public abstract class FragmentMaster {
 		fragment.setRequest(request);
 		fragment.setTargetFragment(target, requestCode);
 		mFragmentManager.beginTransaction()
-				.add(getFragmentContainerId(), fragment)
-				.commitAllowingStateLoss();
+				.add(getFragmentContainerId(), fragment).commit();
 		mFragmentManager.executePendingTransactions();
 		mFragments.add(fragment);
 
@@ -144,8 +143,7 @@ public abstract class FragmentMaster {
 			return;
 		}
 
-		mFragmentManager.beginTransaction().remove(fragment)
-				.commitAllowingStateLoss();
+		mFragmentManager.beginTransaction().remove(fragment).commit();
 		mFragmentManager.executePendingTransactions();
 		mFragments.remove(index);
 
@@ -205,7 +203,7 @@ public abstract class FragmentMaster {
 				fragment.setUserVisibleHint(true);
 			}
 			mActiveFragment = fragment;
-
+			// Only the active fragment can receive events callback.
 			setCallback(fragment);
 		}
 	}
