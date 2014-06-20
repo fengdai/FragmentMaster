@@ -1,6 +1,8 @@
 package com.fragmentmaster.internal;
 
-import android.support.v4.app.FragmentManager;
+import java.util.List;
+
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
@@ -50,7 +52,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 
 	@Override
 	protected void performInstall(ViewGroup container) {
-		mAdapter = new FragmentsAdapter(getFragmentManager());
+		mAdapter = new FragmentsAdapter();
 		mViewPager = new FmPager(getActivity());
 		mViewPager.setId(R.id.fragment_container);
 		mViewPager.setPageTransformer(isReverseDrawingOrder(),
@@ -92,9 +94,10 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	private void onSlideIdle() {
+		List<MasterFragment> fragments = getFragments();
 		int currentItem = mViewPager.getCurrentItem();
 		while (currentItem < mAdapter.getCount() - 1) {
-			MasterFragment f = getActiveFragment();
+			MasterFragment f = fragments.get(fragments.size() - 1);
 			if (f.isFinishing()) {
 				doFinishFragment(f);
 			} else {
@@ -127,16 +130,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 		}
 	}
 
-	private class FragmentsAdapter extends FmPagerAdapter {
-
-		public FragmentsAdapter(FragmentManager fm) {
-			super(fm);
-		}
-
-		public MasterFragment getItem(int position) {
-			MasterFragment fragment = getFragments().get(position);
-			return fragment;
-		}
+	private class FragmentsAdapter extends PagerAdapter {
 
 		@Override
 		public int getCount() {
@@ -150,8 +144,13 @@ public class FragmentMasterImpl extends FragmentMaster {
 		}
 
 		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
+			MasterFragment fragment = getFragments().get(position);
+			return fragment;
+		}
+
+		@Override
 		public void destroyItem(ViewGroup container, int position, Object object) {
-			super.destroyItem(container, position, object);
 			MasterFragment f = (MasterFragment) object;
 			if (getFragments().contains(f)) {
 				f.finish();
@@ -159,10 +158,14 @@ public class FragmentMasterImpl extends FragmentMaster {
 		}
 
 		@Override
-		protected void onPrimaryItemChanged(ViewGroup container, int position,
+		public void setPrimaryItem(ViewGroup container, int position,
 				Object object) {
-			super.onPrimaryItemChanged(container, position, object);
-			setCallback((MasterFragment) object);
+			setActiveFragment((MasterFragment) object);
+		}
+
+		@Override
+		public boolean isViewFromObject(View view, Object object) {
+			return ((MasterFragment) object).getView() == view;
 		}
 	}
 

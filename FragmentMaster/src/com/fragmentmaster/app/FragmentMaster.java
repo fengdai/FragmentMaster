@@ -38,6 +38,7 @@ public abstract class FragmentMaster {
 
 	// Fragments started by FragmentMaster.
 	private ArrayList<MasterFragment> mFragments = new ArrayList<MasterFragment>();
+	private MasterFragment mActiveFragment = null;
 
 	// Events callback
 	private Callback mCallback = null;
@@ -104,6 +105,9 @@ public abstract class FragmentMaster {
 		mFragmentManager.executePendingTransactions();
 		mFragments.add(fragment);
 
+		fragment.setMenuVisibility(false);
+		fragment.setUserVisibleHint(false);
+
 		performStartFragmentForResult(fragment);
 	}
 
@@ -167,7 +171,7 @@ public abstract class FragmentMaster {
 		}
 	}
 
-	void dispatchFragmentResult(MasterFragment who, int requestCode,
+	private void dispatchFragmentResult(MasterFragment who, int requestCode,
 			int resultCode, Request data) {
 		if (who.mTargetChildFragment == null) {
 			who.onFragmentResult(requestCode, resultCode, data);
@@ -187,11 +191,23 @@ public abstract class FragmentMaster {
 	protected abstract void performFinishFragment(MasterFragment fragment);
 
 	public MasterFragment getActiveFragment() {
-		MasterFragment activeFragment = null;
-		if (mFragments.size() > 0) {
-			activeFragment = mFragments.get(mFragments.size() - 1);
+		return mActiveFragment;
+	}
+
+	protected void setActiveFragment(MasterFragment fragment) {
+		if (fragment != mActiveFragment) {
+			if (mActiveFragment != null) {
+				mActiveFragment.setMenuVisibility(false);
+				mActiveFragment.setUserVisibleHint(false);
+			}
+			if (fragment != null) {
+				fragment.setMenuVisibility(true);
+				fragment.setUserVisibleHint(true);
+			}
+			mActiveFragment = fragment;
+
+			setCallback(fragment);
 		}
-		return activeFragment;
 	}
 
 	public List<MasterFragment> getFragments() {
