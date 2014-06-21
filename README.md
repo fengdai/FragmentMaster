@@ -3,11 +3,14 @@ FragmentMaster
 
 FragmentMaster is a library allows you easily develop an Android application which only navigated by Fragments.
 
-  Features:
-    
-    * Pass data and receive result between two fragments.
-    * Swipe right to navigate back.
-    * Custom transform animation.
+
+
+Features
+========
+
+  * Pass data and receive result between two fragments.
+  * Swipe right to navigate back.
+  * Custom transform animation.
 
 
 
