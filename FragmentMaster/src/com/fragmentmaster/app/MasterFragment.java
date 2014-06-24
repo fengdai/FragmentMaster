@@ -281,17 +281,21 @@ public class MasterFragment extends Fragment
 		return mSoftInputMode;
 	}
 
-	@Override
-	public void setUserVisibleHint(boolean isVisibleToUser) {
-		super.setUserVisibleHint(isVisibleToUser);
+	public void setPrimary(boolean isPrimary) {
+		setMenuVisibility(isPrimary);
+		setUserVisibleHint(isPrimary);
+		onSetPrimary(isPrimary);
+	}
+
+	private void onSetPrimary(boolean isPrimary) {
 		boolean oldPrimaryState = mIsPrimary;
-		mIsPrimary = isVisibleToUser;
-		if (!oldPrimaryState && isVisibleToUser) {
+		mIsPrimary = isPrimary;
+		if (!oldPrimaryState && isPrimary) {
 			invalidateWindowConfiguration();
 			if (isResumed()) {
 				performUserActive();
 			}
-		} else if (oldPrimaryState && !isVisibleToUser) {
+		} else if (oldPrimaryState && !isPrimary) {
 			if (isResumed()) {
 				performUserLeave();
 			}

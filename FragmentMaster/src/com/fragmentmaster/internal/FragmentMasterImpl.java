@@ -160,7 +160,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 		@Override
 		public void setPrimaryItem(ViewGroup container, int position,
 				Object object) {
-			setActiveFragment((MasterFragment) object);
+			setPrimaryFragment((MasterFragment) object);
 		}
 
 		@Override

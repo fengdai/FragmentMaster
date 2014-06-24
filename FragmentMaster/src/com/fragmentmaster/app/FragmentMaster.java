@@ -38,7 +38,7 @@ public abstract class FragmentMaster {
 
 	// Fragments started by FragmentMaster.
 	private ArrayList<MasterFragment> mFragments = new ArrayList<MasterFragment>();
-	private MasterFragment mActiveFragment = null;
+	private MasterFragment mPrimaryFragment = null;
 
 	// Events callback
 	private Callback mCallback = null;
@@ -104,8 +104,7 @@ public abstract class FragmentMaster {
 		mFragmentManager.executePendingTransactions();
 		mFragments.add(fragment);
 
-		fragment.setMenuVisibility(false);
-		fragment.setUserVisibleHint(false);
+		fragment.setPrimary(false);
 
 		performStartFragmentForResult(fragment);
 	}
@@ -188,22 +187,20 @@ public abstract class FragmentMaster {
 
 	protected abstract void performFinishFragment(MasterFragment fragment);
 
-	public MasterFragment getActiveFragment() {
-		return mActiveFragment;
+	public MasterFragment getPrimaryFragment() {
+		return mPrimaryFragment;
 	}
 
-	protected void setActiveFragment(MasterFragment fragment) {
-		if (fragment != mActiveFragment) {
-			if (mActiveFragment != null) {
-				mActiveFragment.setMenuVisibility(false);
-				mActiveFragment.setUserVisibleHint(false);
+	protected void setPrimaryFragment(MasterFragment fragment) {
+		if (fragment != mPrimaryFragment) {
+			if (mPrimaryFragment != null) {
+				mPrimaryFragment.setPrimary(false);
 			}
 			if (fragment != null) {
-				fragment.setMenuVisibility(true);
-				fragment.setUserVisibleHint(true);
+				fragment.setPrimary(true);
 			}
-			mActiveFragment = fragment;
-			// Only the active fragment can receive events callback.
+			mPrimaryFragment = fragment;
+			// Only the primary fragment can receive events callback.
 			setCallback(fragment);
 		}
 	}
