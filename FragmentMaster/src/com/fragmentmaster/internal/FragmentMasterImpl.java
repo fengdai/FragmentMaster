@@ -12,7 +12,6 @@ import com.fragmentmaster.R;
 import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.IMasterFragment;
 import com.fragmentmaster.app.MasterActivity;
-import com.fragmentmaster.app.MasterFragment;
 import com.fragmentmaster.app.Request;
 
 public class FragmentMasterImpl extends FragmentMaster {
@@ -152,7 +151,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 
 		@Override
 		public void destroyItem(ViewGroup container, int position, Object object) {
-			MasterFragment f = (MasterFragment) object;
+			IMasterFragment f = (IMasterFragment) object;
 			if (getFragments().contains(f)) {
 				f.finish();
 			}
@@ -161,12 +160,12 @@ public class FragmentMasterImpl extends FragmentMaster {
 		@Override
 		public void setPrimaryItem(ViewGroup container, int position,
 				Object object) {
-			setPrimaryFragment((MasterFragment) object);
+			setPrimaryFragment((IMasterFragment) object);
 		}
 
 		@Override
 		public boolean isViewFromObject(View view, Object object) {
-			return ((MasterFragment) object).getView() == view;
+			return ((IMasterFragment) object).getView() == view;
 		}
 	}
 
