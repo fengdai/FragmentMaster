@@ -5,18 +5,16 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
-/**
- * The base fragment
- */
-public class MasterFragment extends Fragment implements IMasterFragment {
+public class MasterListFragment extends ListFragment implements IMasterFragment {
 
 	private MasterFragmentDelegate mImpl = new MasterFragmentDelegate(this);
 
-	public MasterFragment() {
+	public MasterListFragment() {
 	}
 
 	// ------------------------------------------------------------------------
@@ -254,6 +252,10 @@ public class MasterFragment extends Fragment implements IMasterFragment {
 	// Handle events
 	// ------------------------------------------------------------------------
 
+	public boolean onTouchEvent(MotionEvent ev) {
+		return false;
+	}
+
 	@TargetApi(Build.VERSION_CODES.ECLAIR)
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
@@ -284,10 +286,6 @@ public class MasterFragment extends Fragment implements IMasterFragment {
 	}
 
 	public boolean onKeyMultiple(int keyCode, int repeatCount, KeyEvent event) {
-		return false;
-	}
-
-	public boolean onTouchEvent(MotionEvent ev) {
 		return false;
 	}
 

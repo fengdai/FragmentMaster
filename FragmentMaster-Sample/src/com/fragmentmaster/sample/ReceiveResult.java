@@ -50,8 +50,7 @@ public class ReceiveResult extends MasterFragment {
 	}
 
 	@Override
-	protected void onFragmentResult(int requestCode, int resultCode,
-			Request data) {
+	public void onFragmentResult(int requestCode, int resultCode, Request data) {
 		super.onFragmentResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			mResultView.setText(data
@@ -92,7 +91,7 @@ public class ReceiveResult extends MasterFragment {
 		}
 
 		@Override
-		protected void onFragmentResult(int requestCode, int resultCode,
+		public void onFragmentResult(int requestCode, int resultCode,
 				Request data) {
 			super.onFragmentResult(requestCode, resultCode, data);
 			if (resultCode == RESULT_OK) {

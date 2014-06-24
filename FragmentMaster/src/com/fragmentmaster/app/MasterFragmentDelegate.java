@@ -17,9 +17,9 @@ class MasterFragmentDelegate {
 	private static final String BUNDLE_KEY_TARGET_CHILD_FRAGMENT = "FragmentMaster:TARGET_CHILD_FRAGMENT";
 	private static final String BUNDLE_KEY_SOFT_INPUT_MODE = "FragmentMaster:SOFT_INPUT_MODE";
 
-	MasterFragment mMasterFragment;
+	IMasterFragment mMasterFragment;
 
-	private MasterFragment mTargetChildFragment;
+	private IMasterFragment mTargetChildFragment;
 
 	private static final int MSG_ON_USER_ACTIVE = 1;
 	@SuppressLint("HandlerLeak")
@@ -51,7 +51,7 @@ class MasterFragmentDelegate {
 
 	private boolean mFinished = false;
 
-	public MasterFragmentDelegate(MasterFragment masterFragment) {
+	public MasterFragmentDelegate(IMasterFragment masterFragment) {
 		mMasterFragment = masterFragment;
 	}
 
@@ -76,7 +76,7 @@ class MasterFragmentDelegate {
 	/**
 	 * Starts a specific fragment.
 	 */
-	public void startFragment(Class<? extends MasterFragment> clazz) {
+	public void startFragment(Class<? extends IMasterFragment> clazz) {
 		startFragmentForResult(new Request(clazz), -1);
 	}
 
@@ -90,7 +90,7 @@ class MasterFragmentDelegate {
 		startFragmentForResult(request, -1);
 	}
 
-	public void startFragmentForResult(Class<? extends MasterFragment> clazz,
+	public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
 			int requestCode) {
 		startFragmentForResult(new Request(clazz), requestCode);
 	}
@@ -98,7 +98,7 @@ class MasterFragmentDelegate {
 	public void startFragmentForResult(Request request, int requestCode) {
 		checkState();
 		if (mMasterFragment.getParentFragment() instanceof MasterFragment) {
-			((MasterFragment) mMasterFragment.getParentFragment())
+			((IMasterFragment) mMasterFragment.getParentFragment())
 					.startFragmentFromChild(mMasterFragment, request,
 							requestCode);
 		} else {
@@ -114,7 +114,7 @@ class MasterFragmentDelegate {
 		}
 	}
 
-	public void startFragmentFromChild(MasterFragment childFragment,
+	public void startFragmentFromChild(IMasterFragment childFragment,
 			Request request, int requestCode) {
 		if (requestCode != -1) {
 			mTargetChildFragment = childFragment;
@@ -181,7 +181,8 @@ class MasterFragmentDelegate {
 	public void onSaveInstanceState(Bundle outState) {
 		if (mTargetChildFragment != null) {
 			mMasterFragment.getChildFragmentManager().putFragment(outState,
-					BUNDLE_KEY_TARGET_CHILD_FRAGMENT, mTargetChildFragment);
+					BUNDLE_KEY_TARGET_CHILD_FRAGMENT,
+					mTargetChildFragment.getFragment());
 		}
 		outState.putInt(BUNDLE_KEY_SOFT_INPUT_MODE, mSoftInputMode);
 		mStateSaved = true;
@@ -313,11 +314,11 @@ class MasterFragmentDelegate {
 		getFragmentMaster().setSlideEnable(enable);
 	}
 
-	public MasterFragment getTargetChildFragment() {
+	public IMasterFragment getTargetChildFragment() {
 		return mTargetChildFragment;
 	}
 
-	public void setTargetChildFragment(MasterFragment targetChildFragment) {
+	public void setTargetChildFragment(IMasterFragment targetChildFragment) {
 		mTargetChildFragment = targetChildFragment;
 	}
 

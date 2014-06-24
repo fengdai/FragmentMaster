@@ -37,8 +37,8 @@ public abstract class FragmentMaster {
 	private PageTransformer mPageTransformer;
 
 	// Fragments started by FragmentMaster.
-	private ArrayList<MasterFragment> mFragments = new ArrayList<MasterFragment>();
-	private MasterFragment mPrimaryFragment = null;
+	private ArrayList<IMasterFragment> mFragments = new ArrayList<IMasterFragment>();
+	private IMasterFragment mPrimaryFragment = null;
 
 	// Events callback
 	private Callback mCallback = null;
@@ -92,15 +92,16 @@ public abstract class FragmentMaster {
 		return getContainerResID();
 	}
 
-	public void startFragmentForResult(MasterFragment target, Request request,
+	public void startFragmentForResult(IMasterFragment target, Request request,
 			int requestCode) {
 		ensureInstalled();
 
-		MasterFragment fragment = newFragment(request.getClassName());
+		IMasterFragment fragment = newFragment(request.getClassName());
 		fragment.setRequest(request);
-		fragment.setTargetFragment(target, requestCode);
+		fragment.setTargetFragment(
+				target == null ? null : target.getFragment(), requestCode);
 		mFragmentManager.beginTransaction()
-				.add(getFragmentContainerId(), fragment).commit();
+				.add(getFragmentContainerId(), fragment.getFragment()).commit();
 		mFragmentManager.executePendingTransactions();
 		mFragments.add(fragment);
 
@@ -110,11 +111,11 @@ public abstract class FragmentMaster {
 	}
 
 	protected abstract void performStartFragmentForResult(
-			MasterFragment fragment);
+			IMasterFragment fragment);
 
-	private MasterFragment newFragment(String className) {
+	private IMasterFragment newFragment(String className) {
 		try {
-			return (MasterFragment) MasterFragment.instantiate(getActivity(),
+			return (IMasterFragment) Fragment.instantiate(getActivity(),
 					className, new Bundle());
 		} catch (Exception e) {
 			throw new RuntimeException("No fragment found : { className="
@@ -122,7 +123,7 @@ public abstract class FragmentMaster {
 		}
 	}
 
-	public void finishFragment(MasterFragment fragment, int resultCode,
+	public void finishFragment(IMasterFragment fragment, int resultCode,
 			Request data) {
 		ensureInstalled();
 
@@ -130,7 +131,7 @@ public abstract class FragmentMaster {
 		deliverFragmentResult(fragment, resultCode, data);
 	}
 
-	protected void doFinishFragment(MasterFragment fragment) {
+	protected void doFinishFragment(IMasterFragment fragment) {
 		int index = mFragments.indexOf(fragment);
 		if (index < 0) {
 			throw new IllegalStateException("Fragment {" + fragment
@@ -142,14 +143,15 @@ public abstract class FragmentMaster {
 			return;
 		}
 
-		mFragmentManager.beginTransaction().remove(fragment).commit();
+		mFragmentManager.beginTransaction().remove(fragment.getFragment())
+				.commit();
 		mFragmentManager.executePendingTransactions();
 		mFragments.remove(index);
 
-		MasterFragment f = null;
+		IMasterFragment f = null;
 		for (int i = index; i < mFragments.size(); i++) {
 			f = mFragments.get(i);
-			MasterFragment target = (MasterFragment) f.getTargetFragment();
+			IMasterFragment target = (IMasterFragment) f.getTargetFragment();
 			if (target == fragment) {
 				f.setTargetFragment(null, -1);
 			}
@@ -158,17 +160,17 @@ public abstract class FragmentMaster {
 		performFinishFragment(fragment);
 	}
 
-	protected void deliverFragmentResult(MasterFragment fragment,
+	protected void deliverFragmentResult(IMasterFragment fragment,
 			int resultCode, Request data) {
 		Fragment targetFragment = fragment.getTargetFragment();
 		int requestCode = fragment.getTargetRequestCode();
-		if (requestCode != -1 && targetFragment instanceof MasterFragment) {
-			dispatchFragmentResult((MasterFragment) targetFragment,
+		if (requestCode != -1 && targetFragment instanceof IMasterFragment) {
+			dispatchFragmentResult((IMasterFragment) targetFragment,
 					fragment.getTargetRequestCode(), resultCode, data);
 		}
 	}
 
-	private void dispatchFragmentResult(MasterFragment who, int requestCode,
+	private void dispatchFragmentResult(IMasterFragment who, int requestCode,
 			int resultCode, Request data) {
 		if (who.getTargetChildFragment() == null) {
 			who.onFragmentResult(requestCode, resultCode, data);
@@ -185,13 +187,13 @@ public abstract class FragmentMaster {
 		}
 	}
 
-	protected abstract void performFinishFragment(MasterFragment fragment);
+	protected abstract void performFinishFragment(IMasterFragment fragment);
 
-	public MasterFragment getPrimaryFragment() {
+	public IMasterFragment getPrimaryFragment() {
 		return mPrimaryFragment;
 	}
 
-	protected void setPrimaryFragment(MasterFragment fragment) {
+	protected void setPrimaryFragment(IMasterFragment fragment) {
 		if (fragment != mPrimaryFragment) {
 			if (mPrimaryFragment != null) {
 				mPrimaryFragment.setPrimary(false);
@@ -205,7 +207,7 @@ public abstract class FragmentMaster {
 		}
 	}
 
-	public List<MasterFragment> getFragments() {
+	public List<IMasterFragment> getFragments() {
 		return mFragments;
 	}
 
@@ -286,7 +288,7 @@ public abstract class FragmentMaster {
 		FragmentMasterState state = new FragmentMasterState();
 		Bundle fragments = null;
 		for (int i = 0; i < mFragments.size(); i++) {
-			Fragment f = mFragments.get(i);
+			Fragment f = mFragments.get(i).getFragment();
 			if (f != null) {
 				if (fragments == null) {
 					fragments = new Bundle();
@@ -326,7 +328,7 @@ public abstract class FragmentMaster {
 				for (String key : keys) {
 					if (key.startsWith("f")) {
 						int index = Integer.parseInt(key.substring(1));
-						MasterFragment f = (MasterFragment) mFragmentManager
+						IMasterFragment f = (IMasterFragment) mFragmentManager
 								.getFragment(fragments, key);
 						if (f != null) {
 							while (mFragments.size() <= index) {

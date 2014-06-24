@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.fragmentmaster.R;
 import com.fragmentmaster.app.FragmentMaster;
+import com.fragmentmaster.app.IMasterFragment;
 import com.fragmentmaster.app.MasterActivity;
 import com.fragmentmaster.app.MasterFragment;
 import com.fragmentmaster.app.Request;
@@ -71,13 +72,13 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
-	protected void performStartFragmentForResult(MasterFragment fragment) {
+	protected void performStartFragmentForResult(IMasterFragment fragment) {
 		mAdapter.notifyDataSetChanged();
 		mViewPager.setCurrentItem(mAdapter.getCount() - 1);
 	}
 
 	@Override
-	public void finishFragment(MasterFragment fragment, int resultCode,
+	public void finishFragment(IMasterFragment fragment, int resultCode,
 			Request data) {
 		int index = getFragments().indexOf(fragment);
 		if (index != 0 && mViewPager.getCurrentItem() == index) {
@@ -89,15 +90,15 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
-	protected void performFinishFragment(MasterFragment fragment) {
+	protected void performFinishFragment(IMasterFragment fragment) {
 		mAdapter.notifyDataSetChanged();
 	}
 
 	private void onSlideIdle() {
-		List<MasterFragment> fragments = getFragments();
+		List<IMasterFragment> fragments = getFragments();
 		int currentItem = mViewPager.getCurrentItem();
 		while (currentItem < mAdapter.getCount() - 1) {
-			MasterFragment f = fragments.get(fragments.size() - 1);
+			IMasterFragment f = fragments.get(fragments.size() - 1);
 			if (f.isFinishing()) {
 				doFinishFragment(f);
 			} else {
@@ -145,7 +146,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 
 		@Override
 		public Object instantiateItem(ViewGroup container, int position) {
-			MasterFragment fragment = getFragments().get(position);
+			IMasterFragment fragment = getFragments().get(position);
 			return fragment;
 		}
 
