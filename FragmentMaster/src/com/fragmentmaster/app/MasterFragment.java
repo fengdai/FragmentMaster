@@ -1,329 +1,62 @@
 package com.fragmentmaster.app;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.KeyEventCompat;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 
 /**
  * The base fragment
  */
-public class MasterFragment extends Fragment
-		implements
-			KeyEvent.Callback,
-			FragmentMaster.Callback {
+public class MasterFragment extends Fragment implements IMasterFragment {
 
-	/** Standard fragment result: operation canceled. */
-	public static final int RESULT_CANCELED = 0;
-	/** Standard fragment result: operation succeeded. */
-	public static final int RESULT_OK = -1;
-
-	private static final String BUNDLE_KEY_REQUEST = "FragmentMaster:REQUEST";
-	private static final String BUNDLE_KEY_TARGET_CHILD_FRAGMENT = "FragmentMaster:TARGET_CHILD_FRAGMENT";
-	private static final String BUNDLE_KEY_SOFT_INPUT_MODE = "FragmentMaster:SOFT_INPUT_MODE";
-
-	MasterFragment mTargetChildFragment;
-
-	private static final int MSG_ON_USER_ACTIVE = 1;
-	@SuppressLint("HandlerLeak")
-	private final Handler mHandler = new Handler() {
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-				case MSG_ON_USER_ACTIVE :
-					performUserActive();
-					break;
-				default :
-					super.handleMessage(msg);
-			}
-		}
-
-	};
-
-	private MasterActivity mActivity;
-	private boolean mStateSaved = false;
-
-	private int mResultCode = RESULT_CANCELED;
-	private Request mResultData = null;
-
-	// SoftInputMode, SOFT_INPUT_ADJUST_UNSPECIFIED is default.
-	private int mSoftInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED;
-
-	private boolean mIsUserActive = false;
-	private boolean mIsPrimary = false;
-
-	private boolean mFinished = false;
+	private MasterFragmentDelegate mImpl = new MasterFragmentDelegate(this);
 
 	public MasterFragment() {
 	}
 
+	// ------------------------------------------------------------------------
+	// Lifecycle
+	// ------------------------------------------------------------------------
+
 	@Override
 	public void onAttach(Activity activity) {
-		if (activity instanceof MasterActivity) {
-			mActivity = (MasterActivity) activity;
-		}
 		super.onAttach(activity);
-	}
-
-	public void onDetach() {
-		mActivity = null;
-		super.onDetach();
-	}
-
-	public MasterActivity getMasterActivity() {
-		return mActivity;
-	}
-
-	public FragmentMaster getFragmentMaster() {
-		return mActivity == null ? null : mActivity.getFragmentMaster();
-	}
-
-	/**
-	 * Starts a specific fragment.
-	 */
-	public void startFragment(Class<? extends MasterFragment> clazz) {
-		startFragmentForResult(new Request(clazz), -1);
-	}
-
-	/**
-	 * Starts a fragment.
-	 * 
-	 * @param request
-	 *            The request.
-	 */
-	public void startFragment(Request request) {
-		startFragmentForResult(request, -1);
-	}
-
-	public void startFragmentForResult(Class<? extends MasterFragment> clazz,
-			int requestCode) {
-		startFragmentForResult(new Request(clazz), requestCode);
-	}
-
-	public void startFragmentForResult(Request request, int requestCode) {
-		checkState();
-		if (getParentFragment() instanceof MasterFragment) {
-			((MasterFragment) getParentFragment()).startFragmentFromChild(this,
-					request, requestCode);
-		} else {
-			getFragmentMaster().startFragmentForResult(this, request,
-					requestCode);
-		}
-	}
-
-	private void checkState() {
-		if (mActivity == null) {
-			throw new IllegalStateException("Fragment " + this
-					+ " not attached to MasterActivity!");
-		}
-	}
-
-	private void startFragmentFromChild(MasterFragment childFragment,
-			Request request, int requestCode) {
-		if (requestCode != -1) {
-			mTargetChildFragment = childFragment;
-		}
-		startFragmentForResult(request, requestCode);
-	}
-
-	protected void onFragmentResult(int requestCode, int resultCode,
-			Request data) {
-	}
-
-	/**
-	 * Call this to set the result that your fragment will return to its caller.
-	 */
-	public final void setResult(int resultCode) {
-		synchronized (this) {
-			mResultCode = resultCode;
-			mResultData = null;
-		}
-	}
-
-	/**
-	 * Call this to set the result that your fragment will return to its caller.
-	 */
-	public final void setResult(int resultCode, Request data) {
-		synchronized (this) {
-			mResultCode = resultCode;
-			mResultData = data;
-		}
-	}
-
-	public void finish() {
-		checkState();
-
-		int resultCode;
-		Request resultData;
-		synchronized (this) {
-			resultCode = mResultCode;
-			resultData = mResultData;
-		}
-		getFragmentMaster().finishFragment(this, resultCode, resultData);
-		mFinished = true;
-	}
-
-	public boolean isFinishing() {
-		return mFinished;
-	}
-
-	/**
-	 * Called when the fragment has detected the user's press of the back key.
-	 * The default implementation simply finishes the current fragment, but you
-	 * can override this to do whatever you want.
-	 */
-	public void onBackPressed() {
-		finish();
-	}
-
-	public Request getRequest() {
-		return (Request) getArguments().get(BUNDLE_KEY_REQUEST);
-	}
-
-	public void setRequest(Request newRequest) {
-		Bundle bundle = getArguments();
-		bundle.putParcelable(BUNDLE_KEY_REQUEST, newRequest);
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		if (mTargetChildFragment != null) {
-			getChildFragmentManager().putFragment(outState,
-					BUNDLE_KEY_TARGET_CHILD_FRAGMENT, mTargetChildFragment);
-		}
-		outState.putInt(BUNDLE_KEY_SOFT_INPUT_MODE, mSoftInputMode);
-		mStateSaved = true;
+		mImpl.onAttach(activity);
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mStateSaved = false;
-		if (savedInstanceState != null) {
-			mSoftInputMode = savedInstanceState
-					.getInt(BUNDLE_KEY_SOFT_INPUT_MODE);
-		}
+		mImpl.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		// Set the fragmentRootView's "clickable" to true to avoid
-		// touch events to be passed to the views behind the fragment.
-		view.setClickable(true);
+		mImpl.onViewCreated(view, savedInstanceState);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		mStateSaved = false;
-		if (savedInstanceState != null) {
-			mTargetChildFragment = (MasterFragment) getChildFragmentManager()
-					.getFragment(savedInstanceState,
-							BUNDLE_KEY_TARGET_CHILD_FRAGMENT);
-		}
+		mImpl.onActivityCreated(savedInstanceState);
 	}
 
 	@Override
 	public void onStart() {
 		super.onStart();
-		mStateSaved = false;
+		mImpl.onStart();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		mStateSaved = false;
-		if (isPrimary()) {
-			mHandler.sendEmptyMessage(MSG_ON_USER_ACTIVE);
-		}
-	}
-
-	@Override
-	public void onPause() {
-		super.onPause();
-
-		if (mHandler.hasMessages(MSG_ON_USER_ACTIVE)) {
-			mHandler.removeMessages(MSG_ON_USER_ACTIVE);
-			this.performUserActive();
-		}
-
-		if (isPrimary()) {
-			performUserLeave();
-		}
-	}
-
-	/**
-	 * Whether the state have been saved by system.
-	 */
-	public boolean hasStateSaved() {
-		return mStateSaved;
-	}
-
-	public void setSoftInputMode(int mode) {
-		if (mSoftInputMode != mode) {
-			mSoftInputMode = mode;
-			invalidateWindowConfiguration();
-		}
-	}
-
-	public int getSoftInputMode() {
-		return mSoftInputMode;
-	}
-
-	public void setPrimary(boolean isPrimary) {
-		setMenuVisibility(isPrimary);
-		setUserVisibleHint(isPrimary);
-		onSetPrimary(isPrimary);
-	}
-
-	private void onSetPrimary(boolean isPrimary) {
-		boolean oldPrimaryState = mIsPrimary;
-		mIsPrimary = isPrimary;
-		if (!oldPrimaryState && isPrimary) {
-			invalidateWindowConfiguration();
-			if (isResumed()) {
-				performUserActive();
-			}
-		} else if (oldPrimaryState && !isPrimary) {
-			if (isResumed()) {
-				performUserLeave();
-			}
-		}
-	}
-
-	private void performUserActive() {
-		mIsUserActive = true;
-		onUserActive();
-	}
-
-	private void performUserLeave() {
-		mIsUserActive = false;
-		onUserLeave();
-	}
-
-	public void invalidateWindowConfiguration() {
-		if (getActivity() != null) {
-			getActivity().getWindow().setSoftInputMode(mSoftInputMode);
-		}
-	}
-
-	public boolean isUserActive() {
-		return mIsUserActive;
-	}
-
-	public boolean isPrimary() {
-		return mIsPrimary;
+		mImpl.onResume();
 	}
 
 	/**
@@ -338,9 +71,150 @@ public class MasterFragment extends Fragment
 	public void onUserLeave() {
 	}
 
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		mImpl.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		mImpl.onPause();
+	}
+
+	public void onDetach() {
+		super.onDetach();
+		mImpl.onDetach();
+	}
+
+	// ------------------------------------------------------------------------
+	// MasterFragment features
+	// ------------------------------------------------------------------------
+
+	public MasterActivity getMasterActivity() {
+		return mImpl.getMasterActivity();
+	}
+
+	public FragmentMaster getFragmentMaster() {
+		return mImpl.getFragmentMaster();
+	}
+
+	/**
+	 * Starts a specific fragment.
+	 */
+	public void startFragment(Class<? extends MasterFragment> clazz) {
+		mImpl.startFragment(clazz);
+	}
+
+	/**
+	 * Starts a fragment.
+	 * 
+	 * @param request
+	 *            The request.
+	 */
+	public void startFragment(Request request) {
+		mImpl.startFragment(request);
+	}
+
+	public void startFragmentForResult(Class<? extends MasterFragment> clazz,
+			int requestCode) {
+		mImpl.startFragmentForResult(clazz, requestCode);
+	}
+
+	public void startFragmentForResult(Request request, int requestCode) {
+		mImpl.startFragmentForResult(request, requestCode);
+	}
+
+	void startFragmentFromChild(MasterFragment childFragment, Request request,
+			int requestCode) {
+		mImpl.startFragmentFromChild(childFragment, request, requestCode);
+	}
+
+	/**
+	 * Call this to set the result that your fragment will return to its caller.
+	 */
+	public final void setResult(int resultCode) {
+		mImpl.setResult(resultCode);
+	}
+
+	/**
+	 * Call this to set the result that your fragment will return to its caller.
+	 */
+	public final void setResult(int resultCode, Request data) {
+		mImpl.setResult(resultCode, data);
+	}
+
+	public void finish() {
+		mImpl.finish();
+	}
+
+	public boolean isFinishing() {
+		return mImpl.isFinishing();
+	}
+
+	public Request getRequest() {
+		return mImpl.getRequest();
+	}
+
+	public void setRequest(Request newRequest) {
+		mImpl.setRequest(newRequest);
+	}
+
+	/**
+	 * Whether the state have been saved by system.
+	 */
+	public boolean hasStateSaved() {
+		return mImpl.hasStateSaved();
+	}
+
+	public void setSoftInputMode(int mode) {
+		mImpl.setSoftInputMode(mode);
+	}
+
+	public int getSoftInputMode() {
+		return mImpl.getSoftInputMode();
+	}
+
+	public void setPrimary(boolean isPrimary) {
+		mImpl.setPrimary(isPrimary);
+	}
+
+	public void invalidateWindowConfiguration() {
+		mImpl.invalidateWindowConfiguration();
+	}
+
+	public boolean isUserActive() {
+		return mImpl.isUserActive();
+	}
+
+	public boolean isPrimary() {
+		return mImpl.isPrimary();
+	}
+
 	public void setSlideEnable(boolean enable) {
-		checkState();
-		getFragmentMaster().setSlideEnable(enable);
+		mImpl.setSlideEnable(enable);
+	}
+
+	protected void onFragmentResult(int requestCode, int resultCode,
+			Request data) {
+	}
+
+	MasterFragment getTargetChildFragment() {
+		return mImpl.getTargetChildFragment();
+	}
+
+	void setTargetChildFragment(MasterFragment targetChildFragment) {
+		mImpl.setTargetChildFragment(targetChildFragment);
+	}
+
+	/**
+	 * Called when the fragment has detected the user's press of the back key.
+	 * The default implementation simply finishes the current fragment, but you
+	 * can override this to do whatever you want.
+	 */
+	public void onBackPressed() {
+		mImpl.onBackPressed();
 	}
 
 	// ------------------------------------------------------------------------
@@ -349,63 +223,27 @@ public class MasterFragment extends Fragment
 
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
-		if (getFragmentMaster().dispatchKeyEventToWindow(event)) {
-			return true;
-		}
-
-		View view = getView();
-		boolean handled = KeyEventCompat.dispatch(event, this, view != null
-				? KeyEventCompat.getKeyDispatcherState(view)
-				: null, this);
-		if (handled) {
-			return true;
-		}
-
-		return getFragmentMaster().dispatchKeyEventToActivity(event);
+		return mImpl.dispatchKeyEvent(event);
 	}
 
 	@Override
 	public boolean dispatchKeyShortcutEvent(KeyEvent event) {
-		if (getFragmentMaster().dispatchKeyEventToWindow(event)) {
-			return true;
-		}
-		if (onKeyShortcut(event.getKeyCode(), event)) {
-			return true;
-		}
-		return getFragmentMaster().dispatchKeyShortcutEventToActivity(event);
+		return mImpl.dispatchKeyShortcutEvent(event);
 	}
 
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent ev) {
-		if (getFragmentMaster().dispatchTouchEventToWindow(ev)) {
-			return true;
-		}
-		if (onTouchEvent(ev)) {
-			return true;
-		}
-		return getFragmentMaster().dispatchTouchEventToActivity(ev);
+		return mImpl.dispatchTouchEvent(ev);
 	}
 
 	@Override
 	public boolean dispatchTrackballEvent(MotionEvent ev) {
-		if (getFragmentMaster().dispatchTrackballEventToWindow(ev)) {
-			return true;
-		}
-		if (onTrackballEvent(ev)) {
-			return true;
-		}
-		return getFragmentMaster().dispatchTrackballEventToActivity(ev);
+		return mImpl.dispatchTrackballEvent(ev);
 	}
 
 	@Override
 	public boolean dispatchGenericMotionEvent(MotionEvent ev) {
-		if (getFragmentMaster().dispatchGenericMotionEventToWindow(ev)) {
-			return true;
-		}
-		if (onGenericMotionEvent(ev)) {
-			return true;
-		}
-		return getFragmentMaster().dispatchGenericMotionEventToActivity(ev);
+		return mImpl.dispatchGenericMotionEvent(ev);
 	}
 
 	// ------------------------------------------------------------------------

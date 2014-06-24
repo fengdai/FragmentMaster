@@ -170,13 +170,13 @@ public abstract class FragmentMaster {
 
 	private void dispatchFragmentResult(MasterFragment who, int requestCode,
 			int resultCode, Request data) {
-		if (who.mTargetChildFragment == null) {
+		if (who.getTargetChildFragment() == null) {
 			who.onFragmentResult(requestCode, resultCode, data);
 		} else {
-			dispatchFragmentResult(who.mTargetChildFragment, requestCode,
+			dispatchFragmentResult(who.getTargetChildFragment(), requestCode,
 					resultCode, data);
 		}
-		who.mTargetChildFragment = null;
+		who.setTargetChildFragment(null);
 	}
 
 	private void ensureInstalled() {
