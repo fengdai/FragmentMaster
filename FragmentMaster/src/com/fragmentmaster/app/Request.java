@@ -33,7 +33,7 @@ public class Request implements Parcelable {
 
 	}
 
-	public Request(Class<? extends MasterFragment> clazz) {
+	public Request(Class<? extends IMasterFragment> clazz) {
 		mFragmentName = clazz.getName();
 	}
 

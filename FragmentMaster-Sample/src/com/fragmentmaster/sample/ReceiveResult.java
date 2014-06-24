@@ -7,15 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.fragmentmaster.app.MasterFragment;
+import com.fragmentmaster.app.MasterListFragment;
 import com.fragmentmaster.app.Request;
-import com.fragmentmaster.sample.R;
 
 public class ReceiveResult extends MasterFragment {
 	private static final int REQUEST_CODE = 0;
@@ -50,8 +48,7 @@ public class ReceiveResult extends MasterFragment {
 	}
 
 	@Override
-	protected void onFragmentResult(int requestCode, int resultCode,
-			Request data) {
+	public void onFragmentResult(int requestCode, int resultCode, Request data) {
 		super.onFragmentResult(requestCode, resultCode, data);
 		if (resultCode == RESULT_OK) {
 			mResultView.setText(data
@@ -92,7 +89,7 @@ public class ReceiveResult extends MasterFragment {
 		}
 
 		@Override
-		protected void onFragmentResult(int requestCode, int resultCode,
+		public void onFragmentResult(int requestCode, int resultCode,
 				Request data) {
 			super.onFragmentResult(requestCode, resultCode, data);
 			if (resultCode == RESULT_OK) {
@@ -106,12 +103,12 @@ public class ReceiveResult extends MasterFragment {
 
 	/**
 	 * Numbers list
-	 * 
-	 * TODO Add MasterListFragment and User it here as super class.
 	 */
-	public static class NumbersList extends MasterFragment {
+	public static class NumbersList extends MasterListFragment {
 
 		public static final String EXTRA_KEY_RESULT = "result";
+
+		private String[] mNumbers;
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -122,22 +119,18 @@ public class ReceiveResult extends MasterFragment {
 		@Override
 		public void onViewCreated(View view, Bundle savedInstanceState) {
 			super.onViewCreated(view, savedInstanceState);
-			final String[] numbers = getResources().getStringArray(
-					R.array.numbers);
-			ListView listView = (ListView) view.findViewById(R.id.listView);
-			listView.setAdapter(new ArrayAdapter<String>(getActivity(),
-					android.R.layout.simple_list_item_1, numbers));
-			listView.setOnItemClickListener(new OnItemClickListener() {
-				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1,
-						int arg2, long arg3) {
-					// deliver result
-					Request result = new Request();
-					result.putExtra(EXTRA_KEY_RESULT, numbers[arg2]);
-					setResult(RESULT_OK, result);
-					finish();
-				}
-			});
+			mNumbers = getResources().getStringArray(R.array.numbers);
+			setListAdapter(new ArrayAdapter<String>(getActivity(),
+					android.R.layout.simple_list_item_1, mNumbers));
+		}
+
+		@Override
+		public void onListItemClick(ListView l, View v, int position, long id) {
+			// deliver result
+			Request result = new Request();
+			result.putExtra(EXTRA_KEY_RESULT, mNumbers[position]);
+			setResult(RESULT_OK, result);
+			finish();
 		}
 	}
 }

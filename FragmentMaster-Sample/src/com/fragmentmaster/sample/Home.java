@@ -9,15 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.fragmentmaster.app.MasterFragment;
+import com.fragmentmaster.app.MasterListFragment;
 import com.fragmentmaster.app.Request;
 
-public class Home extends MasterFragment {
+public class Home extends MasterListFragment {
 
 	private static final String TAG = "Home";
 
@@ -54,19 +52,16 @@ public class Home extends MasterFragment {
 	}
 
 	@Override
-	public void onViewCreated(View view, Bundle savedInstanceState) {
-		super.onViewCreated(view, savedInstanceState);
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
 		setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-		ListView listView = (ListView) view.findViewById(R.id.listView);
-		listView.setAdapter(new ArrayAdapter<Entry>(getActivity(),
+		setListAdapter(new ArrayAdapter<Entry>(getActivity(),
 				android.R.layout.simple_list_item_1, ENTRIES));
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				startFragment(ENTRIES.get(arg2).mRequest);
-			}
-		});
+	}
+
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		startFragment(ENTRIES.get(position).mRequest);
 	}
 
 	@Override
