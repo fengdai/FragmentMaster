@@ -274,12 +274,12 @@ class MasterFragmentDelegate {
 
 	private void performUserActive() {
 		mIsUserActive = true;
-		onUserActive();
+		mMasterFragment.onUserActive();
 	}
 
 	private void performUserLeave() {
 		mIsUserActive = false;
-		onUserLeave();
+		mMasterFragment.onUserLeave();
 	}
 
 	public void invalidateWindowConfiguration() {
@@ -295,18 +295,6 @@ class MasterFragmentDelegate {
 
 	public boolean isPrimary() {
 		return mIsPrimary;
-	}
-
-	/**
-	 * Called when user has come to this fragment.
-	 */
-	public void onUserActive() {
-	}
-
-	/**
-	 * Called when user has left this fragment.
-	 */
-	public void onUserLeave() {
 	}
 
 	public void setSlideEnable(boolean enable) {

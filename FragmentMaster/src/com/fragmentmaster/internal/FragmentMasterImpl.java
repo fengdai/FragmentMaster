@@ -151,10 +151,6 @@ public class FragmentMasterImpl extends FragmentMaster {
 
 		@Override
 		public void destroyItem(ViewGroup container, int position, Object object) {
-			IMasterFragment f = (IMasterFragment) object;
-			if (getFragments().contains(f)) {
-				f.finish();
-			}
 		}
 
 		@Override
