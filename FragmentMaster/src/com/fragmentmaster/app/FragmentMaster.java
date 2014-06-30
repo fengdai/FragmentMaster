@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.fragmentmaster.animator.PageAnimator;
+
 public abstract class FragmentMaster {
 
 	private static final String TAG = "FragmentMaster";
@@ -33,8 +35,7 @@ public abstract class FragmentMaster {
 	private boolean mSticky = false;
 	private boolean mHomeFragmentApplied = false;
 
-	private boolean mReverseDrawingOrder = false;
-	private PageTransformer mPageTransformer;
+	private PageAnimator mPageAnimator;
 
 	// Fragments started by FragmentMaster.
 	private ArrayList<IMasterFragment> mFragments = new ArrayList<IMasterFragment>();
@@ -42,26 +43,6 @@ public abstract class FragmentMaster {
 
 	// Events callback
 	private Callback mCallback = null;
-
-	/**
-	 * A PageTransformer is invoked whenever a visible/attached page is
-	 * scrolled. This offers an opportunity for the application to apply a
-	 * custom transformation to the page views.
-	 */
-	public interface PageTransformer {
-		/**
-		 * Apply a transformation to the given page.
-		 * 
-		 * @param page
-		 *            Apply the transformation to this page
-		 * @param position
-		 *            Position of page relative to the current front-and-center
-		 *            position of the pager. 0 is front and center. 1 is one
-		 *            full page position to the right, and -1 is one page
-		 *            position to the left.
-		 */
-		public void transformPage(View page, float position);
-	}
 
 	public interface Callback {
 		public boolean dispatchKeyEvent(KeyEvent event);
@@ -211,23 +192,20 @@ public abstract class FragmentMaster {
 		return mFragments;
 	}
 
-	public final void setPageTransformer(boolean reverseDrawingOrder,
-			PageTransformer transformer) {
-		mReverseDrawingOrder = reverseDrawingOrder;
-		mPageTransformer = transformer;
-		onSetPageTransformer(reverseDrawingOrder, transformer);
+	public final void setPageAnimator(PageAnimator pageAnimator) {
+		mPageAnimator = pageAnimator;
+		onSetPageAnimator(pageAnimator);
 	}
 
-	protected void onSetPageTransformer(boolean reverseDrawingOrder,
-			PageTransformer transformer) {
+	protected void onSetPageAnimator(PageAnimator pageAnimator) {
 	}
 
-	public PageTransformer getPageTransformer() {
-		return mPageTransformer;
+	public PageAnimator getPageAnimator() {
+		return mPageAnimator;
 	}
 
-	public boolean isReverseDrawingOrder() {
-		return mReverseDrawingOrder;
+	public boolean hasPageAnimator() {
+		return mPageAnimator != null;
 	}
 
 	public final void install(int containerResID, Request homeRequest,

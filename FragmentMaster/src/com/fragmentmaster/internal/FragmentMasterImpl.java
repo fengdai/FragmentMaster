@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fragmentmaster.R;
+import com.fragmentmaster.animator.PageAnimator;
 import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.IMasterFragment;
 import com.fragmentmaster.app.MasterActivity;
@@ -39,13 +40,6 @@ public class FragmentMasterImpl extends FragmentMaster {
 
 	};
 
-	private ViewPager.PageTransformer mTransformerWrapper = new ViewPager.PageTransformer() {
-		@Override
-		public void transformPage(View page, float position) {
-			performTransform(page, position);
-		}
-	};
-
 	public FragmentMasterImpl(MasterActivity activity) {
 		super(activity);
 	}
@@ -55,8 +49,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 		mAdapter = new FragmentsAdapter();
 		mViewPager = new FmPager(getActivity());
 		mViewPager.setId(R.id.fragment_container);
-		mViewPager.setPageTransformer(isReverseDrawingOrder(),
-				mTransformerWrapper);
+		mViewPager.setPageAnimation(getPageAnimator());
 		mViewPager.setOffscreenPageLimit(Integer.MAX_VALUE);
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOnPageChangeListener(mOnPageChangeListener);
@@ -64,7 +57,6 @@ public class FragmentMasterImpl extends FragmentMaster {
 
 		container.addView(mViewPager);
 	}
-
 	@Override
 	protected int getFragmentContainerId() {
 		return R.id.fragment_container;
@@ -115,18 +107,9 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
-	protected void onSetPageTransformer(boolean reverseDrawingOrder,
-			PageTransformer transformer) {
-		super.onSetPageTransformer(reverseDrawingOrder, transformer);
+	protected void onSetPageAnimator(PageAnimator pageAnim) {
 		if (isInstalled()) {
-			mViewPager.setPageTransformer(reverseDrawingOrder,
-					mTransformerWrapper);
-		}
-	}
-
-	private void performTransform(View page, float position) {
-		if (getPageTransformer() != null) {
-			getPageTransformer().transformPage(page, position);
+			mViewPager.setPageAnimation(pageAnim);
 		}
 	}
 

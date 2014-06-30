@@ -2,10 +2,10 @@ package com.fragmentmaster.sample;
 
 import android.os.Bundle;
 
+import com.fragmentmaster.animator.DepthPageAnimator;
 import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.MasterActivity;
 import com.fragmentmaster.app.Request;
-import com.fragmentmaster.transformer.DepthPageTransformer;
 
 public class MainActivity extends MasterActivity {
 
@@ -15,7 +15,7 @@ public class MainActivity extends MasterActivity {
 		setContentView(R.layout.activity_main);
 
 		FragmentMaster fragmentMaster = getFragmentMaster();
-		fragmentMaster.setPageTransformer(false, new DepthPageTransformer());
+		fragmentMaster.setPageAnimator(new DepthPageAnimator());
 		fragmentMaster.install(R.id.container, new Request(Home.class), true);
 	}
 
