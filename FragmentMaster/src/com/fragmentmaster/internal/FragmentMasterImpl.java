@@ -53,7 +53,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 		mViewPager.setOffscreenPageLimit(Integer.MAX_VALUE);
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOnPageChangeListener(mOnPageChangeListener);
-		mViewPager.setSlideEnable(isSlideEnable());
+		mViewPager.setSlideable(isSlideable());
 
 		container.addView(mViewPager);
 	}
@@ -99,10 +99,10 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
-	protected void onSlideEnableChanged(boolean enable) {
-		super.onSlideEnableChanged(enable);
+	protected void onSlideableChanged(boolean slideable) {
+		super.onSlideableChanged(slideable);
 		if (isInstalled()) {
-			mViewPager.setSlideEnable(enable);
+			mViewPager.setSlideable(slideable);
 		}
 	}
 

@@ -30,7 +30,7 @@ public abstract class FragmentMaster {
 	private final FragmentManager mFragmentManager;
 	private int mContainerResID = 0;
 	private ViewGroup mContainer;
-	private boolean mIsSlideEnable = true;
+	private boolean mIsSlideable = true;
 	private boolean mIsInstalled = false;
 	private boolean mSticky = false;
 	private boolean mHomeFragmentApplied = false;
@@ -248,18 +248,18 @@ public abstract class FragmentMaster {
 		return mIsInstalled;
 	}
 
-	public final void setSlideEnable(boolean enable) {
-		if (enable != mIsSlideEnable) {
-			mIsSlideEnable = enable;
-			onSlideEnableChanged(enable);
+	public final void setSlideable(boolean slideable) {
+		if (slideable != mIsSlideable) {
+			mIsSlideable = slideable;
+			onSlideableChanged(slideable);
 		}
 	}
 
-	protected void onSlideEnableChanged(boolean enable) {
+	protected void onSlideableChanged(boolean slideable) {
 	}
 
-	public boolean isSlideEnable() {
-		return mIsSlideEnable;
+	public boolean isSlideable() {
+		return mIsSlideable;
 	}
 
 	Parcelable saveAllState() {
@@ -276,7 +276,7 @@ public abstract class FragmentMaster {
 			}
 		}
 		state.mFragments = fragments;
-		state.mIsSlideEnable = mIsSlideEnable;
+		state.mIsSlideable = mIsSlideable;
 		state.mHomeFragmemtApplied = mHomeFragmentApplied;
 
 		logState();
@@ -291,7 +291,7 @@ public abstract class FragmentMaster {
 		}
 		Log.d(TAG, "STATE FragmentMaster[" + mFragments.size()
 				+ "], FragmentManager[" + fragmentsInManagerCount
-				+ "], mIsSlideEnable[" + mIsSlideEnable
+				+ "], mIsSlideable[" + mIsSlideable
 				+ "], mHomeFragmemtApplied[" + mHomeFragmentApplied + "]");
 	}
 
@@ -321,7 +321,7 @@ public abstract class FragmentMaster {
 				}
 			}
 
-			setSlideEnable(fms.mIsSlideEnable);
+			setSlideable(fms.mIsSlideable);
 			mHomeFragmentApplied = fms.mHomeFragmemtApplied;
 		}
 	}
@@ -447,7 +447,7 @@ public abstract class FragmentMaster {
 final class FragmentMasterState implements Parcelable {
 
 	Bundle mFragments;
-	boolean mIsSlideEnable;
+	boolean mIsSlideable;
 	boolean mHomeFragmemtApplied;
 
 	public FragmentMasterState() {
@@ -455,7 +455,7 @@ final class FragmentMasterState implements Parcelable {
 
 	public FragmentMasterState(Parcel in) {
 		mFragments = in.readBundle();
-		mIsSlideEnable = in.readInt() == 0;
+		mIsSlideable = in.readInt() == 0;
 		mHomeFragmemtApplied = in.readInt() == 0;
 	}
 
@@ -467,7 +467,7 @@ final class FragmentMasterState implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeBundle(mFragments);
-		dest.writeInt(mIsSlideEnable ? 0 : 1);
+		dest.writeInt(mIsSlideable ? 0 : 1);
 		dest.writeInt(mHomeFragmemtApplied ? 0 : 1);
 	}
 

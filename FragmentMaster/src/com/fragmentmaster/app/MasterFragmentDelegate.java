@@ -297,9 +297,14 @@ class MasterFragmentDelegate {
 		return mIsPrimary;
 	}
 
-	public void setSlideEnable(boolean enable) {
+	public void setSlideable(boolean slideable) {
 		checkState();
-		getFragmentMaster().setSlideEnable(enable);
+		getFragmentMaster().setSlideable(slideable);
+	}
+
+	public boolean isSlideable() {
+		checkState();
+		return getFragmentMaster().isSlideable();
 	}
 
 	public IMasterFragment getTargetChildFragment() {

@@ -20,7 +20,7 @@ class FmPager extends ViewPagerCompat {
 	/**
 	 * Indicate whether this view can be dragged by user.
 	 */
-	private boolean mIsSlideEnable = false;
+	private boolean mIsSlideable = false;
 
 	private static final int ANIMATION_NONE = 0;
 	private static final int ANIMATION_ENTER = 1;
@@ -55,17 +55,17 @@ class FmPager extends ViewPagerCompat {
 		super.setOnPageChangeListener(new MyOnPageChangeListener(this));
 	}
 
-	public void setSlideEnable(boolean enable) {
-		mIsSlideEnable = enable;
+	public void setSlideable(boolean slideable) {
+		mIsSlideable = slideable;
 	}
 
-	public boolean isSlideEnable() {
-		return mIsSlideEnable;
+	public boolean isSlideable() {
+		return mIsSlideable;
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent ev) {
-		if (mIsSlideEnable) {
+		if (mIsSlideable) {
 			return super.onTouchEvent(ev);
 		}
 		return false;
@@ -73,7 +73,7 @@ class FmPager extends ViewPagerCompat {
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		if (mIsSlideEnable) {
+		if (mIsSlideable) {
 			return super.onInterceptTouchEvent(ev);
 		}
 		return false;
