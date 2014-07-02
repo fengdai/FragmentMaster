@@ -4,6 +4,9 @@ import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+/**
+ * Common MasterFragment interface.
+ */
 public interface IMasterFragment
 		extends
 			IFragmentWrapper,
@@ -53,6 +56,9 @@ public interface IMasterFragment
 	 */
 	public void setResult(int resultCode, Request data);
 
+	/**
+	 * Finish this fragment.
+	 */
 	public void finish();
 
 	public boolean isFinishing();
@@ -80,7 +86,9 @@ public interface IMasterFragment
 
 	public void invalidateWindowConfiguration();
 
-	public void setSlideEnable(boolean enable);
+	public void setSlideable(boolean slideable);
+
+	public boolean isSlideable();
 
 	/**
 	 * Called when user has come to this fragment.

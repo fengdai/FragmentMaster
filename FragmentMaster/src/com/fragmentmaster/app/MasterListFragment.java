@@ -195,8 +195,13 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 		return mImpl.isPrimary();
 	}
 
-	public void setSlideEnable(boolean enable) {
-		mImpl.setSlideEnable(enable);
+	public void setSlideable(boolean slideable) {
+		mImpl.setSlideable(slideable);
+	}
+
+	@Override
+	public boolean isSlideable() {
+		return mImpl.isSlideable();
 	}
 
 	public void onFragmentResult(int requestCode, int resultCode, Request data) {

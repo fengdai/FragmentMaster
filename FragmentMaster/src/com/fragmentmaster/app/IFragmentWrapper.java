@@ -6,7 +6,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 
+/**
+ * Define native fragment's methods that used by FragmentMaster.
+ */
 interface IFragmentWrapper {
+
 	public Bundle getArguments();
 
 	public Fragment getParentFragment();

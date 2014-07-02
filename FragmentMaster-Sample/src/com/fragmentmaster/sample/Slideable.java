@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.fragmentmaster.app.MasterFragment;
 
-public class SlideEnable extends MasterFragment implements OnPageChangeListener {
+public class Slideable extends MasterFragment implements OnPageChangeListener {
 
 	private static final int[] COLORS = new int[] { 0xFF666666, 0xFF96AA39,
 			0xFFC74B46, 0xFFF4842D, 0xFF3F9FE0, 0xFF5161BC };
@@ -18,7 +18,7 @@ public class SlideEnable extends MasterFragment implements OnPageChangeListener 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.slide_enable_fragment, container,
+		return inflater.inflate(R.layout.slideable_fragment, container,
 				false);
 	}
 
@@ -32,7 +32,7 @@ public class SlideEnable extends MasterFragment implements OnPageChangeListener 
 
 	@Override
 	public void finish() {
-		setSlideEnable(true);
+		setSlideable(true);
 		super.finish();
 	}
 
@@ -73,6 +73,6 @@ public class SlideEnable extends MasterFragment implements OnPageChangeListener 
 
 	@Override
 	public void onPageSelected(int arg0) {
-		setSlideEnable(arg0 == 0);
+		setSlideable(arg0 == 0);
 	}
 }

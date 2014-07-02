@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.view.KeyEventCompat;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -13,21 +15,23 @@ import android.view.WindowManager;
 
 class MasterFragmentDelegate {
 
-	private static final String BUNDLE_KEY_REQUEST = "FragmentMaster:REQUEST";
 	private static final String BUNDLE_KEY_TARGET_CHILD_FRAGMENT = "FragmentMaster:TARGET_CHILD_FRAGMENT";
-	private static final String BUNDLE_KEY_SOFT_INPUT_MODE = "FragmentMaster:SOFT_INPUT_MODE";
+	private static final String BUNDLE_KEY_STATE = "FragmentMaster:MASTER_FRAGMENT_STATE";
 
 	IMasterFragment mMasterFragment;
+	Request mRequest = null;
+	// SoftInputMode, SOFT_INPUT_ADJUST_UNSPECIFIED is default.
+	int mSoftInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED;
 
 	private IMasterFragment mTargetChildFragment;
 
-	private static final int MSG_ON_USER_ACTIVE = 1;
+	private static final int MSG_USER_ACTIVE = 1;
 	@SuppressLint("HandlerLeak")
 	private final Handler mHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
-				case MSG_ON_USER_ACTIVE :
+				case MSG_USER_ACTIVE :
 					performUserActive();
 					break;
 				default :
@@ -42,9 +46,6 @@ class MasterFragmentDelegate {
 
 	private int mResultCode = MasterFragment.RESULT_CANCELED;
 	private Request mResultData = null;
-
-	// SoftInputMode, SOFT_INPUT_ADJUST_UNSPECIFIED is default.
-	private int mSoftInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED;
 
 	private boolean mIsUserActive = false;
 	private boolean mIsPrimary = false;
@@ -170,12 +171,11 @@ class MasterFragmentDelegate {
 	}
 
 	public Request getRequest() {
-		return (Request) mMasterFragment.getArguments().get(BUNDLE_KEY_REQUEST);
+		return mRequest;
 	}
 
 	public void setRequest(Request newRequest) {
-		Bundle bundle = mMasterFragment.getArguments();
-		bundle.putParcelable(BUNDLE_KEY_REQUEST, newRequest);
+		mRequest = newRequest;
 	}
 
 	public void onSaveInstanceState(Bundle outState) {
@@ -184,15 +184,16 @@ class MasterFragmentDelegate {
 					BUNDLE_KEY_TARGET_CHILD_FRAGMENT,
 					mTargetChildFragment.getFragment());
 		}
-		outState.putInt(BUNDLE_KEY_SOFT_INPUT_MODE, mSoftInputMode);
+		outState.putParcelable(BUNDLE_KEY_STATE, new MasterFragmentState(this));
 		mStateSaved = true;
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
 		mStateSaved = false;
 		if (savedInstanceState != null) {
-			mSoftInputMode = savedInstanceState
-					.getInt(BUNDLE_KEY_SOFT_INPUT_MODE);
+			MasterFragmentState state = savedInstanceState
+					.getParcelable(BUNDLE_KEY_STATE);
+			state.restore(this);
 		}
 	}
 
@@ -217,14 +218,14 @@ class MasterFragmentDelegate {
 	public void onResume() {
 		mStateSaved = false;
 		if (isPrimary()) {
-			mHandler.sendEmptyMessage(MSG_ON_USER_ACTIVE);
+			mHandler.sendEmptyMessage(MSG_USER_ACTIVE);
 		}
 	}
 
 	public void onPause() {
 
-		if (mHandler.hasMessages(MSG_ON_USER_ACTIVE)) {
-			mHandler.removeMessages(MSG_ON_USER_ACTIVE);
+		if (mHandler.hasMessages(MSG_USER_ACTIVE)) {
+			mHandler.removeMessages(MSG_USER_ACTIVE);
 			this.performUserActive();
 		}
 
@@ -274,12 +275,12 @@ class MasterFragmentDelegate {
 
 	private void performUserActive() {
 		mIsUserActive = true;
-		onUserActive();
+		mMasterFragment.onUserActive();
 	}
 
 	private void performUserLeave() {
 		mIsUserActive = false;
-		onUserLeave();
+		mMasterFragment.onUserLeave();
 	}
 
 	public void invalidateWindowConfiguration() {
@@ -297,21 +298,14 @@ class MasterFragmentDelegate {
 		return mIsPrimary;
 	}
 
-	/**
-	 * Called when user has come to this fragment.
-	 */
-	public void onUserActive() {
-	}
-
-	/**
-	 * Called when user has left this fragment.
-	 */
-	public void onUserLeave() {
-	}
-
-	public void setSlideEnable(boolean enable) {
+	public void setSlideable(boolean slideable) {
 		checkState();
-		getFragmentMaster().setSlideEnable(enable);
+		getFragmentMaster().setSlideable(slideable);
+	}
+
+	public boolean isSlideable() {
+		checkState();
+		return getFragmentMaster().isSlideable();
 	}
 
 	public IMasterFragment getTargetChildFragment() {
@@ -383,4 +377,46 @@ class MasterFragmentDelegate {
 		return getFragmentMaster().dispatchGenericMotionEventToActivity(ev);
 	}
 
+}
+
+final class MasterFragmentState implements Parcelable {
+
+	Request mRequest;
+	int mSoftInputMode;
+
+	public MasterFragmentState(MasterFragmentDelegate mfd) {
+		mRequest = mfd.mRequest;
+		mSoftInputMode = mfd.mSoftInputMode;
+	}
+
+	public MasterFragmentState(Parcel in) {
+		mRequest = in.readParcelable(null);
+		mSoftInputMode = in.readInt();
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeParcelable(mRequest, flags);
+		dest.writeInt(mSoftInputMode);
+	}
+
+	public static final Parcelable.Creator<MasterFragmentState> CREATOR = new Parcelable.Creator<MasterFragmentState>() {
+		public MasterFragmentState createFromParcel(Parcel in) {
+			return new MasterFragmentState(in);
+		}
+
+		public MasterFragmentState[] newArray(int size) {
+			return new MasterFragmentState[size];
+		}
+	};
+
+	public void restore(MasterFragmentDelegate mfd) {
+		mfd.mRequest = mRequest;
+		mfd.mSoftInputMode = mSoftInputMode;
+	}
 }
