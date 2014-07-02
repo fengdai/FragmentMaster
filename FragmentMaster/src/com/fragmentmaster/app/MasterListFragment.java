@@ -60,12 +60,14 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 	/**
 	 * Called when user has come to this fragment.
 	 */
+	@Override
 	public void onUserActive() {
 	}
 
 	/**
 	 * Called when user has left this fragment.
 	 */
+	@Override
 	public void onUserLeave() {
 	}
 
@@ -81,6 +83,7 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 		mImpl.onPause();
 	}
 
+	@Override
 	public void onDetach() {
 		super.onDetach();
 		mImpl.onDetach();
@@ -95,10 +98,12 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 		return this;
 	}
 
+	@Override
 	public MasterActivity getMasterActivity() {
 		return mImpl.getMasterActivity();
 	}
 
+	@Override
 	public FragmentMaster getFragmentMaster() {
 		return mImpl.getFragmentMaster();
 	}
@@ -106,6 +111,7 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 	/**
 	 * Starts a specific fragment.
 	 */
+	@Override
 	public void startFragment(Class<? extends IMasterFragment> clazz) {
 		mImpl.startFragment(clazz);
 	}
@@ -116,19 +122,23 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 	 * @param request
 	 *            The request.
 	 */
+	@Override
 	public void startFragment(Request request) {
 		mImpl.startFragment(request);
 	}
 
+	@Override
 	public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
 			int requestCode) {
 		mImpl.startFragmentForResult(clazz, requestCode);
 	}
 
+	@Override
 	public void startFragmentForResult(Request request, int requestCode) {
 		mImpl.startFragmentForResult(request, requestCode);
 	}
 
+	@Override
 	public void startFragmentFromChild(IMasterFragment childFragment,
 			Request request, int requestCode) {
 		mImpl.startFragmentFromChild(childFragment, request, requestCode);
@@ -137,6 +147,7 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 	/**
 	 * Call this to set the result that your fragment will return to its caller.
 	 */
+	@Override
 	public final void setResult(int resultCode) {
 		mImpl.setResult(resultCode);
 	}
@@ -144,22 +155,27 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 	/**
 	 * Call this to set the result that your fragment will return to its caller.
 	 */
+	@Override
 	public final void setResult(int resultCode, Request data) {
 		mImpl.setResult(resultCode, data);
 	}
 
+	@Override
 	public void finish() {
 		mImpl.finish();
 	}
 
+	@Override
 	public boolean isFinishing() {
 		return mImpl.isFinishing();
 	}
 
+	@Override
 	public Request getRequest() {
 		return mImpl.getRequest();
 	}
 
+	@Override
 	public void setRequest(Request newRequest) {
 		mImpl.setRequest(newRequest);
 	}
@@ -167,34 +183,37 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 	/**
 	 * Whether the state have been saved by system.
 	 */
+	@Override
 	public boolean hasStateSaved() {
 		return mImpl.hasStateSaved();
 	}
 
+	@Override
 	public void setSoftInputMode(int mode) {
 		mImpl.setSoftInputMode(mode);
 	}
 
+	@Override
 	public int getSoftInputMode() {
 		return mImpl.getSoftInputMode();
 	}
 
+	@Override
 	public void setPrimary(boolean isPrimary) {
 		mImpl.setPrimary(isPrimary);
 	}
 
-	public void invalidateWindowConfiguration() {
-		mImpl.invalidateWindowConfiguration();
-	}
-
+	@Override
 	public boolean isUserActive() {
 		return mImpl.isUserActive();
 	}
 
+	@Override
 	public boolean isPrimary() {
 		return mImpl.isPrimary();
 	}
 
+	@Override
 	public void setSlideable(boolean slideable) {
 		mImpl.setSlideable(slideable);
 	}
@@ -204,13 +223,16 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 		return mImpl.isSlideable();
 	}
 
+	@Override
 	public void onFragmentResult(int requestCode, int resultCode, Request data) {
 	}
 
+	@Override
 	public IMasterFragment getTargetChildFragment() {
 		return mImpl.getTargetChildFragment();
 	}
 
+	@Override
 	public void setTargetChildFragment(IMasterFragment targetChildFragment) {
 		mImpl.setTargetChildFragment(targetChildFragment);
 	}
@@ -220,6 +242,7 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 	 * The default implementation simply finishes the current fragment, but you
 	 * can override this to do whatever you want.
 	 */
+	@Override
 	public void onBackPressed() {
 		mImpl.onBackPressed();
 	}
@@ -257,10 +280,7 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 	// Handle events
 	// ------------------------------------------------------------------------
 
-	public boolean onTouchEvent(MotionEvent ev) {
-		return false;
-	}
-
+	@Override
 	@TargetApi(Build.VERSION_CODES.ECLAIR)
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
@@ -274,6 +294,7 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 		return false;
 	}
 
+	@Override
 	@TargetApi(Build.VERSION_CODES.ECLAIR)
 	public boolean onKeyUp(int keyCode, KeyEvent event) {
 		if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
@@ -286,22 +307,32 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 		return false;
 	}
 
+	@Override
 	public boolean onKeyLongPress(int keyCode, KeyEvent event) {
 		return false;
 	}
 
+	@Override
 	public boolean onKeyMultiple(int keyCode, int repeatCount, KeyEvent event) {
 		return false;
 	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent ev) {
+		return false;
+	}
+
+	@Override
 	public boolean onKeyShortcut(int keyCode, KeyEvent event) {
 		return false;
 	}
 
+	@Override
 	public boolean onTrackballEvent(MotionEvent event) {
 		return false;
 	}
 
+	@Override
 	public boolean onGenericMotionEvent(MotionEvent event) {
 		return false;
 	}

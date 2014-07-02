@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fragmentmaster.R;
-import com.fragmentmaster.animator.PageAnimator;
 import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.IMasterFragment;
 import com.fragmentmaster.app.MasterActivity;
@@ -17,8 +16,11 @@ import com.fragmentmaster.app.Request;
 
 public class FragmentMasterImpl extends FragmentMaster {
 
+	// The id of fragments' real container.
+	public final static int FRAGMENT_CONTAINER_ID = R.id.fragment_container;
+
 	private FragmentsAdapter mAdapter;
-	private FmPager mViewPager;
+	private FragmentMasterPager mViewPager;
 
 	private OnPageChangeListener mOnPageChangeListener = new OnPageChangeListener() {
 
@@ -47,37 +49,39 @@ public class FragmentMasterImpl extends FragmentMaster {
 	@Override
 	protected void performInstall(ViewGroup container) {
 		mAdapter = new FragmentsAdapter();
-		mViewPager = new FmPager(getActivity());
-		mViewPager.setId(R.id.fragment_container);
-		mViewPager.setPageAnimation(getPageAnimator());
+		mViewPager = new FragmentMasterPager(this);
+		mViewPager.setId(FRAGMENT_CONTAINER_ID);
 		mViewPager.setOffscreenPageLimit(Integer.MAX_VALUE);
 		mViewPager.setAdapter(mAdapter);
 		mViewPager.setOnPageChangeListener(mOnPageChangeListener);
-		mViewPager.setSlideable(isSlideable());
 
 		container.addView(mViewPager);
 	}
 	@Override
 	protected int getFragmentContainerId() {
-		return R.id.fragment_container;
+		return FRAGMENT_CONTAINER_ID;
 	}
 
 	@Override
 	protected void performStartFragmentForResult(IMasterFragment fragment) {
 		mAdapter.notifyDataSetChanged();
-		mViewPager.setCurrentItem(mAdapter.getCount() - 1);
+		// Don't perform "smooth scroll" if we have a PageAnimator.
+		mViewPager.setCurrentItem(mAdapter.getCount() - 1, hasPageAnimator());
 	}
 
 	@Override
 	public void finishFragment(IMasterFragment fragment, int resultCode,
 			Request data) {
-		int index = getFragments().indexOf(fragment);
-		if (index != 0 && mViewPager.getCurrentItem() == index) {
-			mViewPager.setCurrentItem(index - 1);
-			deliverFragmentResult(fragment, resultCode, data);
-		} else {
-			super.finishFragment(fragment, resultCode, data);
+		// If there's a PageAnimator, do finish after scrolling animation ends.
+		if (hasPageAnimator()) {
+			int index = getFragments().indexOf(fragment);
+			if (index != 0 && mViewPager.getCurrentItem() == index) {
+				mViewPager.setCurrentItem(index - 1);
+				deliverFragmentResult(fragment, resultCode, data);
+				return;
+			}
 		}
+		super.finishFragment(fragment, resultCode, data);
 	}
 
 	@Override
@@ -95,21 +99,6 @@ public class FragmentMasterImpl extends FragmentMaster {
 			} else {
 				f.finish();
 			}
-		}
-	}
-
-	@Override
-	protected void onSlideableChanged(boolean slideable) {
-		super.onSlideableChanged(slideable);
-		if (isInstalled()) {
-			mViewPager.setSlideable(slideable);
-		}
-	}
-
-	@Override
-	protected void onSetPageAnimator(PageAnimator pageAnim) {
-		if (isInstalled()) {
-			mViewPager.setPageAnimation(pageAnim);
 		}
 	}
 

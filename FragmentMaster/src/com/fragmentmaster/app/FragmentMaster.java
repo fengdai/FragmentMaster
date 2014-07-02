@@ -30,7 +30,7 @@ public abstract class FragmentMaster {
 	private final FragmentManager mFragmentManager;
 	private int mContainerResID = 0;
 	private ViewGroup mContainer;
-	private boolean mIsSlideable = true;
+	private boolean mIsSlideable = false;
 	private boolean mIsInstalled = false;
 	private boolean mSticky = false;
 	private boolean mHomeFragmentApplied = false;
@@ -194,10 +194,6 @@ public abstract class FragmentMaster {
 
 	public final void setPageAnimator(PageAnimator pageAnimator) {
 		mPageAnimator = pageAnimator;
-		onSetPageAnimator(pageAnimator);
-	}
-
-	protected void onSetPageAnimator(PageAnimator pageAnimator) {
 	}
 
 	public PageAnimator getPageAnimator() {
@@ -249,17 +245,11 @@ public abstract class FragmentMaster {
 	}
 
 	public final void setSlideable(boolean slideable) {
-		if (slideable != mIsSlideable) {
-			mIsSlideable = slideable;
-			onSlideableChanged(slideable);
-		}
-	}
-
-	protected void onSlideableChanged(boolean slideable) {
+		mIsSlideable = slideable;
 	}
 
 	public boolean isSlideable() {
-		return mIsSlideable;
+		return hasPageAnimator() && mIsSlideable;
 	}
 
 	Parcelable saveAllState() {
