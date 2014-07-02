@@ -22,6 +22,7 @@ class MasterFragmentDelegate {
 	Request mRequest = null;
 	// SoftInputMode, SOFT_INPUT_ADJUST_UNSPECIFIED is default.
 	int mSoftInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED;
+	boolean mIsSlideable = true;
 
 	private IMasterFragment mTargetChildFragment;
 
@@ -38,7 +39,6 @@ class MasterFragmentDelegate {
 					super.handleMessage(msg);
 			}
 		}
-
 	};
 
 	private MasterActivity mActivity;
@@ -252,6 +252,29 @@ class MasterFragmentDelegate {
 		return mSoftInputMode;
 	}
 
+	void invalidateWindowConfiguration() {
+		if (mMasterFragment.getActivity() != null) {
+			mMasterFragment.getActivity().getWindow()
+					.setSoftInputMode(mSoftInputMode);
+		}
+	}
+
+	public void setSlideable(boolean slideable) {
+		if (mIsSlideable != slideable) {
+			mIsSlideable = slideable;
+			invalidateMasterConfiguration();
+		}
+	}
+
+	public boolean isSlideable() {
+		return mIsSlideable;
+	}
+
+	void invalidateMasterConfiguration() {
+		checkState();
+		getFragmentMaster().setSlideable(mIsSlideable);
+	}
+
 	public void setPrimary(boolean isPrimary) {
 		mMasterFragment.setMenuVisibility(isPrimary);
 		mMasterFragment.setUserVisibleHint(isPrimary);
@@ -263,6 +286,7 @@ class MasterFragmentDelegate {
 		mIsPrimary = isPrimary;
 		if (!oldPrimaryState && isPrimary) {
 			invalidateWindowConfiguration();
+			invalidateMasterConfiguration();
 			if (mMasterFragment.isResumed()) {
 				performUserActive();
 			}
@@ -283,29 +307,12 @@ class MasterFragmentDelegate {
 		mMasterFragment.onUserLeave();
 	}
 
-	public void invalidateWindowConfiguration() {
-		if (mMasterFragment.getActivity() != null) {
-			mMasterFragment.getActivity().getWindow()
-					.setSoftInputMode(mSoftInputMode);
-		}
-	}
-
 	public boolean isUserActive() {
 		return mIsUserActive;
 	}
 
 	public boolean isPrimary() {
 		return mIsPrimary;
-	}
-
-	public void setSlideable(boolean slideable) {
-		checkState();
-		getFragmentMaster().setSlideable(slideable);
-	}
-
-	public boolean isSlideable() {
-		checkState();
-		return getFragmentMaster().isSlideable();
 	}
 
 	public IMasterFragment getTargetChildFragment() {
@@ -383,15 +390,18 @@ final class MasterFragmentState implements Parcelable {
 
 	Request mRequest;
 	int mSoftInputMode;
+	boolean mIsSlideable;
 
 	public MasterFragmentState(MasterFragmentDelegate mfd) {
 		mRequest = mfd.mRequest;
 		mSoftInputMode = mfd.mSoftInputMode;
+		mIsSlideable = mfd.mIsSlideable;
 	}
 
 	public MasterFragmentState(Parcel in) {
 		mRequest = in.readParcelable(null);
 		mSoftInputMode = in.readInt();
+		mIsSlideable = in.readInt() != 0;
 	}
 
 	@Override
@@ -403,6 +413,7 @@ final class MasterFragmentState implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeParcelable(mRequest, flags);
 		dest.writeInt(mSoftInputMode);
+		dest.writeInt(mIsSlideable ? 1 : 0);
 	}
 
 	public static final Parcelable.Creator<MasterFragmentState> CREATOR = new Parcelable.Creator<MasterFragmentState>() {

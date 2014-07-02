@@ -84,8 +84,6 @@ public interface IMasterFragment
 
 	public boolean isUserActive();
 
-	public void invalidateWindowConfiguration();
-
 	public void setSlideable(boolean slideable);
 
 	public boolean isSlideable();

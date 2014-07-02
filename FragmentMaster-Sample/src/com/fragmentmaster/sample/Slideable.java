@@ -18,8 +18,7 @@ public class Slideable extends MasterFragment implements OnPageChangeListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.slideable_fragment, container,
-				false);
+		return inflater.inflate(R.layout.slideable_fragment, container, false);
 	}
 
 	@Override
@@ -30,12 +29,6 @@ public class Slideable extends MasterFragment implements OnPageChangeListener {
 		viewPager.setOnPageChangeListener(this);
 	}
 
-	@Override
-	public void finish() {
-		setSlideable(true);
-		super.finish();
-	}
-
 	private class Adapter extends PagerAdapter {
 
 		@Override
@@ -44,8 +37,8 @@ public class Slideable extends MasterFragment implements OnPageChangeListener {
 		}
 
 		@Override
-		public boolean isViewFromObject(View arg0, Object arg1) {
-			return arg0 == arg1;
+		public boolean isViewFromObject(View view, Object object) {
+			return view == object;
 		}
 
 		@Override
@@ -64,15 +57,16 @@ public class Slideable extends MasterFragment implements OnPageChangeListener {
 	}
 
 	@Override
-	public void onPageScrollStateChanged(int arg0) {
+	public void onPageScrollStateChanged(int state) {
 	}
 
 	@Override
-	public void onPageScrolled(int arg0, float arg1, int arg2) {
+	public void onPageScrolled(int position, float positionOffset,
+			int positionOffsetPixels) {
 	}
 
 	@Override
-	public void onPageSelected(int arg0) {
-		setSlideable(arg0 == 0);
+	public void onPageSelected(int position) {
+		setSlideable(position == 0);
 	}
 }
