@@ -88,6 +88,8 @@ public interface IMasterFragment
 
 	public boolean isSlideable();
 
+	public int onCreatePageAnimator();
+
 	/**
 	 * Called when user has come to this fragment.
 	 */

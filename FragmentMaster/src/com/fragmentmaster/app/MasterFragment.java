@@ -1,5 +1,7 @@
 package com.fragmentmaster.app;
 
+import com.fragmentmaster.animator.PageAnimatorProvider;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
@@ -337,6 +339,11 @@ public class MasterFragment extends Fragment implements IMasterFragment {
 	@Override
 	public boolean onGenericMotionEvent(MotionEvent event) {
 		return false;
+	}
+
+	@Override
+	public int onCreatePageAnimator() {
+		return PageAnimatorProvider.DEFAULT_PAGE_ANIMATOR_ID;
 	}
 
 }

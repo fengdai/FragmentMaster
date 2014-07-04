@@ -1,17 +1,13 @@
-package com.fragmentmaster.animator;
+package com.fragmentmaster.sample.pageanimator;
 
 import android.view.View;
-import android.view.animation.Interpolator;
-import android.view.animation.OvershootInterpolator;
 
+import com.fragmentmaster.animator.PageAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
-public class DepthPageAnimator extends PageAnimator {
+public class VerticalSlideAnimator extends PageAnimator {
 	private static final float MIN_SCALE = 0.85f;
 	private static final float MIN_ALPHA = 0.5f;
-
-	private static final Interpolator sInterpolator = new OvershootInterpolator(
-			1.0f);
 
 	@Override
 	protected void transformPageOffScreenLeft(View page, float position,
@@ -37,18 +33,15 @@ public class DepthPageAnimator extends PageAnimator {
 
 	@Override
 	protected void transformPageRight(View page, float position, boolean enter) {
-		float offset = 0;
-		if (enter) {
-			// Perform overshot animation if enter.
-			offset = page.getWidth()
-					* ((1 - position) - sInterpolator
-							.getInterpolation(1 - position));
-		}
-		ViewHelper.setTranslationX(page, offset);
+		int pageWidth = page.getWidth();
+		int pageHeight = page.getHeight();
+		ViewHelper.setTranslationX(page, pageWidth * -position);
+		ViewHelper.setTranslationY(page, pageHeight * position);
 		ViewHelper.setAlpha(page, 1);
 		ViewHelper.setScaleX(page, 1);
 		ViewHelper.setScaleY(page, 1);
 	}
+
 	@Override
 	protected void transformPageOffScreenRight(View page, float position,
 			boolean enter) {

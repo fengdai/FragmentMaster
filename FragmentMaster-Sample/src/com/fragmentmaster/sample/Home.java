@@ -41,6 +41,7 @@ public class Home extends MasterListFragment {
 		ENTRIES.add(new Entry("Pass Data", new Request(PassData.class)));
 		ENTRIES.add(new Entry("Receive Result",
 				new Request(ReceiveResult.class)));
+		ENTRIES.add(new Entry("PageAnimators", new Request(PageAnimators.class)));
 		ENTRIES.add(new Entry("Slideable", new Request(Slideable.class)));
 		ENTRIES.add(new Entry("Soft Input", new Request(SoftInput.class)));
 	}

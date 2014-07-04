@@ -5,5 +5,6 @@
     <string name="receive_result_discription">Click "Pick" button to get a result, which will be diplayed here:</string>
     <string name="pick_your_number">Pick</string>
     <string name="next_button_string">Next</string>
+    <string name="vertical_slide_animator_decription">Click empty area above to close this page.</string>
 
 </resources>

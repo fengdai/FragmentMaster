@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.fragmentmaster.animator.PageAnimator;
+import com.fragmentmaster.animator.PageAnimatorProvider;
 
 public abstract class FragmentMaster {
 
@@ -35,7 +36,8 @@ public abstract class FragmentMaster {
 	private boolean mSticky = false;
 	private boolean mHomeFragmentApplied = false;
 
-	private PageAnimator mPageAnimator;
+	private PageAnimatorProvider mAnimatorProvider = null;
+	private PageAnimator mPageAnimator = null;
 
 	// Fragments started by FragmentMaster.
 	private ArrayList<IMasterFragment> mFragments = new ArrayList<IMasterFragment>();
@@ -192,7 +194,15 @@ public abstract class FragmentMaster {
 		return mFragments;
 	}
 
-	public final void setPageAnimator(PageAnimator pageAnimator) {
+	public final void setAnimatorProvider(PageAnimatorProvider animatorProvider) {
+		mAnimatorProvider = animatorProvider;
+	}
+
+	public final PageAnimatorProvider getAnimatorProvider() {
+		return mAnimatorProvider;
+	}
+
+	void setPageAnimator(PageAnimator pageAnimator) {
 		mPageAnimator = pageAnimator;
 	}
 

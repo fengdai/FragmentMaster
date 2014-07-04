@@ -1,5 +1,7 @@
 package com.fragmentmaster.app;
 
+import com.fragmentmaster.animator.PageAnimatorProvider;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -272,7 +274,15 @@ class MasterFragmentDelegate {
 
 	void invalidateMasterConfiguration() {
 		checkState();
-		getFragmentMaster().setSlideable(mIsSlideable);
+		FragmentMaster fragmentMaster = getFragmentMaster();
+
+		fragmentMaster.setSlideable(mIsSlideable);
+		PageAnimatorProvider animatorProvider = fragmentMaster
+				.getAnimatorProvider();
+		if (animatorProvider != null) {
+			fragmentMaster.setPageAnimator(animatorProvider
+					.getPageAnimator(mMasterFragment.onCreatePageAnimator()));
+		}
 	}
 
 	public void setPrimary(boolean isPrimary) {
@@ -399,7 +409,8 @@ final class MasterFragmentState implements Parcelable {
 	}
 
 	public MasterFragmentState(Parcel in) {
-		mRequest = in.readParcelable(null);
+		mRequest = in
+				.readParcelable(MasterFragmentState.class.getClassLoader());
 		mSoftInputMode = in.readInt();
 		mIsSlideable = in.readInt() != 0;
 	}
