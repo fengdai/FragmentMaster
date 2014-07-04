@@ -399,7 +399,8 @@ final class MasterFragmentState implements Parcelable {
 	}
 
 	public MasterFragmentState(Parcel in) {
-		mRequest = in.readParcelable(null);
+		mRequest = in
+				.readParcelable(MasterFragmentState.class.getClassLoader());
 		mSoftInputMode = in.readInt();
 		mIsSlideable = in.readInt() != 0;
 	}
