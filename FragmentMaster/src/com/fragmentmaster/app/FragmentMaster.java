@@ -11,7 +11,7 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.KeyEventCompat;
+import android.support.v4.view.KeyEventCompat2;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -346,8 +346,8 @@ public abstract class FragmentMaster {
 
 	final boolean dispatchKeyEventToActivity(KeyEvent event) {
 		final View decor = mActivity.getWindow().getDecorView();
-		return KeyEventCompat.dispatch(event, mActivity, decor != null
-				? KeyEventCompat.getKeyDispatcherState(decor)
+		return KeyEventCompat2.dispatch(event, mActivity, decor != null
+				? KeyEventCompat2.getKeyDispatcherState(decor)
 				: null, mActivity);
 	}
 

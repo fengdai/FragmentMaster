@@ -7,7 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.view.KeyEventCompat;
+import android.support.v4.view.KeyEventCompat2;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -333,9 +333,9 @@ class MasterFragmentDelegate {
 		}
 
 		View view = mMasterFragment.getView();
-		boolean handled = KeyEventCompat.dispatch(event, mMasterFragment,
+		boolean handled = KeyEventCompat2.dispatch(event, mMasterFragment,
 				view != null
-						? KeyEventCompat.getKeyDispatcherState(view)
+						? KeyEventCompat2.getKeyDispatcherState(view)
 						: null, this);
 		if (handled) {
 			return true;
