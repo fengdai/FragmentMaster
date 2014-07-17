@@ -63,7 +63,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
-	protected void performStartFragmentForResult(IMasterFragment fragment) {
+	protected void onFragmentStarted(IMasterFragment fragment) {
 		mAdapter.notifyDataSetChanged();
 		// Don't perform "smooth scroll" if we have a PageAnimator.
 		mViewPager.setCurrentItem(mAdapter.getCount() - 1, hasPageAnimator());
@@ -85,7 +85,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
-	protected void performFinishFragment(IMasterFragment fragment) {
+	protected void onFragmentFinished(IMasterFragment fragment) {
 		mAdapter.notifyDataSetChanged();
 	}
 

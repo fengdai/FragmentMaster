@@ -88,11 +88,10 @@ public abstract class FragmentMaster {
 
 		fragment.setPrimary(false);
 
-		performStartFragmentForResult(fragment);
+		onFragmentStarted(fragment);
 	}
 
-	protected abstract void performStartFragmentForResult(
-			IMasterFragment fragment);
+	protected abstract void onFragmentStarted(IMasterFragment fragment);
 
 	private IMasterFragment newFragment(String className) {
 		try {
@@ -138,7 +137,7 @@ public abstract class FragmentMaster {
 			}
 		}
 
-		performFinishFragment(fragment);
+		onFragmentFinished(fragment);
 	}
 
 	protected void deliverFragmentResult(IMasterFragment fragment,
@@ -168,7 +167,7 @@ public abstract class FragmentMaster {
 		}
 	}
 
-	protected abstract void performFinishFragment(IMasterFragment fragment);
+	protected abstract void onFragmentFinished(IMasterFragment fragment);
 
 	public IMasterFragment getPrimaryFragment() {
 		return mPrimaryFragment;
