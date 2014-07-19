@@ -1,7 +1,5 @@
 package com.fragmentmaster.internal;
 
-import java.util.List;
-
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -22,6 +20,8 @@ public class FragmentMasterImpl extends FragmentMaster {
 	private FragmentsAdapter mAdapter;
 	private FragmentMasterPager mViewPager;
 
+	private int mPageScrollState = ViewPager.SCROLL_STATE_IDLE;
+
 	private OnPageChangeListener mOnPageChangeListener = new OnPageChangeListener() {
 
 		@Override
@@ -31,12 +31,17 @@ public class FragmentMasterImpl extends FragmentMaster {
 		@Override
 		public void onPageScrolled(int position, float positionOffset,
 				int positionOffsetPixels) {
+			if (mPageScrollState == ViewPager.SCROLL_STATE_IDLE) {
+				// Pager will not scroll.
+				onScrollIdle();
+			}
 		}
 
 		@Override
 		public void onPageScrollStateChanged(int state) {
+			mPageScrollState = state;
 			if (state == ViewPager.SCROLL_STATE_IDLE) {
-				onSlideIdle();
+				onScrollIdle();
 			}
 		}
 
@@ -89,16 +94,11 @@ public class FragmentMasterImpl extends FragmentMaster {
 		mAdapter.notifyDataSetChanged();
 	}
 
-	private void onSlideIdle() {
-		List<IMasterFragment> fragments = getFragments();
-		int currentItem = mViewPager.getCurrentItem();
-		while (currentItem < mAdapter.getCount() - 1) {
-			IMasterFragment f = fragments.get(fragments.size() - 1);
-			if (f.isFinishing()) {
-				doFinishFragment(f);
-			} else {
-				f.finish();
-			}
+	private void onScrollIdle() {
+		int currItem = mViewPager.getCurrentItem();
+		if (getFragments().size() > 0) {
+			IMasterFragment currFragment = getFragments().get(currItem);
+			setPrimaryFragment(currFragment);
 		}
 	}
 
@@ -128,7 +128,9 @@ public class FragmentMasterImpl extends FragmentMaster {
 		@Override
 		public void setPrimaryItem(ViewGroup container, int position,
 				Object object) {
-			setPrimaryFragment((IMasterFragment) object);
+			if (object == null) {
+				setPrimaryFragment(null);
+			}
 		}
 
 		@Override
