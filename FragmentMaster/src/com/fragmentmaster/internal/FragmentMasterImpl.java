@@ -20,8 +20,6 @@ public class FragmentMasterImpl extends FragmentMaster {
 	private FragmentsAdapter mAdapter;
 	private FragmentMasterPager mViewPager;
 
-	private int mPageScrollState = ViewPager.SCROLL_STATE_IDLE;
-
 	private OnPageChangeListener mOnPageChangeListener = new OnPageChangeListener() {
 
 		@Override
@@ -31,20 +29,22 @@ public class FragmentMasterImpl extends FragmentMaster {
 		@Override
 		public void onPageScrolled(int position, float positionOffset,
 				int positionOffsetPixels) {
-			if (mPageScrollState == ViewPager.SCROLL_STATE_IDLE) {
-				// Pager will not scroll.
-				onScrollIdle();
-			}
 		}
 
 		@Override
 		public void onPageScrollStateChanged(int state) {
-			mPageScrollState = state;
 			if (state == ViewPager.SCROLL_STATE_IDLE) {
 				onScrollIdle();
 			}
 		}
 
+	};
+
+	private Runnable mCleanUpRunnable = new Runnable() {
+		@Override
+		public void run() {
+			cleanUp();
+		}
 	};
 
 	public FragmentMasterImpl(MasterActivity activity) {
@@ -95,11 +95,8 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	private void onScrollIdle() {
-		int currItem = mViewPager.getCurrentItem();
-		if (getFragments().size() > 0) {
-			IMasterFragment currFragment = getFragments().get(currItem);
-			setPrimaryFragment(currFragment);
-		}
+		// When scrolling stopped, do cleanup.
+		mViewPager.post(mCleanUpRunnable);
 	}
 
 	private class FragmentsAdapter extends PagerAdapter {
@@ -128,9 +125,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 		@Override
 		public void setPrimaryItem(ViewGroup container, int position,
 				Object object) {
-			if (object == null) {
-				setPrimaryFragment(null);
-			}
+			setPrimaryFragment((IMasterFragment) object);
 		}
 
 		@Override
