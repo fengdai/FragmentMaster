@@ -1,7 +1,5 @@
 package com.fragmentmaster.internal;
 
-import java.util.List;
-
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -36,10 +34,17 @@ public class FragmentMasterImpl extends FragmentMaster {
 		@Override
 		public void onPageScrollStateChanged(int state) {
 			if (state == ViewPager.SCROLL_STATE_IDLE) {
-				onSlideIdle();
+				onScrollIdle();
 			}
 		}
 
+	};
+
+	private Runnable mCleanUpRunnable = new Runnable() {
+		@Override
+		public void run() {
+			cleanUp();
+		}
 	};
 
 	public FragmentMasterImpl(MasterActivity activity) {
@@ -63,7 +68,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
-	protected void performStartFragmentForResult(IMasterFragment fragment) {
+	protected void onFragmentStarted(IMasterFragment fragment) {
 		mAdapter.notifyDataSetChanged();
 		// Don't perform "smooth scroll" if we have a PageAnimator.
 		mViewPager.setCurrentItem(mAdapter.getCount() - 1, hasPageAnimator());
@@ -85,21 +90,13 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
-	protected void performFinishFragment(IMasterFragment fragment) {
+	protected void onFragmentFinished(IMasterFragment fragment) {
 		mAdapter.notifyDataSetChanged();
 	}
 
-	private void onSlideIdle() {
-		List<IMasterFragment> fragments = getFragments();
-		int currentItem = mViewPager.getCurrentItem();
-		while (currentItem < mAdapter.getCount() - 1) {
-			IMasterFragment f = fragments.get(fragments.size() - 1);
-			if (f.isFinishing()) {
-				doFinishFragment(f);
-			} else {
-				f.finish();
-			}
-		}
+	private void onScrollIdle() {
+		// When scrolling stopped, do cleanup.
+		mViewPager.post(mCleanUpRunnable);
 	}
 
 	private class FragmentsAdapter extends PagerAdapter {

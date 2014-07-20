@@ -11,7 +11,7 @@ import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.KeyEventCompat;
+import android.support.v4.view.KeyEventCompat2;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -90,11 +90,10 @@ public abstract class FragmentMaster {
 
 		fragment.setPrimary(false);
 
-		performStartFragmentForResult(fragment);
+		onFragmentStarted(fragment);
 	}
 
-	protected abstract void performStartFragmentForResult(
-			IMasterFragment fragment);
+	protected abstract void onFragmentStarted(IMasterFragment fragment);
 
 	private IMasterFragment newFragment(String className) {
 		try {
@@ -140,7 +139,7 @@ public abstract class FragmentMaster {
 			}
 		}
 
-		performFinishFragment(fragment);
+		onFragmentFinished(fragment);
 	}
 
 	protected void deliverFragmentResult(IMasterFragment fragment,
@@ -170,7 +169,7 @@ public abstract class FragmentMaster {
 		}
 	}
 
-	protected abstract void performFinishFragment(IMasterFragment fragment);
+	protected abstract void onFragmentFinished(IMasterFragment fragment);
 
 	public IMasterFragment getPrimaryFragment() {
 		return mPrimaryFragment;
@@ -187,6 +186,28 @@ public abstract class FragmentMaster {
 			mPrimaryFragment = fragment;
 			// Only the primary fragment can receive events callback.
 			setCallback(fragment);
+		}
+	}
+
+	protected void cleanUp() {
+		// check whether there are any fragments above the primary one, and
+		// finish them.
+		IMasterFragment[] fragments = getFragments().toArray(
+				new IMasterFragment[getFragments().size()]);
+		IMasterFragment f = null;
+		// determine whether f is above primary fragment.
+		boolean abovePrimary = true;
+		for (int i = fragments.length - 1; i >= 0; i--) {
+			f = fragments[i];
+			if (f == mPrimaryFragment) {
+				abovePrimary = false;
+			}
+			if (f.isFinishing()) {
+				doFinishFragment(f);
+			} else if (abovePrimary) {
+				// All fragments above primary fragment should be finished.
+				f.finish();
+			}
 		}
 	}
 
@@ -285,9 +306,11 @@ public abstract class FragmentMaster {
 
 	private void logState() {
 		int fragmentsInManagerCount = 0;
-		for (Fragment f : mFragmentManager.getFragments()) {
-			if (f != null)
-				fragmentsInManagerCount++;
+		if (mFragmentManager.getFragments() != null) {
+			for (Fragment f : mFragmentManager.getFragments()) {
+				if (f != null)
+					fragmentsInManagerCount++;
+			}
 		}
 		Log.d(TAG, "STATE FragmentMaster[" + mFragments.size()
 				+ "], FragmentManager[" + fragmentsInManagerCount
@@ -356,8 +379,8 @@ public abstract class FragmentMaster {
 
 	final boolean dispatchKeyEventToActivity(KeyEvent event) {
 		final View decor = mActivity.getWindow().getDecorView();
-		return KeyEventCompat.dispatch(event, mActivity, decor != null
-				? KeyEventCompat.getKeyDispatcherState(decor)
+		return KeyEventCompat2.dispatch(event, mActivity, decor != null
+				? KeyEventCompat2.getKeyDispatcherState(decor)
 				: null, mActivity);
 	}
 
