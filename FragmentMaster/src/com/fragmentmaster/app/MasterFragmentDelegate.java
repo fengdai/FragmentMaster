@@ -109,9 +109,16 @@ class MasterFragmentDelegate {
 	}
 
 	private void checkState() {
+		if (mFinished) {
+			throw new IllegalStateException(
+					"Can not perform this action. Fragment "
+							+ this.mMasterFragment + " has been finished!");
+		}
 		if (mActivity == null) {
-			throw new IllegalStateException("Fragment " + this
-					+ " not attached to MasterActivity!");
+			throw new IllegalStateException(
+					"Can not perform this action. Fragment "
+							+ this.mMasterFragment
+							+ " not attached to MasterActivity!");
 		}
 	}
 
