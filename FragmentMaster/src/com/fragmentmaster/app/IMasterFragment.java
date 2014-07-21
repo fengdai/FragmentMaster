@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.fragmentmaster.animator.PageAnimator;
+
 /**
  * Common MasterFragment interface.
  */
@@ -88,7 +90,7 @@ public interface IMasterFragment
 
 	public boolean isSlideable();
 
-	public int onCreatePageAnimator();
+	public PageAnimator onCreatePageAnimator();
 
 	/**
 	 * Called when user has come to this fragment.

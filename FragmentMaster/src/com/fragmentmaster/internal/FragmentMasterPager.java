@@ -8,7 +8,6 @@ import android.support.v4.view.ViewPagerCompat;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.fragmentmaster.animator.PageAnimatorProvider;
 import com.fragmentmaster.app.FragmentMaster;
 import com.nineoldandroids.view.ViewHelper;
 
@@ -30,11 +29,7 @@ class FragmentMasterPager extends ViewPagerCompat {
 	private ViewPager.PageTransformer mPageTransformer = new ViewPager.PageTransformer() {
 		@Override
 		public void transformPage(View page, float position) {
-			PageAnimatorProvider animatorProvider = mFragmentMaster
-					.getAnimatorProvider();
-			if (animatorProvider != null) {
-				animatorProvider.resetPage(page);
-			}
+			resetPage(page);
 			if (mFragmentMaster.hasPageAnimator()) {
 				if (position < -1 || position > 1) {
 					ViewHelper.setAlpha(page, 0);
@@ -44,6 +39,20 @@ class FragmentMasterPager extends ViewPagerCompat {
 				}
 			}
 		}
+
+		private void resetPage(View page) {
+			ViewHelper.setAlpha(page, 1);
+			ViewHelper.setTranslationX(page, 0);
+			ViewHelper.setTranslationY(page, 0);
+			ViewHelper.setScaleX(page, 1);
+			ViewHelper.setScaleY(page, 1);
+			ViewHelper.setRotation(page, 0);
+			ViewHelper.setRotationX(page, 0);
+			ViewHelper.setRotationY(page, 0);
+			ViewHelper.setPivotX(page, page.getWidth() / 2);
+			ViewHelper.setPivotY(page, page.getHeight() / 2);
+		}
+
 	};
 
 	// Internal listener

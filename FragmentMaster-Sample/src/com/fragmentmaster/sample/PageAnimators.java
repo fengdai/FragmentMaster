@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -16,7 +15,7 @@ import com.fragmentmaster.animator.PageAnimator;
 import com.fragmentmaster.app.MasterFragment;
 import com.fragmentmaster.app.MasterListFragment;
 import com.fragmentmaster.app.Request;
-import com.fragmentmaster.sample.MainActivity.MyAnimatorProvider;
+import com.fragmentmaster.sample.pageanimator.Animators;
 import com.fragmentmaster.sample.pageanimator.OvershootSlideAnimator;
 import com.fragmentmaster.sample.pageanimator.VerticalSlideAnimator;
 
@@ -57,7 +56,6 @@ public class PageAnimators extends MasterListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 		setListAdapter(new ArrayAdapter<Page>(getActivity(),
 				android.R.layout.simple_list_item_1, PAGES));
 	}
@@ -98,8 +96,8 @@ public class PageAnimators extends MasterListFragment {
 		}
 
 		@Override
-		public int onCreatePageAnimator() {
-			return MyAnimatorProvider.VERTICAL_SLIDE_ANIMATOR_ID;
+		public PageAnimator onCreatePageAnimator() {
+			return Animators.VERTICAL_SLIDE_ANIMATOR;
 		}
 	}
 
@@ -112,8 +110,8 @@ public class PageAnimators extends MasterListFragment {
 		}
 
 		@Override
-		public int onCreatePageAnimator() {
-			return MyAnimatorProvider.OVER_SHOOT_SLIDE_ANIMATOR_ID;
+		public PageAnimator onCreatePageAnimator() {
+			return Animators.OVER_SHOOT_SLIDE_ANIMATOR;
 		}
 	}
 }

@@ -1,11 +1,12 @@
-package com.fragmentmaster.sample.pageanimator;
+package com.fragmentmaster.animator;
 
 import android.view.View;
 
-import com.fragmentmaster.animator.PageAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
 public class DefaultPageAnimator extends PageAnimator {
+
+	public static final DefaultPageAnimator INSTANCE = new DefaultPageAnimator();
 
 	private static final float MIN_SCALE = 0.85f;
 	private static final float MIN_ALPHA = 0.5f;

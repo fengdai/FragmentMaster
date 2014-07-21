@@ -1,7 +1,5 @@
 package com.fragmentmaster.app;
 
-import com.fragmentmaster.animator.PageAnimatorProvider;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
@@ -11,6 +9,9 @@ import android.support.v4.app.ListFragment;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.fragmentmaster.animator.DefaultPageAnimator;
+import com.fragmentmaster.animator.PageAnimator;
 
 public class MasterListFragment extends ListFragment implements IMasterFragment {
 
@@ -340,8 +341,8 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 	}
 
 	@Override
-	public int onCreatePageAnimator() {
-		return PageAnimatorProvider.DEFAULT_PAGE_ANIMATOR_ID;
+	public PageAnimator onCreatePageAnimator() {
+		return DefaultPageAnimator.INSTANCE;
 	}
 
 }

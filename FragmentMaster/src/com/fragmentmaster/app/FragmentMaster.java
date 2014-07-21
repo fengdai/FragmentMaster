@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import com.fragmentmaster.animator.PageAnimator;
-import com.fragmentmaster.animator.PageAnimatorProvider;
 
 public abstract class FragmentMaster {
 
@@ -36,7 +35,6 @@ public abstract class FragmentMaster {
 	private boolean mSticky = false;
 	private boolean mHomeFragmentApplied = false;
 
-	private PageAnimatorProvider mAnimatorProvider = null;
 	private PageAnimator mPageAnimator = null;
 
 	// Fragments started by FragmentMaster.
@@ -93,15 +91,12 @@ public abstract class FragmentMaster {
 	}
 
 	protected void setUpAnimator(IMasterFragment fragment) {
-		PageAnimatorProvider animatorProvider = getAnimatorProvider();
 		PageAnimator pageAnimator = null;
 		if (fragment != null) {
-			pageAnimator = animatorProvider != null ? animatorProvider
-					.getPageAnimator(fragment.onCreatePageAnimator()) : null;
+			pageAnimator = fragment.onCreatePageAnimator();
 		}
 		this.setPageAnimator(pageAnimator);
 	}
-
 	protected abstract void onFragmentStarted(IMasterFragment fragment);
 
 	private IMasterFragment newFragment(String className) {
@@ -224,19 +219,7 @@ public abstract class FragmentMaster {
 		return mFragments;
 	}
 
-	public final void setAnimatorProvider(PageAnimatorProvider animatorProvider) {
-		if (isInstalled()) {
-			throw new IllegalStateException(
-					"Counldn't change PageAnimatorProvider after install().");
-		}
-		mAnimatorProvider = animatorProvider;
-	}
-
-	public final PageAnimatorProvider getAnimatorProvider() {
-		return mAnimatorProvider;
-	}
-
-	void setPageAnimator(PageAnimator pageAnimator) {
+	protected void setPageAnimator(PageAnimator pageAnimator) {
 		mPageAnimator = pageAnimator;
 	}
 
