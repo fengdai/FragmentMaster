@@ -8,7 +8,9 @@ import android.support.v4.view.ViewPagerCompat;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.fragmentmaster.animator.PageAnimatorProvider;
 import com.fragmentmaster.app.FragmentMaster;
+import com.nineoldandroids.view.ViewHelper;
 
 /**
  * Real container of fragments.
@@ -28,9 +30,18 @@ class FragmentMasterPager extends ViewPagerCompat {
 	private ViewPager.PageTransformer mPageTransformer = new ViewPager.PageTransformer() {
 		@Override
 		public void transformPage(View page, float position) {
+			PageAnimatorProvider animatorProvider = mFragmentMaster
+					.getAnimatorProvider();
+			if (animatorProvider != null) {
+				animatorProvider.resetPage(page);
+			}
 			if (mFragmentMaster.hasPageAnimator()) {
-				mFragmentMaster.getPageAnimator().transformPage(page, position,
-						mAnimationState == ANIMATION_ENTER);
+				if (position < -1 || position > 1) {
+					ViewHelper.setAlpha(page, 0);
+				} else {
+					mFragmentMaster.getPageAnimator().transformPage(page,
+							position, mAnimationState == ANIMATION_ENTER);
+				}
 			}
 		}
 	};

@@ -10,12 +10,6 @@ public class VerticalSlideAnimator extends PageAnimator {
 	private static final float MIN_ALPHA = 0.5f;
 
 	@Override
-	protected void transformPageOffScreenLeft(View page, float position,
-			boolean enter) {
-		ViewHelper.setAlpha(page, 0);
-	}
-
-	@Override
 	protected void transformPageLeft(View page, float position, boolean enter) {
 		int pageWidth = page.getWidth();
 
@@ -40,11 +34,5 @@ public class VerticalSlideAnimator extends PageAnimator {
 		ViewHelper.setAlpha(page, 1);
 		ViewHelper.setScaleX(page, 1);
 		ViewHelper.setScaleY(page, 1);
-	}
-
-	@Override
-	protected void transformPageOffScreenRight(View page, float position,
-			boolean enter) {
-		ViewHelper.setAlpha(page, 0);
 	}
 }

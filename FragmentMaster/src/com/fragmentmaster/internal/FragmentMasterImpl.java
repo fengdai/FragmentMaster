@@ -20,6 +20,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 	private FragmentsAdapter mAdapter;
 	private FragmentMasterPager mViewPager;
 
+	private int mState = ViewPager.SCROLL_STATE_IDLE;
 	private OnPageChangeListener mOnPageChangeListener = new OnPageChangeListener() {
 
 		@Override
@@ -29,11 +30,21 @@ public class FragmentMasterImpl extends FragmentMaster {
 		@Override
 		public void onPageScrolled(int position, float positionOffset,
 				int positionOffsetPixels) {
+			if (mState == ViewPager.SCROLL_STATE_IDLE) {
+				setUpAnimator(getPrimaryFragment());
+			}
 		}
 
 		@Override
 		public void onPageScrollStateChanged(int state) {
+			mState = state;
 			if (state == ViewPager.SCROLL_STATE_IDLE) {
+				mViewPager.post(new Runnable() {
+					@Override
+					public void run() {
+						setUpAnimator(getPrimaryFragment());
+					}
+				});
 				onScrollIdle();
 			}
 		}

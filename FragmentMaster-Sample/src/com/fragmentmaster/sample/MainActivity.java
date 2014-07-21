@@ -1,15 +1,15 @@
 package com.fragmentmaster.sample;
 
 import android.os.Bundle;
+import android.view.View;
 
-import com.fragmentmaster.animator.DefaultPageAnimator;
 import com.fragmentmaster.animator.PageAnimator;
 import com.fragmentmaster.animator.PageAnimatorProvider;
 import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.MasterActivity;
 import com.fragmentmaster.app.Request;
-import com.fragmentmaster.sample.pageanimator.OvershootSlideAnimator;
-import com.fragmentmaster.sample.pageanimator.VerticalSlideAnimator;
+import com.fragmentmaster.sample.pageanimator.Animators;
+import com.nineoldandroids.view.ViewHelper;
 
 public class MainActivity extends MasterActivity {
 
@@ -25,24 +25,33 @@ public class MainActivity extends MasterActivity {
 
 	public static class MyAnimatorProvider implements PageAnimatorProvider {
 
-		private static final PageAnimator DEFAULT_PAGE_ANIMATOR = new DefaultPageAnimator();
-
 		public static final int VERTICAL_SLIDE_ANIMATOR_ID = 1;
 		public static final int OVER_SHOOT_SLIDE_ANIMATOR_ID = 2;
-
-		private static final PageAnimator VERTICAL_SLIDE_ANIMATOR = new VerticalSlideAnimator();
-		private static final PageAnimator OVER_SHOOT_SLIDE_ANIMATOR = new OvershootSlideAnimator();
 
 		@Override
 		public PageAnimator getPageAnimator(int pageAnimatorId) {
 			switch (pageAnimatorId) {
 			case VERTICAL_SLIDE_ANIMATOR_ID:
-				return VERTICAL_SLIDE_ANIMATOR;
+				return Animators.VERTICAL_SLIDE_ANIMATOR;
 			case OVER_SHOOT_SLIDE_ANIMATOR_ID:
-				return OVER_SHOOT_SLIDE_ANIMATOR;
+				return Animators.OVER_SHOOT_SLIDE_ANIMATOR;
 			default:
-				return DEFAULT_PAGE_ANIMATOR;
+				return Animators.DEFAULT_PAGE_ANIMATOR;
 			}
+		}
+
+		@Override
+		public void resetPage(View page) {
+			ViewHelper.setAlpha(page, 1);
+			ViewHelper.setTranslationX(page, 0);
+			ViewHelper.setTranslationY(page, 0);
+			ViewHelper.setScaleX(page, 1);
+			ViewHelper.setScaleY(page, 1);
+			ViewHelper.setRotation(page, 0);
+			ViewHelper.setRotationX(page, 0);
+			ViewHelper.setRotationY(page, 0);
+			ViewHelper.setPivotX(page, page.getWidth() / 2);
+			ViewHelper.setPivotY(page, page.getHeight() / 2);
 		}
 	}
 }

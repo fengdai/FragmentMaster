@@ -1,18 +1,14 @@
-package com.fragmentmaster.animator;
+package com.fragmentmaster.sample.pageanimator;
 
 import android.view.View;
 
+import com.fragmentmaster.animator.PageAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
 public class DefaultPageAnimator extends PageAnimator {
 
 	private static final float MIN_SCALE = 0.85f;
 	private static final float MIN_ALPHA = 0.5f;
-
-	@Override
-	protected void transformPageOffScreenLeft(View page, float position, boolean enter) {
-		ViewHelper.setAlpha(page, 0);
-	}
 
 	@Override
 	protected void transformPageLeft(View page, float position, boolean enter) {
@@ -36,10 +32,6 @@ public class DefaultPageAnimator extends PageAnimator {
 		ViewHelper.setAlpha(page, 1);
 		ViewHelper.setScaleX(page, 1);
 		ViewHelper.setScaleY(page, 1);
-	}
-	@Override
-	protected void transformPageOffScreenRight(View page, float position, boolean enter) {
-		ViewHelper.setAlpha(page, 0);
 	}
 
 }

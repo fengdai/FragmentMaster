@@ -1,7 +1,5 @@
 package com.fragmentmaster.app;
 
-import com.fragmentmaster.animator.PageAnimatorProvider;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -275,14 +273,7 @@ class MasterFragmentDelegate {
 	void invalidateMasterConfiguration() {
 		checkState();
 		FragmentMaster fragmentMaster = getFragmentMaster();
-
 		fragmentMaster.setSlideable(mIsSlideable);
-		PageAnimatorProvider animatorProvider = fragmentMaster
-				.getAnimatorProvider();
-		if (animatorProvider != null) {
-			fragmentMaster.setPageAnimator(animatorProvider
-					.getPageAnimator(mMasterFragment.onCreatePageAnimator()));
-		}
 	}
 
 	public void setPrimary(boolean isPrimary) {

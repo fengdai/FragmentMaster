@@ -87,10 +87,19 @@ public abstract class FragmentMaster {
 				.add(getFragmentContainerId(), fragment.getFragment()).commit();
 		mFragmentManager.executePendingTransactions();
 		mFragments.add(fragment);
-
 		fragment.setPrimary(false);
-
+		setUpAnimator(fragment);
 		onFragmentStarted(fragment);
+	}
+
+	protected void setUpAnimator(IMasterFragment fragment) {
+		PageAnimatorProvider animatorProvider = getAnimatorProvider();
+		PageAnimator pageAnimator = null;
+		if (fragment != null) {
+			pageAnimator = animatorProvider != null ? animatorProvider
+					.getPageAnimator(fragment.onCreatePageAnimator()) : null;
+		}
+		this.setPageAnimator(pageAnimator);
 	}
 
 	protected abstract void onFragmentStarted(IMasterFragment fragment);
@@ -216,6 +225,10 @@ public abstract class FragmentMaster {
 	}
 
 	public final void setAnimatorProvider(PageAnimatorProvider animatorProvider) {
+		if (isInstalled()) {
+			throw new IllegalStateException(
+					"Counldn't change PageAnimatorProvider after install().");
+		}
 		mAnimatorProvider = animatorProvider;
 	}
 
