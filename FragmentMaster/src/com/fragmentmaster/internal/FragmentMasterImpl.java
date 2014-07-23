@@ -83,15 +83,14 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	@Override
-	public void finishFragment(final IMasterFragment fragment,
+	protected void onFinishFragment(final IMasterFragment fragment,
 			final int resultCode, final Request data) {
 		final int index = getFragments().indexOf(fragment);
 		int curItem = mViewPager.getCurrentItem();
 
-		if (index == 0) {
-			setCallback(null);
-		} else if (hasPageAnimator() && curItem == index) {
-			// There's a PageAnimator, scroll back smoothly.
+		if (hasPageAnimator() && curItem == index && index != 0) {
+			// If there's a PageAnimator, and the fragment to finish is the
+			// primary fragment, scroll back smoothly.
 			// When scrolling is stopped, real finish will be done by
 			// cleanUp method.
 			mViewPager.setCurrentItem(index - 1, true);
@@ -102,7 +101,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 			deliverFragmentResult(fragment, resultCode, data);
 			return;
 		}
-		super.finishFragment(fragment, resultCode, data);
+		super.onFinishFragment(fragment, resultCode, data);
 	}
 
 	@Override
@@ -119,6 +118,39 @@ public class FragmentMasterImpl extends FragmentMaster {
 
 	boolean isScrolling() {
 		return mScrolling;
+	}
+
+	private void cleanUp() {
+		// check whether there are any fragments above the primary one, and
+		// finish them.
+		IMasterFragment[] fragments = getFragments().toArray(
+				new IMasterFragment[getFragments().size()]);
+		IMasterFragment primaryFragment = getPrimaryFragment();
+		IMasterFragment f = null;
+		// determine whether f is above primary fragment.
+		boolean abovePrimary = true;
+		for (int i = fragments.length - 1; i >= 0; i--) {
+			f = fragments[i];
+
+			if (f == primaryFragment) {
+				abovePrimary = false;
+			}
+
+			if (abovePrimary) {
+				// All fragments above primary fragment should be finished.
+				if (isInFragmentMaster(f)) {
+					if (isFinishPending(f)) {
+						doFinishFragment(f);
+					} else {
+						f.finish();
+					}
+				}
+			} else {
+				if (isFinishPending(f) && !mScrolling) {
+					doFinishFragment(f);
+				}
+			}
+		}
 	}
 
 	private class FragmentsAdapter extends PagerAdapter {
