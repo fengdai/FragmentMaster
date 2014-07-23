@@ -1,6 +1,7 @@
 package com.fragmentmaster.app;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import android.annotation.TargetApi;
@@ -40,6 +41,7 @@ public abstract class FragmentMaster {
 	// Fragments started by FragmentMaster.
 	private ArrayList<IMasterFragment> mFragments = new ArrayList<IMasterFragment>();
 	private IMasterFragment mPrimaryFragment = null;
+	private HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<IMasterFragment>();
 
 	// Events callback
 	private Callback mCallback = null;
@@ -73,8 +75,8 @@ public abstract class FragmentMaster {
 		return getContainerResID();
 	}
 
-	public void startFragmentForResult(IMasterFragment target, Request request,
-			int requestCode) {
+	public final void startFragmentForResult(IMasterFragment target,
+			Request request, int requestCode) {
 		ensureInstalled();
 
 		IMasterFragment fragment = newFragment(request.getClassName());
@@ -109,21 +111,58 @@ public abstract class FragmentMaster {
 		}
 	}
 
-	public void finishFragment(IMasterFragment fragment, int resultCode,
+	public final void finishFragment(IMasterFragment fragment, int resultCode,
 			Request data) {
 		ensureInstalled();
+		throwIfNotInFragmentMaster(fragment);
+		if (!mFinishPendingFragments.contains(fragment)) {
+			mFinishPendingFragments.add(fragment);
+		}
+		onFinishFragment(fragment, resultCode, data);
+	}
 
+	/**
+	 * Check whether the specific fragment is in FragmentMaster.
+	 * 
+	 * </p> If a fragment is not in FragmentMaster, it may not be started by
+	 * FragmentMaster or has been finished already.
+	 * 
+	 * @param fragment
+	 *            The fragment to check.
+	 * @return If the fragment is in FragmentMaster, returns true; else returns
+	 *         false.
+	 */
+	public boolean isInFragmentMaster(IMasterFragment fragment) {
+		return mFragments.indexOf(fragment) >= 0;
+	}
+
+	/**
+	 * Check whether the specific fragment is pending to be finished.
+	 * 
+	 * @param fragment
+	 *            The fragment to check.
+	 * @return If the fragment is pending to be finished, returns true; else
+	 *         returns false.
+	 */
+	public boolean isFinishPending(IMasterFragment fragment) {
+		return mFinishPendingFragments.contains(fragment);
+	}
+
+	private void throwIfNotInFragmentMaster(IMasterFragment fragment) {
+		if (!isInFragmentMaster(fragment)) {
+			throw new IllegalStateException("Fragment {" + fragment
+					+ "} not currently in FragmentMaster.");
+		}
+	}
+
+	protected void onFinishFragment(IMasterFragment fragment, int resultCode,
+			Request data) {
 		doFinishFragment(fragment);
 		deliverFragmentResult(fragment, resultCode, data);
 	}
 
-	protected void doFinishFragment(IMasterFragment fragment) {
+	protected final void doFinishFragment(IMasterFragment fragment) {
 		int index = mFragments.indexOf(fragment);
-		if (index < 0) {
-			throw new IllegalStateException("Fragment {" + fragment
-					+ "} not currently in FragmentMaster.");
-		}
-
 		if (index == 0 && mSticky) {
 			mActivity.finish();
 			return;
@@ -133,6 +172,7 @@ public abstract class FragmentMaster {
 				.commit();
 		mFragmentManager.executePendingTransactions();
 		mFragments.remove(index);
+		mFinishPendingFragments.remove(fragment);
 
 		IMasterFragment f = null;
 		for (int i = index; i < mFragments.size(); i++) {
@@ -158,6 +198,9 @@ public abstract class FragmentMaster {
 
 	private void dispatchFragmentResult(IMasterFragment who, int requestCode,
 			int resultCode, Request data) {
+		if (who.isFinishing()) {
+			return;
+		}
 		if (who.getTargetChildFragment() == null) {
 			who.onFragmentResult(requestCode, resultCode, data);
 		} else {
@@ -179,7 +222,7 @@ public abstract class FragmentMaster {
 		return mPrimaryFragment;
 	}
 
-	protected void setPrimaryFragment(IMasterFragment fragment) {
+	protected final void setPrimaryFragment(IMasterFragment fragment) {
 		if (fragment != mPrimaryFragment) {
 			if (mPrimaryFragment != null) {
 				mPrimaryFragment.setPrimary(false);
@@ -190,28 +233,6 @@ public abstract class FragmentMaster {
 			mPrimaryFragment = fragment;
 			// Only the primary fragment can receive events callback.
 			setCallback(fragment);
-		}
-	}
-
-	protected void cleanUp() {
-		// check whether there are any fragments above the primary one, and
-		// finish them.
-		IMasterFragment[] fragments = getFragments().toArray(
-				new IMasterFragment[getFragments().size()]);
-		IMasterFragment f = null;
-		// determine whether f is above primary fragment.
-		boolean abovePrimary = true;
-		for (int i = fragments.length - 1; i >= 0; i--) {
-			f = fragments[i];
-			if (f == mPrimaryFragment) {
-				abovePrimary = false;
-			}
-			if (f.isFinishing()) {
-				doFinishFragment(f);
-			} else if (abovePrimary) {
-				// All fragments above primary fragment should be finished.
-				f.finish();
-			}
 		}
 	}
 

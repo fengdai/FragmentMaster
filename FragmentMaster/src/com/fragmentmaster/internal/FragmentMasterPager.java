@@ -8,7 +8,6 @@ import android.support.v4.view.ViewPagerCompat;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.fragmentmaster.app.FragmentMaster;
 import com.nineoldandroids.view.ViewHelper;
 
 /**
@@ -16,7 +15,7 @@ import com.nineoldandroids.view.ViewHelper;
  */
 class FragmentMasterPager extends ViewPagerCompat {
 
-	private FragmentMaster mFragmentMaster;
+	private FragmentMasterImpl mFragmentMasterImpl;
 
 	private static final int ANIMATION_NONE = 0;
 	private static final int ANIMATION_ENTER = 1;
@@ -29,18 +28,18 @@ class FragmentMasterPager extends ViewPagerCompat {
 	private ViewPager.PageTransformer mPageTransformer = new ViewPager.PageTransformer() {
 		@Override
 		public void transformPage(View page, float position) {
-			resetPage(page);
-			if (mFragmentMaster.hasPageAnimator()) {
+			resetPage(page, position);
+			if (mFragmentMasterImpl.hasPageAnimator()) {
 				if (position < -1 || position > 1) {
 					ViewHelper.setAlpha(page, 0);
 				} else {
-					mFragmentMaster.getPageAnimator().transformPage(page,
+					mFragmentMasterImpl.getPageAnimator().transformPage(page,
 							position, mAnimationState == ANIMATION_ENTER);
 				}
 			}
 		}
 
-		private void resetPage(View page) {
+		private void resetPage(View page, float position) {
 			ViewHelper.setAlpha(page, 1);
 			ViewHelper.setTranslationX(page, 0);
 			ViewHelper.setTranslationY(page, 0);
@@ -87,9 +86,9 @@ class FragmentMasterPager extends ViewPagerCompat {
 
 	private OnPageChangeListener mWrappedOnPageChangeListener;
 
-	public FragmentMasterPager(FragmentMaster fragmentMaster) {
+	public FragmentMasterPager(FragmentMasterImpl fragmentMaster) {
 		super(fragmentMaster.getActivity());
-		mFragmentMaster = fragmentMaster;
+		mFragmentMasterImpl = fragmentMaster;
 		super.setOnPageChangeListener(mOnPageChangeListener);
 		setPageTransformer(false, mPageTransformer);
 	}
@@ -97,7 +96,8 @@ class FragmentMasterPager extends ViewPagerCompat {
 	@Override
 	@SuppressLint("ClickableViewAccessibility")
 	public boolean onTouchEvent(MotionEvent ev) {
-		if (mFragmentMaster.isSlideable()) {
+		if (mFragmentMasterImpl.isSlideable()
+				&& !mFragmentMasterImpl.isScrolling()) {
 			return super.onTouchEvent(ev);
 		}
 		return false;
@@ -105,7 +105,8 @@ class FragmentMasterPager extends ViewPagerCompat {
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		if (mFragmentMaster.isSlideable()) {
+		if (mFragmentMasterImpl.isSlideable()
+				&& !mFragmentMasterImpl.isScrolling()) {
 			return super.onInterceptTouchEvent(ev);
 		}
 		return false;
