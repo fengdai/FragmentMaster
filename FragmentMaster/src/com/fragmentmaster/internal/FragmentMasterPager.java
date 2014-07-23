@@ -23,6 +23,13 @@ class FragmentMasterPager extends ViewPagerCompat {
 
 	// The position of primary item in the latest SCROLL_STATE_IDLE state.
 	private int mLatestIdleItem = 0;
+	private Runnable mIdleRunnable = new Runnable() {
+		public void run() {
+			mLatestIdleItem = getCurrentItem();
+			setAnimationState(ANIMATION_NONE);
+		}
+	};
+
 	private ViewPager.PageTransformer mPageTransformer = new ViewPager.PageTransformer() {
 		@Override
 		public void transformPage(View page, float position) {
@@ -42,8 +49,7 @@ class FragmentMasterPager extends ViewPagerCompat {
 			}
 
 			if (state == ViewPager.SCROLL_STATE_IDLE) {
-				mLatestIdleItem = getCurrentItem();
-				mAnimationState = ANIMATION_NONE;
+				post(mIdleRunnable);
 			}
 		}
 		@Override
@@ -100,10 +106,10 @@ class FragmentMasterPager extends ViewPagerCompat {
 	protected void onPageScrolled(int position, float offset, int offsetPixels) {
 		if (mLatestIdleItem > position) {
 			// The ViewPager is performing exiting.
-			mAnimationState = ANIMATION_EXIT;
-		} else if (mLatestIdleItem == position) {
+			setAnimationState(ANIMATION_EXIT);
+		} else if (mLatestIdleItem <= position) {
 			// The ViewPager is performing entering.
-			mAnimationState = ANIMATION_ENTER;
+			setAnimationState(ANIMATION_ENTER);
 		}
 		super.onPageScrolled(position, offset, offsetPixels);
 	}
@@ -112,6 +118,10 @@ class FragmentMasterPager extends ViewPagerCompat {
 	public void onRestoreInstanceState(Parcelable state) {
 		super.onRestoreInstanceState(state);
 		mLatestIdleItem = getCurrentItem();
+	}
+
+	private void setAnimationState(int state) {
+		mAnimationState = state;
 	}
 
 }
