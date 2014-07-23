@@ -19,6 +19,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 
 	private FragmentsAdapter mAdapter;
 	private FragmentMasterPager mViewPager;
+	private boolean mScrolling = false;
 
 	private OnPageChangeListener mOnPageChangeListener = new OnPageChangeListener() {
 
@@ -62,6 +63,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 
 		container.addView(mViewPager);
 	}
+
 	@Override
 	protected int getFragmentContainerId() {
 		return FRAGMENT_CONTAINER_ID;
@@ -70,21 +72,35 @@ public class FragmentMasterImpl extends FragmentMaster {
 	@Override
 	protected void onFragmentStarted(IMasterFragment fragment) {
 		mAdapter.notifyDataSetChanged();
-		// Don't perform "smooth scroll" if we have a PageAnimator.
-		mViewPager.setCurrentItem(mAdapter.getCount() - 1, hasPageAnimator());
+		int nextItem = mAdapter.getCount() - 1;
+		// Perform "smooth scroll" if the page has a PageAnimator and more than
+		// one item.
+		boolean smoothScroll = hasPageAnimator() && nextItem > 0;
+		mViewPager.setCurrentItem(nextItem, smoothScroll);
+		if (smoothScroll) {
+			mScrolling = true;
+		}
 	}
 
 	@Override
-	public void finishFragment(IMasterFragment fragment, int resultCode,
-			Request data) {
-		// If there's a PageAnimator, do finish after scrolling animation ends.
-		if (hasPageAnimator()) {
-			int index = getFragments().indexOf(fragment);
-			if (index != 0 && mViewPager.getCurrentItem() == index) {
-				mViewPager.setCurrentItem(index - 1);
-				deliverFragmentResult(fragment, resultCode, data);
-				return;
-			}
+	public void finishFragment(final IMasterFragment fragment,
+			final int resultCode, final Request data) {
+		final int index = getFragments().indexOf(fragment);
+		int curItem = mViewPager.getCurrentItem();
+
+		if (index == 0) {
+			setCallback(null);
+		} else if (hasPageAnimator() && curItem == index) {
+			// There's a PageAnimator, scroll back smoothly.
+			// When scrolling is stopped, real finish will be done by
+			// cleanUp method.
+			mViewPager.setCurrentItem(index - 1, true);
+			mScrolling = true;
+		}
+		if (mScrolling) {
+			// If pager is scrolling, do real finish when cleanUp.
+			deliverFragmentResult(fragment, resultCode, data);
+			return;
 		}
 		super.finishFragment(fragment, resultCode, data);
 	}
@@ -95,8 +111,14 @@ public class FragmentMasterImpl extends FragmentMaster {
 	}
 
 	private void onScrollIdle() {
+		mScrolling = false;
 		// When scrolling stopped, do cleanup.
+		mViewPager.removeCallbacks(mCleanUpRunnable);
 		mViewPager.post(mCleanUpRunnable);
+	}
+
+	boolean isScrolling() {
+		return mScrolling;
 	}
 
 	private class FragmentsAdapter extends PagerAdapter {

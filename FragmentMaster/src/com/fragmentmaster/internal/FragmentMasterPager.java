@@ -8,14 +8,12 @@ import android.support.v4.view.ViewPagerCompat;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.fragmentmaster.app.FragmentMaster;
-
 /**
  * Real container of fragments.
  */
 class FragmentMasterPager extends ViewPagerCompat {
 
-	private FragmentMaster mFragmentMaster;
+	private FragmentMasterImpl mFragmentMasterImpl;
 
 	private static final int ANIMATION_NONE = 0;
 	private static final int ANIMATION_ENTER = 1;
@@ -28,9 +26,9 @@ class FragmentMasterPager extends ViewPagerCompat {
 	private ViewPager.PageTransformer mPageTransformer = new ViewPager.PageTransformer() {
 		@Override
 		public void transformPage(View page, float position) {
-			if (mFragmentMaster.hasPageAnimator()) {
-				mFragmentMaster.getPageAnimator().transformPage(page, position,
-						mAnimationState == ANIMATION_ENTER);
+			if (mFragmentMasterImpl.hasPageAnimator()) {
+				mFragmentMasterImpl.getPageAnimator().transformPage(page,
+						position, mAnimationState == ANIMATION_ENTER);
 			}
 		}
 	};
@@ -67,9 +65,9 @@ class FragmentMasterPager extends ViewPagerCompat {
 
 	private OnPageChangeListener mWrappedOnPageChangeListener;
 
-	public FragmentMasterPager(FragmentMaster fragmentMaster) {
+	public FragmentMasterPager(FragmentMasterImpl fragmentMaster) {
 		super(fragmentMaster.getActivity());
-		mFragmentMaster = fragmentMaster;
+		mFragmentMasterImpl = fragmentMaster;
 		super.setOnPageChangeListener(mOnPageChangeListener);
 		setPageTransformer(false, mPageTransformer);
 	}
@@ -77,7 +75,8 @@ class FragmentMasterPager extends ViewPagerCompat {
 	@Override
 	@SuppressLint("ClickableViewAccessibility")
 	public boolean onTouchEvent(MotionEvent ev) {
-		if (mFragmentMaster.isSlideable()) {
+		if (mFragmentMasterImpl.isSlideable()
+				&& !mFragmentMasterImpl.isScrolling()) {
 			return super.onTouchEvent(ev);
 		}
 		return false;
@@ -85,7 +84,8 @@ class FragmentMasterPager extends ViewPagerCompat {
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
-		if (mFragmentMaster.isSlideable()) {
+		if (mFragmentMasterImpl.isSlideable()
+				&& !mFragmentMasterImpl.isScrolling()) {
 			return super.onInterceptTouchEvent(ev);
 		}
 		return false;

@@ -152,6 +152,9 @@ public abstract class FragmentMaster {
 
 	private void dispatchFragmentResult(IMasterFragment who, int requestCode,
 			int resultCode, Request data) {
+		if (who.isFinishing()) {
+			return;
+		}
 		if (who.getTargetChildFragment() == null) {
 			who.onFragmentResult(requestCode, resultCode, data);
 		} else {
@@ -192,15 +195,21 @@ public abstract class FragmentMaster {
 		// finish them.
 		IMasterFragment[] fragments = getFragments().toArray(
 				new IMasterFragment[getFragments().size()]);
+		IMasterFragment primaryFragment = mPrimaryFragment;
 		IMasterFragment f = null;
 		// determine whether f is above primary fragment.
 		boolean abovePrimary = true;
 		for (int i = fragments.length - 1; i >= 0; i--) {
 			f = fragments[i];
-			if (f == mPrimaryFragment) {
+
+			if (f == primaryFragment) {
 				abovePrimary = false;
+				if (f.isFinishing() && mFragments.indexOf(f) > 0) {
+					break;
+				}
 			}
-			if (f.isFinishing()) {
+
+			if (f.isFinishing() && mFragments.indexOf(f) >= 0) {
 				doFinishFragment(f);
 			} else if (abovePrimary) {
 				// All fragments above primary fragment should be finished.
