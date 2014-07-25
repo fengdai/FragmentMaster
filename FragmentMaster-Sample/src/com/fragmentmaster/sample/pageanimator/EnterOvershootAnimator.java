@@ -7,7 +7,7 @@ import android.view.animation.OvershootInterpolator;
 import com.fragmentmaster.animator.PageAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
-public class OvershootSlideAnimator extends PageAnimator {
+public class EnterOvershootAnimator extends PageAnimator {
 	private static final float MIN_SCALE = 0.85f;
 	private static final float MIN_ALPHA = 0.5f;
 
@@ -15,7 +15,8 @@ public class OvershootSlideAnimator extends PageAnimator {
 			1.0f);
 
 	@Override
-	protected void transformPageLeft(View page, float position, boolean enter) {
+	protected void transformBackgroundPage(View page, float position,
+			boolean enter) {
 		int pageWidth = page.getWidth();
 
 		// Counteract the default slide transition
@@ -31,7 +32,8 @@ public class OvershootSlideAnimator extends PageAnimator {
 	}
 
 	@Override
-	protected void transformPageRight(View page, float position, boolean enter) {
+	protected void transformForegroundPage(View page, float position,
+			boolean enter) {
 		float offset = 0;
 		if (enter) {
 			// Perform overshot animation if enter.

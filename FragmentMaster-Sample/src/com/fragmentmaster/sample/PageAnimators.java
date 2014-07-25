@@ -16,20 +16,16 @@ import com.fragmentmaster.app.MasterFragment;
 import com.fragmentmaster.app.MasterListFragment;
 import com.fragmentmaster.app.Request;
 import com.fragmentmaster.sample.pageanimator.Animators;
-import com.fragmentmaster.sample.pageanimator.OvershootSlideAnimator;
-import com.fragmentmaster.sample.pageanimator.VerticalSlideAnimator;
 
 public class PageAnimators extends MasterListFragment {
 
 	static class Page {
 		CharSequence name;
 		Request request;
-		PageAnimator pageAnimator;
 
-		Page(CharSequence name, Request request, PageAnimator pageAnimator) {
+		Page(CharSequence name, Request request) {
 			this.name = name;
 			this.request = request;
-			this.pageAnimator = pageAnimator;
 		}
 
 		@Override
@@ -41,10 +37,11 @@ public class PageAnimators extends MasterListFragment {
 	private static final List<Page> PAGES = new ArrayList<Page>();
 
 	static {
+		PAGES.add(new Page("StackAnimator", new Request(StackPage.class)));
+		PAGES.add(new Page("EnterOvershootAnimator", new Request(
+				EnterOvershootPage.class)));
 		PAGES.add(new Page("VerticalSlideAnimator", new Request(
-				VerticalSlidePage.class), new VerticalSlideAnimator()));
-		PAGES.add(new Page("OvershootSlideAnimator", new Request(
-				OvershootSlidePage.class), new OvershootSlideAnimator()));
+				VerticalSlidePage.class)));
 	}
 
 	@Override
@@ -101,7 +98,7 @@ public class PageAnimators extends MasterListFragment {
 		}
 	}
 
-	public static class OvershootSlidePage extends MasterFragment {
+	public static class EnterOvershootPage extends MasterFragment {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -111,7 +108,21 @@ public class PageAnimators extends MasterListFragment {
 
 		@Override
 		public PageAnimator onCreatePageAnimator() {
-			return Animators.OVER_SHOOT_SLIDE_ANIMATOR;
+			return Animators.ENTER_OVER_SHOOT_ANIMATOR;
+		}
+	}
+
+	public static class StackPage extends MasterFragment {
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container,
+				Bundle savedInstanceState) {
+			return inflater.inflate(R.layout.overshoot_slide_animator_fragment,
+					container, false);
+		}
+
+		@Override
+		public PageAnimator onCreatePageAnimator() {
+			return Animators.STACK_ANIMATOR;
 		}
 	}
 }

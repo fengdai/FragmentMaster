@@ -10,7 +10,8 @@ public class VerticalSlideAnimator extends PageAnimator {
 	private static final float MIN_ALPHA = 0.5f;
 
 	@Override
-	protected void transformPageLeft(View page, float position, boolean enter) {
+	protected void transformBackgroundPage(View page, float position,
+			boolean enter) {
 		int pageWidth = page.getWidth();
 
 		// Counteract the default slide transition
@@ -26,7 +27,8 @@ public class VerticalSlideAnimator extends PageAnimator {
 	}
 
 	@Override
-	protected void transformPageRight(View page, float position, boolean enter) {
+	protected void transformForegroundPage(View page, float position,
+			boolean enter) {
 		int pageWidth = page.getWidth();
 		int pageHeight = page.getHeight();
 		ViewHelper.setTranslationX(page, pageWidth * -position);

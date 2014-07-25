@@ -84,8 +84,9 @@ public class ViewPagerCompat extends ViewGroup {
 
 	private static final Interpolator sInterpolator = new Interpolator() {
 		public float getInterpolation(float t) {
-			t -= 1.0f;
-			return t * t * t * t * t + 1.0f;
+			// t -= 1.0f;
+			// return t * t * t * t * t + 1.0f;
+			return t;
 		}
 	};
 

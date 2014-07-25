@@ -24,24 +24,28 @@ public abstract class PageAnimator {
 	 */
 	public void transformPage(View page, float position, boolean enter) {
 		if (position <= 0) { // [-1,0]
-			transformPageLeft(page, position, enter);
+			transformBackgroundPage(page, position, enter);
 		} else if (position <= 1) { // (0,1]
-			transformPageRight(page, position, enter);
+			transformForegroundPage(page, position, enter);
 		}
 	}
 
 	/**
-	 * In this stage, the left part of the page is beyond the left side of the
-	 * screen.
+	 * In this stage, transform the background page.
+	 * 
+	 * @param position
+	 *            [-1,0]
 	 */
-	protected abstract void transformPageLeft(View page, float position,
+	protected abstract void transformBackgroundPage(View page, float position,
 			boolean enter);
 
 	/**
-	 * In this stage, the right part of the page is beyond the right side of the
-	 * screen.
+	 * In this stage, transform the foreground page.
+	 * 
+	 * @param position
+	 *            (0,1]
 	 */
-	protected abstract void transformPageRight(View page, float position,
+	protected abstract void transformForegroundPage(View page, float position,
 			boolean enter);
 
 }
