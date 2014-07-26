@@ -12,6 +12,10 @@
 classes
 gen-external-apklibs
 
+# Gradle
+.gradle
+build
+
 # Ant
 bin
 gen
