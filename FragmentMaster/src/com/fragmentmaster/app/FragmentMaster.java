@@ -84,7 +84,8 @@ public abstract class FragmentMaster {
 		fragment.setTargetFragment(
 				target == null ? null : target.getFragment(), requestCode);
 		mFragmentManager.beginTransaction()
-				.add(getFragmentContainerId(), fragment.getFragment()).commit();
+				.add(getFragmentContainerId(), fragment.getFragment())
+				.commitAllowingStateLoss();
 		mFragmentManager.executePendingTransactions();
 		mFragments.add(fragment);
 		fragment.setPrimary(false);

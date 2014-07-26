@@ -4,6 +4,18 @@
 .settings
 .checkstyle
 
+# IntelliJ IDEA
+.idea
+*.iml
+*.ipr
+*.iws
+classes
+gen-external-apklibs
+
+# Gradle
+.gradle
+build
+
 # Ant
 bin
 gen
