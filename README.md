@@ -17,22 +17,23 @@ Features
 Usage
 =====
 1. MasterFragment
+
    In FragmentMaster, every "page" is subclass of **MasterFragment** (Or other IMasterFragment, like **MasterListFragment**) not **Activity**.
 
-   You can start a MasterFragment as start a Activity:
+   - You can start a MasterFragment as start a Activity:
    ```Java
    // start YourMasterFragment
    Request request = new Request(YourMasterFragment.class);
    startFragment(request);
    ```
 
-   You can pass data within two MasterFragments:
+   - You can pass data within two MasterFragments:
    ```Java
    // pass data.
    request.putExtra(EXTRA_KEY, "Extra data");
    ```
 
-   And get extra data in YourMasterFragment:
+   - And get extra data in YourMasterFragment:
    ```Java
    Request request = getRequest();
    String extraData = request.getStringExtra(EXTRA_KEY);
@@ -52,6 +53,7 @@ Usage
    If the third parameter is true, the host MasterActivity will be finished when the home MasterFragment is Finished.
 
 3. PageAnimator
+
    FragmentMaster provides an API for you to add custom animation for each MasterFragment. The animation will be performed when starting, finishing and dragging by user.
 
    - Subclass PageAnimator and implement two methods:
