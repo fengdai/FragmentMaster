@@ -10,6 +10,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.fragmentmaster.animator.DefaultPageAnimator;
+import com.fragmentmaster.animator.PageAnimator;
+
 public class MasterListFragment extends ListFragment implements IMasterFragment {
 
 	private MasterFragmentDelegate mImpl = new MasterFragmentDelegate(this);
@@ -335,6 +338,11 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
 	@Override
 	public boolean onGenericMotionEvent(MotionEvent event) {
 		return false;
+	}
+
+	@Override
+	public PageAnimator onCreatePageAnimator() {
+		return DefaultPageAnimator.INSTANCE;
 	}
 
 }

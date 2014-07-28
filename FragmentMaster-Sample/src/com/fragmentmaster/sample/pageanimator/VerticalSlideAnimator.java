@@ -1,13 +1,11 @@
-package com.fragmentmaster.animator;
+package com.fragmentmaster.sample.pageanimator;
 
 import android.view.View;
 
+import com.fragmentmaster.animator.PageAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
-public class DefaultPageAnimator extends PageAnimator {
-
-	public static final DefaultPageAnimator INSTANCE = new DefaultPageAnimator();
-
+public class VerticalSlideAnimator extends PageAnimator {
 	private static final float MIN_SCALE = 0.85f;
 	private static final float MIN_ALPHA = 0.5f;
 
@@ -31,10 +29,12 @@ public class DefaultPageAnimator extends PageAnimator {
 	@Override
 	protected void transformForegroundPage(View page, float position,
 			boolean enter) {
-		ViewHelper.setTranslationX(page, 0);
+		int pageWidth = page.getWidth();
+		int pageHeight = page.getHeight();
+		ViewHelper.setTranslationX(page, pageWidth * -position);
+		ViewHelper.setTranslationY(page, pageHeight * position);
 		ViewHelper.setAlpha(page, 1);
 		ViewHelper.setScaleX(page, 1);
 		ViewHelper.setScaleY(page, 1);
 	}
-
 }

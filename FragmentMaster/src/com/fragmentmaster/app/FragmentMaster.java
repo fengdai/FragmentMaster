@@ -36,7 +36,7 @@ public abstract class FragmentMaster {
 	private boolean mSticky = false;
 	private boolean mHomeFragmentApplied = false;
 
-	private PageAnimator mPageAnimator;
+	private PageAnimator mPageAnimator = null;
 
 	// Fragments started by FragmentMaster.
 	private ArrayList<IMasterFragment> mFragments = new ArrayList<IMasterFragment>();
@@ -88,12 +88,18 @@ public abstract class FragmentMaster {
 				.commitAllowingStateLoss();
 		mFragmentManager.executePendingTransactions();
 		mFragments.add(fragment);
-
 		fragment.setPrimary(false);
-
+		setUpAnimator(fragment);
 		onFragmentStarted(fragment);
 	}
 
+	protected void setUpAnimator(IMasterFragment fragment) {
+		PageAnimator pageAnimator = null;
+		if (fragment != null) {
+			pageAnimator = fragment.onCreatePageAnimator();
+		}
+		this.setPageAnimator(pageAnimator);
+	}
 	protected abstract void onFragmentStarted(IMasterFragment fragment);
 
 	private IMasterFragment newFragment(String className) {
@@ -235,7 +241,7 @@ public abstract class FragmentMaster {
 		return mFragments;
 	}
 
-	public final void setPageAnimator(PageAnimator pageAnimator) {
+	protected void setPageAnimator(PageAnimator pageAnimator) {
 		mPageAnimator = pageAnimator;
 	}
 

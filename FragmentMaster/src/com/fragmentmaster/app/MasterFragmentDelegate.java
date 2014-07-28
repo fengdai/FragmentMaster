@@ -274,7 +274,8 @@ class MasterFragmentDelegate {
 
 	void invalidateMasterConfiguration() {
 		checkState();
-		getFragmentMaster().setSlideable(mIsSlideable);
+		FragmentMaster fragmentMaster = getFragmentMaster();
+		fragmentMaster.setSlideable(mIsSlideable);
 	}
 
 	public void setPrimary(boolean isPrimary) {

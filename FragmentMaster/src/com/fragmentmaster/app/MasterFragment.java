@@ -9,6 +9,9 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.fragmentmaster.animator.DefaultPageAnimator;
+import com.fragmentmaster.animator.PageAnimator;
+
 /**
  * The base fragment
  */
@@ -337,6 +340,11 @@ public class MasterFragment extends Fragment implements IMasterFragment {
 	@Override
 	public boolean onGenericMotionEvent(MotionEvent event) {
 		return false;
+	}
+
+	@Override
+	public PageAnimator onCreatePageAnimator() {
+		return DefaultPageAnimator.INSTANCE;
 	}
 
 }

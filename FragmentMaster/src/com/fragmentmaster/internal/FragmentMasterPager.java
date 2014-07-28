@@ -8,6 +8,8 @@ import android.support.v4.view.ViewPagerCompat;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.nineoldandroids.view.ViewHelper;
+
 /**
  * Real container of fragments.
  */
@@ -33,11 +35,33 @@ class FragmentMasterPager extends ViewPagerCompat {
 	private ViewPager.PageTransformer mPageTransformer = new ViewPager.PageTransformer() {
 		@Override
 		public void transformPage(View page, float position) {
+			resetPage(page, position);
 			if (mFragmentMasterImpl.hasPageAnimator()) {
-				mFragmentMasterImpl.getPageAnimator().transformPage(page,
-						position, mAnimationState == ANIMATION_ENTER);
+				if (position < -1 || position > 1) {
+					page.setVisibility(INVISIBLE);
+				} else {
+					page.setVisibility(VISIBLE);
+					mFragmentMasterImpl.getPageAnimator().transformPage(page,
+							position, mAnimationState == ANIMATION_ENTER);
+				}
+			} else {
+				page.setVisibility(VISIBLE);
 			}
 		}
+
+		private void resetPage(View page, float position) {
+			ViewHelper.setAlpha(page, 1);
+			ViewHelper.setTranslationX(page, 0);
+			ViewHelper.setTranslationY(page, 0);
+			ViewHelper.setScaleX(page, 1);
+			ViewHelper.setScaleY(page, 1);
+			ViewHelper.setRotation(page, 0);
+			ViewHelper.setRotationX(page, 0);
+			ViewHelper.setRotationY(page, 0);
+			ViewHelper.setPivotX(page, page.getWidth() / 2);
+			ViewHelper.setPivotY(page, page.getHeight() / 2);
+		}
+
 	};
 
 	// Internal listener

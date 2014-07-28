@@ -1,12 +1,13 @@
-package com.fragmentmaster.animator;
+package com.fragmentmaster.sample.pageanimator;
 
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 
+import com.fragmentmaster.animator.PageAnimator;
 import com.nineoldandroids.view.ViewHelper;
 
-public class DepthPageAnimator extends PageAnimator {
+public class EnterOvershootAnimator extends PageAnimator {
 	private static final float MIN_SCALE = 0.85f;
 	private static final float MIN_ALPHA = 0.5f;
 
@@ -14,13 +15,8 @@ public class DepthPageAnimator extends PageAnimator {
 			1.0f);
 
 	@Override
-	protected void transformPageOffScreenLeft(View page, float position,
+	protected void transformBackgroundPage(View page, float position,
 			boolean enter) {
-		ViewHelper.setAlpha(page, 0);
-	}
-
-	@Override
-	protected void transformPageLeft(View page, float position, boolean enter) {
 		int pageWidth = page.getWidth();
 
 		// Counteract the default slide transition
@@ -36,7 +32,8 @@ public class DepthPageAnimator extends PageAnimator {
 	}
 
 	@Override
-	protected void transformPageRight(View page, float position, boolean enter) {
+	protected void transformForegroundPage(View page, float position,
+			boolean enter) {
 		float offset = 0;
 		if (enter) {
 			// Perform overshot animation if enter.
@@ -48,10 +45,5 @@ public class DepthPageAnimator extends PageAnimator {
 		ViewHelper.setAlpha(page, 1);
 		ViewHelper.setScaleX(page, 1);
 		ViewHelper.setScaleY(page, 1);
-	}
-	@Override
-	protected void transformPageOffScreenRight(View page, float position,
-			boolean enter) {
-		ViewHelper.setAlpha(page, 0);
 	}
 }
