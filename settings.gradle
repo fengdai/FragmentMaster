@@ -1,2 +1,2 @@
-include ':FragmentMaster'
-include ':FragmentMaster-Sample'
+include ':fragmentmaster'
+include ':fragmentmaster-samples'

@@ -2,8 +2,7 @@ apply plugin: 'android'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile project(':FragmentMaster')
-    compile project(':FragmentMaster')
+    compile project(':fragmentmaster')
 }
 
 android {
