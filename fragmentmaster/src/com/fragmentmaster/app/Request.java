@@ -56,7 +56,7 @@ public class Request implements Parcelable {
 	/**
 	 * Sets fragment's class.
 	 */
-	public void setClass(Class<? extends MasterFragment> clazz) {
+	public void setClass(Class<? extends IMasterFragment> clazz) {
 		this.mFragmentName = clazz.getName();
 	}
 
