@@ -31,7 +31,9 @@ Usage
    2. You can pass data within two MasterFragments:
    ```Java
    // pass data.
+   Request request = new Request(YourMasterFragment.class);
    request.putExtra(EXTRA_KEY, "Extra data");
+   startFragment(request);
    ```
 
    3. And get extra data in YourMasterFragment:
@@ -42,9 +44,10 @@ Usage
 
 2. Install FragmentMaster
 
-   Subclass **MasterActivity**, it is the host of all MasterFragment. And in its onCreate() add the codes below after setContentView() method:
+   Subclass **MasterActivity**, it is the host of all MasterFragments. And in its ```onCreate()``` add the codes below after ```setContentView()``` method:
    
    ```Java
+   setContentView(R.layout.master_activity);
    FragmentMaster fragmentMaster = getFragmentMaster();
    fragmentMaster.install(R.id.container, new Request(Home.class), true);
    ```
@@ -70,15 +73,15 @@ boolean enter);
 boolean enter);
    ```
 
-   2. Override onCreatePageAnimator method of MasterFragment:
+   2. Override onCreatePageAnimator method of MasterFragment to provide your custom PagerAnimator:
    ```Java
    @Override
    public PageAnimator onCreatePageAnimator() {
        // return your own PageAnimator.
-       return YOURCUSTOMANIMATOR;
+       return YOUR_CUSTOM_ANIMATOR;
    }
    ```
-
+   [There are some custom PageAnimators in the Sample project.](https://github.com/fengdai/FragmentMaster/tree/master/fragmentmaster-samples/src/com/fragmentmaster/sample/pageanimator)
 
 
 Still missing
