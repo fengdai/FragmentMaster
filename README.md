@@ -27,6 +27,7 @@ Usage
    Request request = new Request(YourMasterFragment.class);
    startFragment(request);
    ```
+   The **Request** class is similar to the Android's **Intent** which is an abstract description of your operation. The difference is that **Request** is used to start a **MasterFragment**.
 
    2. You can pass data within two MasterFragments:
    ```Java
@@ -52,8 +53,8 @@ Usage
    fragmentMaster.install(R.id.container, new Request(Home.class), true);
    ```
 
-   The first parameter of ```install()``` is your MasterFragment's container. All started MasterFragment will be added to this container.
-   The second parameter is the decription of the home MasterFragment. The home MasterFragment will be started once the host MasterActivity is started.
+   The first parameter of ```install()``` is the id your MasterFragment's container. All started MasterFragment will be added to this container.
+   The second parameter is a **Request** object which describes your home MasterFragment. The home MasterFragment will be started once the host MasterActivity is started.
    If the third parameter is true, the host MasterActivity will be finished when the home MasterFragment is Finished.
 
 3. PageAnimator
@@ -87,7 +88,7 @@ boolean enter);
 Still missing
 =============
 
-  * An inner fragment ActionBar.
+   * An inner fragment ActionBar.
 
 
 
