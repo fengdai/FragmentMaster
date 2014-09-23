@@ -32,14 +32,14 @@ Usage
    ```Java
    // pass data.
    Request request = new Request(YourMasterFragment.class);
-   request.putExtra(EXTRA_KEY, "Extra data");
+   request.putExtra(YourMasterFragment.EXTRA_KEY, "Extra data");
    startFragment(request);
    ```
 
    3. And get extra data in YourMasterFragment:
    ```Java
    Request request = getRequest();
-   String extraData = request.getStringExtra(EXTRA_KEY);
+   String extraData = request.getStringExtra(YourMasterFragment.EXTRA_KEY);
    ```
 
 2. Install FragmentMaster
@@ -81,7 +81,7 @@ boolean enter);
        return YOUR_CUSTOM_ANIMATOR;
    }
    ```
-   [There are some custom PageAnimators in the Sample project.](https://github.com/fengdai/FragmentMaster/tree/master/fragmentmaster-samples/src/com/fragmentmaster/sample/pageanimator)
+   There are some custom PageAnimators in [the Sample project.](https://github.com/fengdai/FragmentMaster/tree/master/fragmentmaster-samples/src/com/fragmentmaster/sample/pageanimator)
 
 
 Still missing
