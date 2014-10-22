@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?><LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFF4842D"
     android:orientation="vertical"
-    android:padding="8dp" >
+    android:padding="8dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="This is a nested fragment."
-        android:textColor="@android:color/white"
         android:textSize="18sp"
         tools:ignore="HardcodedText" />
 
@@ -26,7 +26,6 @@
         android:layout_height="match_parent"
         android:layout_marginTop="5dp"
         android:background="#FF3F9FE0"
-        android:textColor="@android:color/white"
         android:textSize="18sp" />
 
 </LinearLayout>

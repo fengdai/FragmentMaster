@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#FFE5E5E5"
     android:orientation="vertical"
-    android:padding="8dp" >
+    android:padding="8dp">
 
     <TextView
         android:id="@+id/index"
@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:gravity="center"
-        android:textColor="@android:color/black"
         android:textSize="58sp" />
 
     <Button

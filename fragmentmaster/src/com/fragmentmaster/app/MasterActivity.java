@@ -1,21 +1,23 @@
 package com.fragmentmaster.app;
 
-import com.fragmentmaster.internal.FragmentMasterImpl;
-
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
+import com.fragmentmaster.internal.FragmentMasterImpl;
 
 /**
  * Host activity of MasterFragment.
  */
-public abstract class MasterActivity extends FragmentActivity {
+public abstract class MasterActivity extends ActionBarActivity {
 
-    /** Persistence key for FragmentMaster */
+    /**
+     * Persistence key for FragmentMaster
+     */
     private static final String FRAGMENTS_TAG = "FragmentMaster:fragments";
 
     private FragmentMaster mFragmentMaster = new FragmentMasterImpl(this);
