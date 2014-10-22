@@ -1,5 +1,7 @@
 package com.fragmentmaster.app;
 
+import com.fragmentmaster.internal.FragmentMasterImpl;
+
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
@@ -8,82 +10,82 @@ import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.fragmentmaster.internal.FragmentMasterImpl;
-
 /**
  * Host activity of MasterFragment.
  */
 public abstract class MasterActivity extends FragmentActivity {
-	/** Persistence key for FragmentMaster */
-	private static final String FRAGMENTS_TAG = "FragmentMaster:fragments";
-	private FragmentMaster mFragmentMaster = new FragmentMasterImpl(this);
 
-	@Override
-	protected void onCreate(Bundle bundle) {
-		super.onCreate(bundle);
-		if (bundle != null) {
-			Parcelable p = bundle.getParcelable(FRAGMENTS_TAG);
-			mFragmentMaster.restoreAllState(p);
-		}
-	}
+    /** Persistence key for FragmentMaster */
+    private static final String FRAGMENTS_TAG = "FragmentMaster:fragments";
 
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		Parcelable p = mFragmentMaster.saveAllState();
-		if (p != null) {
-			outState.putParcelable(FRAGMENTS_TAG, p);
-		}
-	}
+    private FragmentMaster mFragmentMaster = new FragmentMasterImpl(this);
 
-	public FragmentMaster getFragmentMaster() {
-		return mFragmentMaster;
-	}
+    @Override
+    protected void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+        if (bundle != null) {
+            Parcelable p = bundle.getParcelable(FRAGMENTS_TAG);
+            mFragmentMaster.restoreAllState(p);
+        }
+    }
 
-	@Override
-	public boolean dispatchKeyEvent(KeyEvent event) {
-		return mFragmentMaster.dispatchKeyEvent(event);
-	}
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Parcelable p = mFragmentMaster.saveAllState();
+        if (p != null) {
+            outState.putParcelable(FRAGMENTS_TAG, p);
+        }
+    }
 
-	public boolean superDispatchKeyEvent(KeyEvent event) {
-		return super.dispatchKeyEvent(event);
-	}
+    public FragmentMaster getFragmentMaster() {
+        return mFragmentMaster;
+    }
 
-	@Override
-	public boolean dispatchKeyShortcutEvent(KeyEvent event) {
-		return mFragmentMaster.dispatchKeyShortcutEvent(event);
-	}
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return mFragmentMaster.dispatchKeyEvent(event);
+    }
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	public boolean superDispatchKeyShortcutEvent(KeyEvent event) {
-		return super.dispatchKeyShortcutEvent(event);
-	}
+    public boolean superDispatchKeyEvent(KeyEvent event) {
+        return super.dispatchKeyEvent(event);
+    }
 
-	@Override
-	public boolean dispatchTouchEvent(MotionEvent ev) {
-		return mFragmentMaster.dispatchTouchEvent(ev);
-	}
+    @Override
+    public boolean dispatchKeyShortcutEvent(KeyEvent event) {
+        return mFragmentMaster.dispatchKeyShortcutEvent(event);
+    }
 
-	public boolean superDispatchTouchEvent(MotionEvent ev) {
-		return super.dispatchTouchEvent(ev);
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public boolean superDispatchKeyShortcutEvent(KeyEvent event) {
+        return super.dispatchKeyShortcutEvent(event);
+    }
 
-	@Override
-	public boolean dispatchGenericMotionEvent(MotionEvent ev) {
-		return mFragmentMaster.dispatchGenericMotionEvent(ev);
-	}
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return mFragmentMaster.dispatchTouchEvent(ev);
+    }
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
-	public boolean superDispatchGenericMotionEvent(MotionEvent ev) {
-		return super.dispatchGenericMotionEvent(ev);
-	}
+    public boolean superDispatchTouchEvent(MotionEvent ev) {
+        return super.dispatchTouchEvent(ev);
+    }
 
-	@Override
-	public boolean dispatchTrackballEvent(MotionEvent ev) {
-		return mFragmentMaster.dispatchTrackballEvent(ev);
-	}
+    @Override
+    public boolean dispatchGenericMotionEvent(MotionEvent ev) {
+        return mFragmentMaster.dispatchGenericMotionEvent(ev);
+    }
 
-	public boolean superDispatchTrackballEvent(MotionEvent ev) {
-		return super.dispatchTrackballEvent(ev);
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
+    public boolean superDispatchGenericMotionEvent(MotionEvent ev) {
+        return super.dispatchGenericMotionEvent(ev);
+    }
+
+    @Override
+    public boolean dispatchTrackballEvent(MotionEvent ev) {
+        return mFragmentMaster.dispatchTrackballEvent(ev);
+    }
+
+    public boolean superDispatchTrackballEvent(MotionEvent ev) {
+        return super.dispatchTrackballEvent(ev);
+    }
 }

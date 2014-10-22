@@ -1,116 +1,119 @@
 package com.fragmentmaster.app;
 
+import com.fragmentmaster.animator.PageAnimator;
+
 import android.support.v4.app.Fragment;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
-
-import com.fragmentmaster.animator.PageAnimator;
 
 /**
  * Common MasterFragment interface.
  */
 public interface IMasterFragment
-		extends
-			IFragmentWrapper,
-			FragmentMaster.Callback,
-			KeyEvent.Callback {
+        extends
+        IFragmentWrapper,
+        FragmentMaster.Callback,
+        KeyEvent.Callback {
 
-	/** Standard fragment result: operation canceled. */
-	public static final int RESULT_CANCELED = 0;
-	/** Standard fragment result: operation succeeded. */
-	public static final int RESULT_OK = -1;
+    /** Standard fragment result: operation canceled. */
+    public static final int RESULT_CANCELED = 0;
+    /** Standard fragment result: operation succeeded. */
+    public static final int RESULT_OK = -1;
 
-	/**
-	 * Starts a specific fragment.
-	 */
-	public void startFragment(Class<? extends IMasterFragment> clazz);
-	/**
-	 * Starts a fragment.
-	 * 
-	 * @param request
-	 *            The request.
-	 */
-	public void startFragment(Request request);
+    /**
+     * Starts a specific fragment.
+     */
+    public void startFragment(Class<? extends IMasterFragment> clazz);
 
-	public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
-			int requestCode);
+    /**
+     * Starts a fragment.
+     *
+     * @param request The request.
+     */
+    public void startFragment(Request request);
 
-	public void startFragmentForResult(Request request, int requestCode);
+    public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
+            int requestCode);
 
-	public void startFragmentFromChild(IMasterFragment masterFragment,
-			Request request, int requestCode);
+    public void startFragmentForResult(Request request, int requestCode);
 
-	public void setRequest(Request request);
+    public void startFragmentFromChild(IMasterFragment masterFragment,
+            Request request, int requestCode);
 
-	public Request getRequest();
+    public void setRequest(Request request);
 
-	public void setTargetChildFragment(IMasterFragment targetChildFragment);
+    public Request getRequest();
 
-	public IMasterFragment getTargetChildFragment();
+    public void setTargetChildFragment(IMasterFragment targetChildFragment);
 
-	/**
-	 * Call this to set the result that your fragment will return to its caller.
-	 */
-	public void setResult(int resultCode);
+    public IMasterFragment getTargetChildFragment();
 
-	/**
-	 * Call this to set the result that your fragment will return to its caller.
-	 */
-	public void setResult(int resultCode, Request data);
+    /**
+     * Call this to set the result that your fragment will return to its caller.
+     */
+    public void setResult(int resultCode);
 
-	/**
-	 * Finish this fragment.
-	 */
-	public void finish();
+    /**
+     * Call this to set the result that your fragment will return to its caller.
+     */
+    public void setResult(int resultCode, Request data);
 
-	public boolean isFinishing();
+    /**
+     * Finish this fragment.
+     */
+    public void finish();
 
-	public Fragment getFragment();
+    public boolean isFinishing();
 
-	public MasterActivity getMasterActivity();
+    public Fragment getFragment();
 
-	public FragmentMaster getFragmentMaster();
+    public MasterActivity getMasterActivity();
 
-	/**
-	 * Whether the state have been saved by system.
-	 */
-	public boolean hasStateSaved();
+    public FragmentMaster getFragmentMaster();
 
-	public void setSoftInputMode(int mode);
+    public ContextThemeWrapper getContextThemeWrapper();
 
-	public int getSoftInputMode();
+    /**
+     * Whether the state have been saved by system.
+     */
+    public boolean hasStateSaved();
 
-	public void setPrimary(boolean isPrimary);
+    public void setSoftInputMode(int mode);
 
-	public boolean isPrimary();
+    public int getSoftInputMode();
 
-	public boolean isUserActive();
+    public void setPrimary(boolean isPrimary);
 
-	public void setSlideable(boolean slideable);
+    public boolean isPrimary();
 
-	public boolean isSlideable();
+    public boolean isUserActive();
 
-	public PageAnimator onCreatePageAnimator();
+    public void setSlideable(boolean slideable);
 
-	/**
-	 * Called when user has come to this fragment.
-	 */
-	public void onUserActive();
+    public boolean isSlideable();
 
-	/**
-	 * Called when user has left this fragment.
-	 */
-	public void onUserLeave();
+    public PageAnimator onCreatePageAnimator();
 
-	public void onFragmentResult(int requestCode, int resultCode, Request data);
+    /**
+     * Called when user has come to this fragment.
+     */
+    public void onUserActive();
 
-	public void onBackPressed();
+    /**
+     * Called when user has left this fragment.
+     */
+    public void onUserLeave();
 
-	public boolean onTouchEvent(MotionEvent ev);
+    public void onFragmentResult(int requestCode, int resultCode, Request data);
 
-	public boolean onKeyShortcut(int keyCode, KeyEvent event);
+    public void onBackPressed();
 
-	public boolean onTrackballEvent(MotionEvent event);
+    public boolean onTouchEvent(MotionEvent ev);
 
-	public boolean onGenericMotionEvent(MotionEvent event);
+    public boolean onKeyShortcut(int keyCode, KeyEvent event);
+
+    public boolean onTrackballEvent(MotionEvent event);
+
+    public boolean onGenericMotionEvent(MotionEvent event);
 }

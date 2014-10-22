@@ -1,14 +1,17 @@
 <resources>
 
-    <style name="AppBaseTheme" parent="android:Theme.Light"></style>
-
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="masterFragmentTheme">@style/AppTheme.MasterFragment</item>
     </style>
 
-    <style name="AppTheme.White">
-        <item name="android:background">@android:color/white</item>
+    <!-- Host activity theme. -->
+    <style name="AppTheme.HostActivity">
+        <item name="android:windowBackground">@android:color/background_dark</item>
     </style>
 
+    <!-- Master Fragment theme. -->
+    <style name="AppTheme.MasterFragment">
+        <item name="masterFragmentBackground">?android:windowBackground</item>
+    </style>
 </resources>
