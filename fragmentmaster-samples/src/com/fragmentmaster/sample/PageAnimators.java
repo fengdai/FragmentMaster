@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.fragmentmaster.animator.PageAnimator;
+import com.fragmentmaster.annotation.Configuration;
 import com.fragmentmaster.app.MasterFragment;
 import com.fragmentmaster.app.MasterListFragment;
 import com.fragmentmaster.app.Request;
@@ -64,6 +65,7 @@ public class PageAnimators extends MasterListFragment {
         startFragment(page.request);
     }
 
+    @Configuration(theme = R.style.AppTheme_MasterFragment_Transparent)
     public static class VerticalSlidePage extends MasterFragment {
 
         @Override

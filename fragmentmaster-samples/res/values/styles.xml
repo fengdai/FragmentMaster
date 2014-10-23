@@ -14,4 +14,9 @@
     <style name="AppTheme.MasterFragment">
         <item name="masterFragmentBackground">?android:windowBackground</item>
     </style>
+
+    <!-- Master Fragment theme, transparent -->
+    <style name="AppTheme.MasterFragment.Transparent">
+        <item name="masterFragmentBackground">@android:color/transparent</item>
+    </style>
 </resources>

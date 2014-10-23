@@ -13,8 +13,8 @@ public class ThemeFragment extends Fragment {
 
     @Override
     View performCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        mContextThemeWrapper = FragmentThemeHelper.createContextThemeWrapper(getActivity());
+                           Bundle savedInstanceState) {
+        mContextThemeWrapper = FragmentThemeHelper.createContextThemeWrapper(getActivity(), this);
         return super.performCreateView(
                 inflater.cloneInContext(mContextThemeWrapper), container,
                 savedInstanceState);
