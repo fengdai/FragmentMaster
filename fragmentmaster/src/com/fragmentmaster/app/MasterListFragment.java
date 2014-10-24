@@ -1,20 +1,20 @@
 package com.fragmentmaster.app;
 
-import com.fragmentmaster.animator.DefaultPageAnimator;
-import com.fragmentmaster.animator.PageAnimator;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ThemeListFragment;
-import android.view.ContextThemeWrapper;
+import android.support.v4.app.ListFragment;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 
-public class MasterListFragment extends ThemeListFragment implements IMasterFragment {
+import com.fragmentmaster.animator.DefaultPageAnimator;
+import com.fragmentmaster.animator.PageAnimator;
+
+public class MasterListFragment extends ListFragment implements IMasterFragment {
 
     private MasterFragmentDelegate mImpl = new MasterFragmentDelegate(this);
 
@@ -113,8 +113,8 @@ public class MasterListFragment extends ThemeListFragment implements IMasterFrag
     }
 
     @Override
-    public ContextThemeWrapper getContextThemeWrapper() {
-        return mContextThemeWrapper;
+    public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
+        return mImpl.getLayoutInflater(savedInstanceState);
     }
 
     /**
@@ -137,7 +137,7 @@ public class MasterListFragment extends ThemeListFragment implements IMasterFrag
 
     @Override
     public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
-            int requestCode) {
+                                       int requestCode) {
         mImpl.startFragmentForResult(clazz, requestCode);
     }
 
@@ -148,7 +148,7 @@ public class MasterListFragment extends ThemeListFragment implements IMasterFrag
 
     @Override
     public void startFragmentFromChild(IMasterFragment childFragment,
-            Request request, int requestCode) {
+                                       Request request, int requestCode) {
         mImpl.startFragmentFromChild(childFragment, request, requestCode);
     }
 

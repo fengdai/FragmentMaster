@@ -1,7 +1,8 @@
-package android.support.v4.app;
+package com.fragmentmaster.app;
 
 import android.app.Activity;
-import android.content.res.TypedArray;
+import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 
 import com.fragmentmaster.R;
@@ -27,11 +28,9 @@ public class FragmentThemeHelper {
         }
         // Get theme from Theme attrs.
         if (masterFragmentTheme == -1) {
-            TypedArray a = activity.obtainStyledAttributes(null,
-                    R.styleable.FragmentMaster, android.R.attr.theme, 0);
-            masterFragmentTheme = a.getResourceId(R.styleable.FragmentMaster_masterFragmentTheme,
-                    -1);
-            a.recycle();
+            TypedValue outValue = new TypedValue();
+            activity.getTheme().resolveAttribute(R.attr.masterFragmentTheme, outValue, true);
+            masterFragmentTheme = outValue.resourceId;
         }
         return masterFragmentTheme;
     }

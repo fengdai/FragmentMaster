@@ -1,11 +1,10 @@
 package com.fragmentmaster.app;
 
-import com.fragmentmaster.animator.PageAnimator;
-
 import android.support.v4.app.Fragment;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
+import com.fragmentmaster.animator.PageAnimator;
 
 /**
  * Common MasterFragment interface.
@@ -16,9 +15,13 @@ public interface IMasterFragment
         FragmentMaster.Callback,
         KeyEvent.Callback {
 
-    /** Standard fragment result: operation canceled. */
+    /**
+     * Standard fragment result: operation canceled.
+     */
     public static final int RESULT_CANCELED = 0;
-    /** Standard fragment result: operation succeeded. */
+    /**
+     * Standard fragment result: operation succeeded.
+     */
     public static final int RESULT_OK = -1;
 
     /**
@@ -34,12 +37,12 @@ public interface IMasterFragment
     public void startFragment(Request request);
 
     public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
-            int requestCode);
+                                       int requestCode);
 
     public void startFragmentForResult(Request request, int requestCode);
 
     public void startFragmentFromChild(IMasterFragment masterFragment,
-            Request request, int requestCode);
+                                       Request request, int requestCode);
 
     public void setRequest(Request request);
 
@@ -71,8 +74,6 @@ public interface IMasterFragment
     public MasterActivity getMasterActivity();
 
     public FragmentMaster getFragmentMaster();
-
-    public ContextThemeWrapper getContextThemeWrapper();
 
     /**
      * Whether the state have been saved by system.

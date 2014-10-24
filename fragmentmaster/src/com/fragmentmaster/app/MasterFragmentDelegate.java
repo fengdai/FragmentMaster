@@ -1,20 +1,22 @@
 package com.fragmentmaster.app;
 
-import com.fragmentmaster.R;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.view.KeyEventCompat2;
+import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+
+import com.fragmentmaster.R;
 
 public class MasterFragmentDelegate {
 
@@ -23,8 +25,7 @@ public class MasterFragmentDelegate {
 
     private static final String BUNDLE_KEY_STATE = "FragmentMaster:MASTER_FRAGMENT_STATE";
 
-    private static final int[] MASTER_FRAGMENT_BACKGROUND_ATTRS = new int[]{
-            R.attr.masterFragmentBackground};
+    private ContextThemeWrapper mContextThemeWrapper;
 
     IMasterFragment mMasterFragment;
 
@@ -89,6 +90,15 @@ public class MasterFragmentDelegate {
         return mActivity == null ? null : mActivity.getFragmentMaster();
     }
 
+    public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
+        mContextThemeWrapper = FragmentThemeHelper.createContextThemeWrapper(mActivity, mMasterFragment.getFragment());
+        return mActivity.getLayoutInflater().cloneInContext(mContextThemeWrapper);
+    }
+
+    public ContextThemeWrapper getContextThemeWrapper() {
+        return mContextThemeWrapper;
+    }
+
     /**
      * Starts a specific fragment.
      */
@@ -106,7 +116,7 @@ public class MasterFragmentDelegate {
     }
 
     public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
-            int requestCode) {
+                                       int requestCode) {
         startFragmentForResult(new Request(clazz), requestCode);
     }
 
@@ -132,7 +142,7 @@ public class MasterFragmentDelegate {
     }
 
     public void startFragmentFromChild(IMasterFragment childFragment,
-            Request request, int requestCode) {
+                                       Request request, int requestCode) {
         if (requestCode != -1) {
             mTargetChildFragment = childFragment;
         }
@@ -214,11 +224,10 @@ public class MasterFragmentDelegate {
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        TypedArray a = mMasterFragment.getContextThemeWrapper()
-                .obtainStyledAttributes(MASTER_FRAGMENT_BACKGROUND_ATTRS);
+        TypedValue outValue = new TypedValue();
+        mContextThemeWrapper.getTheme().resolveAttribute(R.attr.masterFragmentBackground, outValue, true);
         view.setBackgroundResource(
-                a.getResourceId(0, 0));
-        a.recycle();
+                outValue.resourceId);
         // Set the "clickable" of the fragment's root view to true to avoid
         // touch events to be passed to the views behind the fragment.
         view.setClickable(true);

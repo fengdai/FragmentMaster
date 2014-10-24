@@ -1,23 +1,22 @@
 package com.fragmentmaster.app;
 
-import com.fragmentmaster.animator.DefaultPageAnimator;
-import com.fragmentmaster.animator.PageAnimator;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ThemeFragment;
-import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.fragmentmaster.animator.DefaultPageAnimator;
+import com.fragmentmaster.animator.PageAnimator;
 
 /**
  * The base fragment
  */
-public class MasterFragment extends ThemeFragment implements IMasterFragment {
+public class MasterFragment extends Fragment implements IMasterFragment {
 
     private MasterFragmentDelegate mImpl = new MasterFragmentDelegate(this);
 
@@ -116,8 +115,8 @@ public class MasterFragment extends ThemeFragment implements IMasterFragment {
     }
 
     @Override
-    public ContextThemeWrapper getContextThemeWrapper() {
-        return mContextThemeWrapper;
+    public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
+        return mImpl.getLayoutInflater(savedInstanceState);
     }
 
     /**
@@ -140,7 +139,7 @@ public class MasterFragment extends ThemeFragment implements IMasterFragment {
 
     @Override
     public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
-            int requestCode) {
+                                       int requestCode) {
         mImpl.startFragmentForResult(clazz, requestCode);
     }
 
@@ -151,7 +150,7 @@ public class MasterFragment extends ThemeFragment implements IMasterFragment {
 
     @Override
     public void startFragmentFromChild(IMasterFragment childFragment,
-            Request request, int requestCode) {
+                                       Request request, int requestCode) {
         mImpl.startFragmentFromChild(childFragment, request, requestCode);
     }
 
