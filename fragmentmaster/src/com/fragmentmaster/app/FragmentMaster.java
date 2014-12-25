@@ -1,15 +1,11 @@
 package com.fragmentmaster.app;
 
-import com.fragmentmaster.animator.PageAnimator;
-
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.KeyEventCompat2;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -18,18 +14,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.fragmentmaster.animator.PageAnimator;
+import com.fragmentmaster.app.ware.FragmentManagerWare;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public abstract class FragmentMaster {
+public abstract class FragmentMaster<Fragment, FragmentManager> {
 
     private static final String TAG = "FragmentMaster";
 
     // The host activity.
     private final MasterActivity mActivity;
 
-    private final FragmentManager mFragmentManager;
+    private FragmentManagerWare<Fragment, FragmentManager> mFragmentManagerWare;
 
     private int mContainerResID = 0;
 
@@ -46,11 +45,11 @@ public abstract class FragmentMaster {
     private PageAnimator mPageAnimator = null;
 
     // Fragments started by FragmentMaster.
-    private ArrayList<IMasterFragment> mFragments = new ArrayList<IMasterFragment>();
+    private ArrayList<IMasterFragment<Fragment>> mFragments = new ArrayList<>();
 
-    private IMasterFragment mPrimaryFragment = null;
+    private IMasterFragment<Fragment> mPrimaryFragment = null;
 
-    private HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<IMasterFragment>();
+    private HashSet<IMasterFragment<Fragment>> mFinishPendingFragments = new HashSet<>();
 
     // Events callback
     private Callback mCallback = null;
@@ -68,17 +67,13 @@ public abstract class FragmentMaster {
         public boolean dispatchGenericMotionEvent(MotionEvent event);
     }
 
-    protected FragmentMaster(MasterActivity activity) {
+    protected FragmentMaster(MasterActivity activity, FragmentManagerWare<Fragment, FragmentManager> fragmentManagerWare) {
         mActivity = activity;
-        mFragmentManager = activity.getSupportFragmentManager();
+        mFragmentManagerWare = fragmentManagerWare;
     }
 
-    public FragmentActivity getActivity() {
+    public Activity getActivity() {
         return mActivity;
-    }
-
-    public FragmentManager getFragmentManager() {
-        return mFragmentManager;
     }
 
     public int getContainerResID() {
@@ -89,25 +84,22 @@ public abstract class FragmentMaster {
         return getContainerResID();
     }
 
-    public final void startFragmentForResult(IMasterFragment target,
-            Request request, int requestCode) {
+    public final void startFragmentForResult(IMasterFragment<Fragment> target,
+                                             Request request, int requestCode) {
         ensureInstalled();
 
-        IMasterFragment fragment = newFragment(request.getClassName());
+        IMasterFragment<Fragment> fragment = (IMasterFragment<Fragment>) mFragmentManagerWare.newFragment(getActivity(), request.getClassName());
         fragment.setRequest(request);
         fragment.setTargetFragment(
                 target == null ? null : target.getFragment(), requestCode);
-        mFragmentManager.beginTransaction()
-                .add(getFragmentContainerId(), fragment.getFragment())
-                .commitAllowingStateLoss();
-        mFragmentManager.executePendingTransactions();
+        mFragmentManagerWare.addFragment(getFragmentContainerId(), fragment.getFragment());
         mFragments.add(fragment);
         fragment.setPrimary(false);
         setUpAnimator(fragment);
         onFragmentStarted(fragment);
     }
 
-    protected void setUpAnimator(IMasterFragment fragment) {
+    protected void setUpAnimator(IMasterFragment<Fragment> fragment) {
         PageAnimator pageAnimator = null;
         if (fragment != null) {
             pageAnimator = fragment.onCreatePageAnimator();
@@ -115,20 +107,10 @@ public abstract class FragmentMaster {
         this.setPageAnimator(pageAnimator);
     }
 
-    protected abstract void onFragmentStarted(IMasterFragment fragment);
+    protected abstract void onFragmentStarted(IMasterFragment<Fragment> fragment);
 
-    private IMasterFragment newFragment(String className) {
-        try {
-            return (IMasterFragment) Fragment.instantiate(getActivity(),
-                    className, new Bundle());
-        } catch (Exception e) {
-            throw new RuntimeException("No fragment found : { className="
-                    + className + " }");
-        }
-    }
-
-    public final void finishFragment(IMasterFragment fragment, int resultCode,
-            Request data) {
+    public final void finishFragment(IMasterFragment<Fragment> fragment, int resultCode,
+                                     Request data) {
         ensureInstalled();
         throwIfNotInFragmentMaster(fragment);
         if (!mFinishPendingFragments.contains(fragment)) {
@@ -139,7 +121,7 @@ public abstract class FragmentMaster {
 
     /**
      * Check whether the specific fragment is in FragmentMaster.
-     *
+     * <p/>
      * </p> If a fragment is not in FragmentMaster, it may not be started by
      * FragmentMaster or has been finished already.
      *
@@ -147,7 +129,7 @@ public abstract class FragmentMaster {
      * @return If the fragment is in FragmentMaster, returns true; else returns
      * false.
      */
-    public boolean isInFragmentMaster(IMasterFragment fragment) {
+    public boolean isInFragmentMaster(IMasterFragment<Fragment> fragment) {
         return mFragments.indexOf(fragment) >= 0;
     }
 
@@ -158,40 +140,38 @@ public abstract class FragmentMaster {
      * @return If the fragment is pending to be finished, returns true; else
      * returns false.
      */
-    public boolean isFinishPending(IMasterFragment fragment) {
+    public boolean isFinishPending(IMasterFragment<Fragment> fragment) {
         return mFinishPendingFragments.contains(fragment);
     }
 
-    private void throwIfNotInFragmentMaster(IMasterFragment fragment) {
+    private void throwIfNotInFragmentMaster(IMasterFragment<Fragment> fragment) {
         if (!isInFragmentMaster(fragment)) {
             throw new IllegalStateException("Fragment {" + fragment
                     + "} not currently in FragmentMaster.");
         }
     }
 
-    protected void onFinishFragment(IMasterFragment fragment, int resultCode,
-            Request data) {
+    protected void onFinishFragment(IMasterFragment<Fragment> fragment, int resultCode,
+                                    Request data) {
         doFinishFragment(fragment);
         deliverFragmentResult(fragment, resultCode, data);
     }
 
-    protected final void doFinishFragment(IMasterFragment fragment) {
+    protected final void doFinishFragment(IMasterFragment<Fragment> fragment) {
         int index = mFragments.indexOf(fragment);
         if (index == 0 && mSticky) {
             mActivity.finish();
             return;
         }
 
-        mFragmentManager.beginTransaction().remove(fragment.getFragment())
-                .commit();
-        mFragmentManager.executePendingTransactions();
+        mFragmentManagerWare.removeFragment(fragment.getFragment());
         mFragments.remove(index);
         mFinishPendingFragments.remove(fragment);
 
-        IMasterFragment f = null;
+        IMasterFragment<Fragment> f = null;
         for (int i = index; i < mFragments.size(); i++) {
             f = mFragments.get(i);
-            IMasterFragment target = (IMasterFragment) f.getTargetFragment();
+            IMasterFragment<Fragment> target = (IMasterFragment<Fragment>) f.getTargetFragment();
             if (target == fragment) {
                 f.setTargetFragment(null, -1);
             }
@@ -200,18 +180,18 @@ public abstract class FragmentMaster {
         onFragmentFinished(fragment);
     }
 
-    protected void deliverFragmentResult(IMasterFragment fragment,
-            int resultCode, Request data) {
+    protected void deliverFragmentResult(IMasterFragment<Fragment> fragment,
+                                         int resultCode, Request data) {
         Fragment targetFragment = fragment.getTargetFragment();
         int requestCode = fragment.getTargetRequestCode();
         if (requestCode != -1 && targetFragment instanceof IMasterFragment) {
-            dispatchFragmentResult((IMasterFragment) targetFragment,
+            dispatchFragmentResult((IMasterFragment<Fragment>) targetFragment,
                     fragment.getTargetRequestCode(), resultCode, data);
         }
     }
 
-    private void dispatchFragmentResult(IMasterFragment who, int requestCode,
-            int resultCode, Request data) {
+    private void dispatchFragmentResult(IMasterFragment<Fragment> who, int requestCode,
+                                        int resultCode, Request data) {
         if (who.isFinishing()) {
             return;
         }
@@ -230,13 +210,13 @@ public abstract class FragmentMaster {
         }
     }
 
-    protected abstract void onFragmentFinished(IMasterFragment fragment);
+    protected abstract void onFragmentFinished(IMasterFragment<Fragment> fragment);
 
-    public IMasterFragment getPrimaryFragment() {
+    public IMasterFragment<Fragment> getPrimaryFragment() {
         return mPrimaryFragment;
     }
 
-    protected final void setPrimaryFragment(IMasterFragment fragment) {
+    protected final void setPrimaryFragment(IMasterFragment<Fragment> fragment) {
         if (fragment != mPrimaryFragment) {
             if (mPrimaryFragment != null) {
                 mPrimaryFragment.setPrimary(false);
@@ -250,7 +230,7 @@ public abstract class FragmentMaster {
         }
     }
 
-    public List<IMasterFragment> getFragments() {
+    public List<IMasterFragment<Fragment>> getFragments() {
         return mFragments;
     }
 
@@ -267,7 +247,7 @@ public abstract class FragmentMaster {
     }
 
     public final void install(int containerResID, Request homeRequest,
-            boolean sticky) {
+                              boolean sticky) {
         if (isInstalled()) {
             throw new IllegalStateException("Already installed!");
         } else {
@@ -324,7 +304,7 @@ public abstract class FragmentMaster {
                     fragments = new Bundle();
                 }
                 String key = "f" + i;
-                mFragmentManager.putFragment(fragments, key, f);
+                mFragmentManagerWare.putFragment(fragments, key, f);
             }
         }
         state.mFragments = fragments;
@@ -336,17 +316,8 @@ public abstract class FragmentMaster {
     }
 
     private void logState() {
-        int fragmentsInManagerCount = 0;
-        if (mFragmentManager.getFragments() != null) {
-            for (Fragment f : mFragmentManager.getFragments()) {
-                if (f != null) {
-                    fragmentsInManagerCount++;
-                }
-            }
-        }
         Log.d(TAG, "STATE FragmentMaster[" + mFragments.size()
-                + "], FragmentManager[" + fragmentsInManagerCount
-                + "], mIsSlideable[" + mIsSlideable
+                + "],  mIsSlideable[" + mIsSlideable
                 + "], mHomeFragmentApplied[" + mHomeFragmentApplied + "]");
     }
 
@@ -361,7 +332,7 @@ public abstract class FragmentMaster {
                 for (String key : keys) {
                     if (key.startsWith("f")) {
                         int index = Integer.parseInt(key.substring(1));
-                        IMasterFragment f = (IMasterFragment) mFragmentManager
+                        IMasterFragment<Fragment> f = (IMasterFragment<Fragment>) mFragmentManagerWare
                                 .getFragment(fragments, key);
                         if (f != null) {
                             while (mFragments.size() <= index) {

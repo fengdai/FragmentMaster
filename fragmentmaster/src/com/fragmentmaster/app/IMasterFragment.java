@@ -1,6 +1,5 @@
 package com.fragmentmaster.app;
 
-import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -8,10 +7,11 @@ import com.fragmentmaster.animator.PageAnimator;
 
 /**
  * Common MasterFragment interface.
+ *
+ * @param <Fragment> {@link android.app.Fragment} Or {@link android.support.v4.app.Fragment}
  */
-public interface IMasterFragment
-        extends
-        IFragmentWrapper,
+public interface IMasterFragment<Fragment> extends
+        IFragmentWrapper<Fragment>,
         FragmentMaster.Callback,
         KeyEvent.Callback {
 
@@ -19,6 +19,7 @@ public interface IMasterFragment
      * Standard fragment result: operation canceled.
      */
     public static final int RESULT_CANCELED = 0;
+
     /**
      * Standard fragment result: operation succeeded.
      */
@@ -40,7 +41,7 @@ public interface IMasterFragment
      * @see #startFragment(Request)
      * @see #startFragmentForResult(Request, int)
      */
-    public void startFragment(Class<? extends IMasterFragment> clazz);
+    public void startFragment(Class<? extends IMasterFragment<Fragment>> clazz);
 
     /**
      * Start an IMasterFragment for which you would like a result when it finished.
@@ -65,7 +66,7 @@ public interface IMasterFragment
      *                    onFragmentResult() when the IMasterFragment exits.
      * @see #startFragmentForResult(Request, int)
      */
-    public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
+    public void startFragmentForResult(Class<? extends IMasterFragment<Fragment>> clazz,
                                        int requestCode);
 
     /**
@@ -79,7 +80,7 @@ public interface IMasterFragment
      * @see #startFragment
      * @see #startFragmentForResult
      */
-    public void startFragmentFromChild(IMasterFragment child,
+    public void startFragmentFromChild(IMasterFragment<Fragment> child,
                                        Request request, int requestCode);
 
     /**
@@ -95,9 +96,9 @@ public interface IMasterFragment
      */
     public void setRequest(Request request);
 
-    public void setTargetChildFragment(IMasterFragment targetChildFragment);
+    public void setTargetChildFragment(IMasterFragment<Fragment> targetChildFragment);
 
-    public IMasterFragment getTargetChildFragment();
+    public IMasterFragment<Fragment> getTargetChildFragment();
 
     /**
      * Call this to set the result that your fragment will return to its caller.
@@ -128,8 +129,6 @@ public interface IMasterFragment
     public void finish();
 
     public boolean isFinishing();
-
-    public Fragment getFragment();
 
     public MasterActivity getMasterActivity();
 

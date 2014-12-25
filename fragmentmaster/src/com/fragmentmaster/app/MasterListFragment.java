@@ -14,7 +14,7 @@ import android.view.View;
 import com.fragmentmaster.animator.DefaultPageAnimator;
 import com.fragmentmaster.animator.PageAnimator;
 
-public class MasterListFragment extends ListFragment implements IMasterFragment {
+public class MasterListFragment extends ListFragment implements IMasterFragment<Fragment> {
 
     private MasterFragmentDelegate mImpl = new MasterFragmentDelegate(this);
 
@@ -121,7 +121,7 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
      * Starts a specific fragment.
      */
     @Override
-    public void startFragment(Class<? extends IMasterFragment> clazz) {
+    public void startFragment(Class<? extends IMasterFragment<Fragment>> clazz) {
         mImpl.startFragment(clazz);
     }
 
@@ -136,7 +136,7 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
     }
 
     @Override
-    public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
+    public void startFragmentForResult(Class<? extends IMasterFragment<Fragment>> clazz,
                                        int requestCode) {
         mImpl.startFragmentForResult(clazz, requestCode);
     }
@@ -147,7 +147,7 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
     }
 
     @Override
-    public void startFragmentFromChild(IMasterFragment childFragment,
+    public void startFragmentFromChild(IMasterFragment<Fragment> childFragment,
                                        Request request, int requestCode) {
         mImpl.startFragmentFromChild(childFragment, request, requestCode);
     }
@@ -236,12 +236,12 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
     }
 
     @Override
-    public IMasterFragment getTargetChildFragment() {
+    public IMasterFragment<Fragment> getTargetChildFragment() {
         return mImpl.getTargetChildFragment();
     }
 
     @Override
-    public void setTargetChildFragment(IMasterFragment targetChildFragment) {
+    public void setTargetChildFragment(IMasterFragment<Fragment> targetChildFragment) {
         mImpl.setTargetChildFragment(targetChildFragment);
     }
 

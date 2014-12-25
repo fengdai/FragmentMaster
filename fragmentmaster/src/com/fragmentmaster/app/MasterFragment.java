@@ -16,7 +16,7 @@ import com.fragmentmaster.animator.PageAnimator;
 /**
  * The base fragment
  */
-public class MasterFragment extends Fragment implements IMasterFragment {
+public class MasterFragment extends Fragment implements IMasterFragment<Fragment> {
 
     private MasterFragmentDelegate mImpl = new MasterFragmentDelegate(this);
 
@@ -123,7 +123,7 @@ public class MasterFragment extends Fragment implements IMasterFragment {
      * Starts a specific fragment.
      */
     @Override
-    public void startFragment(Class<? extends IMasterFragment> clazz) {
+    public void startFragment(Class<? extends IMasterFragment<Fragment>> clazz) {
         mImpl.startFragment(clazz);
     }
 
@@ -138,7 +138,7 @@ public class MasterFragment extends Fragment implements IMasterFragment {
     }
 
     @Override
-    public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
+    public void startFragmentForResult(Class<? extends IMasterFragment<Fragment>> clazz,
                                        int requestCode) {
         mImpl.startFragmentForResult(clazz, requestCode);
     }
@@ -149,7 +149,7 @@ public class MasterFragment extends Fragment implements IMasterFragment {
     }
 
     @Override
-    public void startFragmentFromChild(IMasterFragment childFragment,
+    public void startFragmentFromChild(IMasterFragment<Fragment> childFragment,
                                        Request request, int requestCode) {
         mImpl.startFragmentFromChild(childFragment, request, requestCode);
     }
@@ -238,12 +238,12 @@ public class MasterFragment extends Fragment implements IMasterFragment {
     }
 
     @Override
-    public IMasterFragment getTargetChildFragment() {
+    public IMasterFragment<Fragment> getTargetChildFragment() {
         return mImpl.getTargetChildFragment();
     }
 
     @Override
-    public void setTargetChildFragment(IMasterFragment targetChildFragment) {
+    public void setTargetChildFragment(IMasterFragment<Fragment> targetChildFragment) {
         mImpl.setTargetChildFragment(targetChildFragment);
     }
 

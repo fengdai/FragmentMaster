@@ -13,7 +13,7 @@ public class MainActivity extends MasterActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentMaster fragmentMaster = getFragmentMaster();
+        FragmentMaster fragmentMaster = getSupportFragmentMaster();
         fragmentMaster.install(R.id.container, new Request(Home.class), true);
     }
 }

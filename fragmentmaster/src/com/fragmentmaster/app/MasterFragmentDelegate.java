@@ -17,17 +17,23 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.fragmentmaster.R;
+import com.fragmentmaster.app.ware.FragmentManagerWare;
+import com.fragmentmaster.util.FragmentUtil;
 
-public class MasterFragmentDelegate {
+public class MasterFragmentDelegate<Fragment, FragmentManager> {
 
     private static final String BUNDLE_KEY_TARGET_CHILD_FRAGMENT
             = "FragmentMaster:TARGET_CHILD_FRAGMENT";
 
     private static final String BUNDLE_KEY_STATE = "FragmentMaster:MASTER_FRAGMENT_STATE";
 
+    private boolean isChildFragmentSupported = false;
+
     private ContextThemeWrapper mContextThemeWrapper;
 
-    IMasterFragment mMasterFragment;
+    IMasterFragment<Fragment> mMasterFragment;
+
+    FragmentManagerWare mChildFragmentManagerWare;
 
     Request mRequest = null;
 
@@ -36,7 +42,7 @@ public class MasterFragmentDelegate {
 
     boolean mIsSlideable = true;
 
-    private IMasterFragment mTargetChildFragment;
+    private IMasterFragment<Fragment> mTargetChildFragment;
 
     private static final int MSG_USER_ACTIVE = 1;
 
@@ -68,8 +74,9 @@ public class MasterFragmentDelegate {
 
     private boolean mFinished = false;
 
-    public MasterFragmentDelegate(IMasterFragment masterFragment) {
+    public MasterFragmentDelegate(IMasterFragment<Fragment> masterFragment) {
         mMasterFragment = masterFragment;
+        isChildFragmentSupported = FragmentUtil.isChildFragmentSupported(masterFragment);
     }
 
     public void onAttach(Activity activity) {
@@ -87,11 +94,18 @@ public class MasterFragmentDelegate {
     }
 
     public FragmentMaster getFragmentMaster() {
-        return mActivity == null ? null : mActivity.getFragmentMaster();
+        return mActivity == null ? null : mActivity.getSupportFragmentMaster();
+    }
+
+    public FragmentManagerWare<Fragment, FragmentManager> getChildFragmentManagerWare() {
+        if (mChildFragmentManagerWare == null) {
+            mChildFragmentManagerWare = FragmentManagerWare.createChildFragmentManagerWare(mMasterFragment);
+        }
+        return mChildFragmentManagerWare;
     }
 
     public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
-        mContextThemeWrapper = FragmentThemeHelper.createContextThemeWrapper(mActivity, mMasterFragment.getFragment());
+        mContextThemeWrapper = FragmentThemeHelper.createContextThemeWrapper(mActivity, mMasterFragment);
         return mActivity.getLayoutInflater().cloneInContext(mContextThemeWrapper);
     }
 
@@ -205,8 +219,8 @@ public class MasterFragmentDelegate {
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        if (mTargetChildFragment != null) {
-            mMasterFragment.getChildFragmentManager().putFragment(outState,
+        if (mTargetChildFragment != null && isChildFragmentSupported) {
+            getChildFragmentManagerWare().putFragment(outState,
                     BUNDLE_KEY_TARGET_CHILD_FRAGMENT,
                     mTargetChildFragment.getFragment());
         }
@@ -236,9 +250,10 @@ public class MasterFragmentDelegate {
     public void onActivityCreated(Bundle savedInstanceState) {
         mStateSaved = false;
         if (savedInstanceState != null) {
-            mTargetChildFragment = (IMasterFragment) mMasterFragment
-                    .getChildFragmentManager().getFragment(savedInstanceState,
-                            BUNDLE_KEY_TARGET_CHILD_FRAGMENT);
+            if (isChildFragmentSupported) {
+                mTargetChildFragment = (IMasterFragment) getChildFragmentManagerWare().getFragment(savedInstanceState,
+                        BUNDLE_KEY_TARGET_CHILD_FRAGMENT);
+            }
         }
     }
 

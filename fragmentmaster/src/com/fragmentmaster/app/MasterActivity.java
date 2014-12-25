@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
+import com.fragmentmaster.app.ware.FragmentManagerWare;
 import com.fragmentmaster.internal.FragmentMasterImpl;
 
 /**
@@ -20,7 +21,7 @@ public abstract class MasterActivity extends ActionBarActivity {
      */
     private static final String FRAGMENTS_TAG = "FragmentMaster:fragments";
 
-    private FragmentMaster mFragmentMaster = new FragmentMasterImpl(this);
+    private FragmentMaster mFragmentMaster = new FragmentMasterImpl(this, FragmentManagerWare.createFragmentManagerWare(this, true));
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -40,7 +41,7 @@ public abstract class MasterActivity extends ActionBarActivity {
         }
     }
 
-    public FragmentMaster getFragmentMaster() {
+    public FragmentMaster getSupportFragmentMaster() {
         return mFragmentMaster;
     }
 

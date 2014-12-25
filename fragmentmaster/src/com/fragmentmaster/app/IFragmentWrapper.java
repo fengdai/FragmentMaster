@@ -1,28 +1,22 @@
 package com.fragmentmaster.app;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
 import android.view.View;
 
 /**
- * Define native fragment's methods that used by FragmentMaster.
+ * Define fragment's methods that used by FragmentMaster.
+ *
+ * @param <Fragment> {@link android.app.Fragment} Or {@link android.support.v4.app.Fragment}
  */
-interface IFragmentWrapper {
+interface IFragmentWrapper<Fragment> {
 
-    public Bundle getArguments();
-
-    public Fragment getParentFragment();
+    public Fragment getFragment();
 
     public Activity getActivity();
 
-    public FragmentManager getFragmentManager();
+    public Fragment getParentFragment();
 
-    public FragmentManager getChildFragmentManager();
-
-    public void setTargetFragment(Fragment target, int requestCode);
+    public void setTargetFragment(Fragment fragment, int requestCode);
 
     public Fragment getTargetFragment();
 
@@ -35,6 +29,4 @@ interface IFragmentWrapper {
     public boolean isResumed();
 
     public View getView();
-
-    public LayoutInflater getLayoutInflater(Bundle savedInstanceState);
 }

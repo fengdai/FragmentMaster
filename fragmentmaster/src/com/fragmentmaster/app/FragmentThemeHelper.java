@@ -1,7 +1,6 @@
 package com.fragmentmaster.app;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 
@@ -10,7 +9,7 @@ import com.fragmentmaster.annotation.Configuration;
 
 public class FragmentThemeHelper {
 
-    public static ContextThemeWrapper createContextThemeWrapper(Activity activity, Fragment fragment) {
+    public static ContextThemeWrapper createContextThemeWrapper(Activity activity, IMasterFragment fragment) {
         int masterFragmentTheme = getMasterFragmentTheme(activity, fragment);
         if (masterFragmentTheme == -1) {
             return activity;
@@ -18,9 +17,9 @@ public class FragmentThemeHelper {
         return new ContextThemeWrapper(activity, masterFragmentTheme);
     }
 
-    public static int getMasterFragmentTheme(Activity activity, Fragment fragment) {
+    public static int getMasterFragmentTheme(Activity activity, IMasterFragment fragment) {
         int masterFragmentTheme = -1;
-        Class clazz = ((Object) fragment).getClass();
+        Class clazz = fragment.getClass();
         // Get theme from Configuration annotation.
         if (clazz.isAnnotationPresent(Configuration.class)) {
             Configuration configuration = (Configuration) clazz.getAnnotation(Configuration.class);

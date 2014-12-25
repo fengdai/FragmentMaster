@@ -5,6 +5,7 @@ import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.IMasterFragment;
 import com.fragmentmaster.app.MasterActivity;
 import com.fragmentmaster.app.Request;
+import com.fragmentmaster.app.ware.FragmentManagerWare;
 
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -12,7 +13,10 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class FragmentMasterImpl extends FragmentMaster {
+import java.lang.reflect.Array;
+
+public class FragmentMasterImpl<Fragment, FragmentManager>
+        extends FragmentMaster<Fragment, FragmentManager> {
 
     // The id of fragments' real container.
     public final static int FRAGMENT_CONTAINER_ID = R.id.fragment_container;
@@ -33,7 +37,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 
         @Override
         public void onPageScrolled(int position, float positionOffset,
-                int positionOffsetPixels) {
+                                   int positionOffsetPixels) {
             if (mState == ViewPager.SCROLL_STATE_IDLE) {
                 setUpAnimator(getPrimaryFragment());
             }
@@ -62,8 +66,9 @@ public class FragmentMasterImpl extends FragmentMaster {
         }
     };
 
-    public FragmentMasterImpl(MasterActivity activity) {
-        super(activity);
+    public FragmentMasterImpl(MasterActivity activity,
+                              FragmentManagerWare<Fragment, FragmentManager> fragmentManagerWare) {
+        super(activity, fragmentManagerWare);
     }
 
     @Override
@@ -97,8 +102,8 @@ public class FragmentMasterImpl extends FragmentMaster {
     }
 
     @Override
-    protected void onFinishFragment(final IMasterFragment fragment,
-            final int resultCode, final Request data) {
+    protected void onFinishFragment(final IMasterFragment<Fragment> fragment,
+                                    final int resultCode, final Request data) {
         final int index = getFragments().indexOf(fragment);
         int curItem = mViewPager.getCurrentItem();
 
@@ -137,10 +142,9 @@ public class FragmentMasterImpl extends FragmentMaster {
     private void cleanUp() {
         // check whether there are any fragments above the primary one, and
         // finish them.
-        IMasterFragment[] fragments = getFragments().toArray(
-                new IMasterFragment[getFragments().size()]);
-        IMasterFragment primaryFragment = getPrimaryFragment();
-        IMasterFragment f = null;
+        IMasterFragment<Fragment>[] fragments = getFragments().toArray((IMasterFragment<Fragment>[]) Array.newInstance(IMasterFragment.class, getFragments().size()));
+        IMasterFragment<Fragment> primaryFragment = getPrimaryFragment();
+        IMasterFragment<Fragment> f = null;
         // determine whether f is above primary fragment.
         boolean abovePrimary = true;
         for (int i = fragments.length - 1; i >= 0; i--) {
@@ -182,8 +186,7 @@ public class FragmentMasterImpl extends FragmentMaster {
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            IMasterFragment fragment = getFragments().get(position);
-            return fragment;
+            return getFragments().get(position);
         }
 
         @Override
@@ -192,8 +195,8 @@ public class FragmentMasterImpl extends FragmentMaster {
 
         @Override
         public void setPrimaryItem(ViewGroup container, int position,
-                Object object) {
-            setPrimaryFragment((IMasterFragment) object);
+                                   Object object) {
+            setPrimaryFragment((IMasterFragment<Fragment>) object);
         }
 
         @Override
