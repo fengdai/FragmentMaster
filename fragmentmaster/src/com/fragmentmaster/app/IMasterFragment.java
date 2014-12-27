@@ -25,28 +25,75 @@ public interface IMasterFragment
     public static final int RESULT_OK = -1;
 
     /**
-     * Starts a specific fragment.
+     * Start a new IMasterFragment.
+     *
+     * @param request The request used to start.
+     * @see #startFragment(Class)
+     * @see #startFragmentForResult(Request, int)
+     */
+    public void startFragment(Request request);
+
+    /**
+     * Same as calling {@link #startFragment(Request)}
+     *
+     * @param clazz The {@link java.lang.Class} of the IMasterFragment.
+     * @see #startFragment(Request)
+     * @see #startFragmentForResult(Request, int)
      */
     public void startFragment(Class<? extends IMasterFragment> clazz);
 
     /**
-     * Starts a fragment.
+     * Start an IMasterFragment for which you would like a result when it finished.
+     * When this IMasterFragment exits, your
+     * {@link #onFragmentResult(int, int, Request)} method will be called with the given requestCode.
+     * Using a negative requestCode is the same as calling
+     * {@link #startFragment(Request)}
      *
-     * @param request The request.
+     * @param request     The request used to start.
+     * @param requestCode If >= 0, this code will be returned in
+     *                    onFragmentResult() when the IMasterFragment exits.
+     * @see #startFragment(Request)
+     * @see #startFragmentForResult(Class, int)
      */
-    public void startFragment(Request request);
+    public void startFragmentForResult(Request request, int requestCode);
 
+    /**
+     * Same as calling {@link #startFragmentForResult(Request, int)}.
+     *
+     * @param clazz       The {@link java.lang.Class} of the IMasterFragment.
+     * @param requestCode If >= 0, this code will be returned in
+     *                    onFragmentResult() when the IMasterFragment exits.
+     * @see #startFragmentForResult(Request, int)
+     */
     public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
                                        int requestCode);
 
-    public void startFragmentForResult(Request request, int requestCode);
-
-    public void startFragmentFromChild(IMasterFragment masterFragment,
+    /**
+     * This is called when a child IMasterFragment of this one calls its
+     * {@link #startFragment} or {@link #startFragmentForResult} method.
+     *
+     * @param child       The IMasterFragment making the call.
+     * @param request     The request used to start.
+     * @param requestCode If >= 0, this code will be returned in
+     *                    onFragmentResult() when the IMasterFragment exits.
+     * @see #startFragment
+     * @see #startFragmentForResult
+     */
+    public void startFragmentFromChild(IMasterFragment child,
                                        Request request, int requestCode);
 
-    public void setRequest(Request request);
-
+    /**
+     * Return the request that started this IMasterFragment.
+     */
     public Request getRequest();
+
+    /**
+     * Change the intent returned by {@link #getRequest()}.
+     *
+     * @param request The new Request object to return from getRequest
+     * @see #getRequest()
+     */
+    public void setRequest(Request request);
 
     public void setTargetChildFragment(IMasterFragment targetChildFragment);
 
@@ -54,11 +101,24 @@ public interface IMasterFragment
 
     /**
      * Call this to set the result that your fragment will return to its caller.
+     *
+     * @param resultCode The result code to propagate back to the originating
+     *                   IMasterFragment, often RESULT_CANCELED or RESULT_OK
+     * @see #RESULT_CANCELED
+     * @see #RESULT_OK
+     * @see #setResult(int, Request)
      */
     public void setResult(int resultCode);
 
     /**
      * Call this to set the result that your fragment will return to its caller.
+     *
+     * @param resultCode The result code to propagate back to the originating
+     *                   IMasterFragment, often RESULT_CANCELED or RESULT_OK
+     * @param data       The data to propagate back to the originating IMasterFragment.
+     * @see #RESULT_CANCELED
+     * @see #RESULT_OK
+     * @see #setResult(int)
      */
     public void setResult(int resultCode, Request data);
 
