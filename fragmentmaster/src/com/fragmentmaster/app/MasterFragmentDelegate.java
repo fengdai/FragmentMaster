@@ -377,7 +377,7 @@ public class MasterFragmentDelegate {
     }
 
     public boolean dispatchKeyShortcutEvent(KeyEvent event) {
-        if (getFragmentMaster().dispatchKeyEventToWindow(event)) {
+        if (getFragmentMaster().dispatchKeyShortcutEventToWindow(event)) {
             return true;
         }
         if (mMasterFragment.onKeyShortcut(event.getKeyCode(), event)) {

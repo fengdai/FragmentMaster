@@ -329,7 +329,7 @@ public abstract class FragmentMaster {
         }
         state.mFragments = fragments;
         state.mIsSlideable = mIsSlideable;
-        state.mHomeFragmemtApplied = mHomeFragmentApplied;
+        state.mHomeFragmentApplied = mHomeFragmentApplied;
 
         logState();
         return state;
@@ -347,7 +347,7 @@ public abstract class FragmentMaster {
         Log.d(TAG, "STATE FragmentMaster[" + mFragments.size()
                 + "], FragmentManager[" + fragmentsInManagerCount
                 + "], mIsSlideable[" + mIsSlideable
-                + "], mHomeFragmemtApplied[" + mHomeFragmentApplied + "]");
+                + "], mHomeFragmentApplied[" + mHomeFragmentApplied + "]");
     }
 
     void restoreAllState(Parcelable state) {
@@ -377,7 +377,7 @@ public abstract class FragmentMaster {
             }
 
             setSlideable(fms.mIsSlideable);
-            mHomeFragmentApplied = fms.mHomeFragmemtApplied;
+            mHomeFragmentApplied = fms.mHomeFragmentApplied;
         }
     }
 
@@ -505,7 +505,7 @@ final class FragmentMasterState implements Parcelable {
 
     boolean mIsSlideable;
 
-    boolean mHomeFragmemtApplied;
+    boolean mHomeFragmentApplied;
 
     public FragmentMasterState() {
     }
@@ -513,7 +513,7 @@ final class FragmentMasterState implements Parcelable {
     public FragmentMasterState(Parcel in) {
         mFragments = in.readBundle();
         mIsSlideable = in.readInt() == 0;
-        mHomeFragmemtApplied = in.readInt() == 0;
+        mHomeFragmentApplied = in.readInt() == 0;
     }
 
     @Override
@@ -525,7 +525,7 @@ final class FragmentMasterState implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeBundle(mFragments);
         dest.writeInt(mIsSlideable ? 0 : 1);
-        dest.writeInt(mHomeFragmemtApplied ? 0 : 1);
+        dest.writeInt(mHomeFragmentApplied ? 0 : 1);
     }
 
     public static final Parcelable.Creator<FragmentMasterState> CREATOR
