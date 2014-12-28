@@ -2,6 +2,7 @@
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Specify the default MasterFragment's theme.-->
         <item name="masterFragmentTheme">@style/AppTheme.MasterFragment</item>
     </style>
 
@@ -10,13 +11,12 @@
         <item name="android:windowBackground">@android:color/background_dark</item>
     </style>
 
-    <!-- Master Fragment theme. -->
+    <!-- Default MasterFragment's theme. -->
     <style name="AppTheme.MasterFragment">
-        <item name="masterFragmentBackground">?android:windowBackground</item>
     </style>
 
-    <!-- Master Fragment theme, transparent -->
+    <!-- MasterFragment's theme, transparent -->
     <style name="AppTheme.MasterFragment.Transparent">
-        <item name="masterFragmentBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 </resources>

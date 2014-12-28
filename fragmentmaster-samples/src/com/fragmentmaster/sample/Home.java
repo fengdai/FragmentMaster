@@ -11,6 +11,7 @@ import android.widget.ListView;
 
 import com.fragmentmaster.app.MasterListFragment;
 import com.fragmentmaster.app.Request;
+import com.fragmentmaster.sample.entry.Entry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,29 +20,14 @@ public class Home extends MasterListFragment {
 
     private static final String TAG = "Home";
 
-    static class Entry {
-
-        String mTitle;
-        Request mRequest;
-
-        Entry(String title, Request request) {
-            mTitle = title;
-            mRequest = request;
-        }
-
-        @Override
-        public String toString() {
-            return mTitle;
-        }
-    }
-
-    private static final List<Entry> ENTRIES = new ArrayList<Home.Entry>();
+    private static final List<Entry> ENTRIES = new ArrayList<>();
 
     static {
         ENTRIES.add(new Entry("Pass Data", new Request(PassData.class)));
         ENTRIES.add(new Entry("Receive Result",
                 new Request(ReceiveResult.class)));
         ENTRIES.add(new Entry("PageAnimators", new Request(PageAnimators.class)));
+        ENTRIES.add(new Entry("Themes", new Request(Themes.class)));
         ENTRIES.add(new Entry("Slideable", new Request(Slideable.class)));
         ENTRIES.add(new Entry("Soft Input", new Request(SoftInput.class)));
     }
@@ -56,7 +42,7 @@ public class Home extends MasterListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        setListAdapter(new ArrayAdapter<Entry>(getActivity(),
+        setListAdapter(new ArrayAdapter<>(getActivity(),
                 android.R.layout.simple_list_item_1, ENTRIES));
     }
 

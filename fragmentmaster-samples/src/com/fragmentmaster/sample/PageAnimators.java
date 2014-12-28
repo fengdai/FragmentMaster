@@ -13,6 +13,7 @@ import com.fragmentmaster.annotation.Configuration;
 import com.fragmentmaster.app.MasterFragment;
 import com.fragmentmaster.app.MasterListFragment;
 import com.fragmentmaster.app.Request;
+import com.fragmentmaster.sample.entry.Entry;
 import com.fragmentmaster.sample.pageanimator.Animators;
 
 import java.util.ArrayList;
@@ -20,28 +21,13 @@ import java.util.List;
 
 public class PageAnimators extends MasterListFragment {
 
-    static class Page {
-        CharSequence name;
-        Request request;
-
-        Page(CharSequence name, Request request) {
-            this.name = name;
-            this.request = request;
-        }
-
-        @Override
-        public String toString() {
-            return name.toString();
-        }
-    }
-
-    private static final List<Page> PAGES = new ArrayList<Page>();
+    private static final List<Entry> ENTRIES = new ArrayList<>();
 
     static {
-        PAGES.add(new Page("StackAnimator", new Request(StackPage.class)));
-        PAGES.add(new Page("EnterOvershootAnimator", new Request(
+        ENTRIES.add(new Entry("StackAnimator", new Request(StackPage.class)));
+        ENTRIES.add(new Entry("EnterOvershootAnimator", new Request(
                 EnterOvershootPage.class)));
-        PAGES.add(new Page("VerticalSlideAnimator", new Request(
+        ENTRIES.add(new Entry("VerticalSlideAnimator", new Request(
                 VerticalSlidePage.class)));
     }
 
@@ -54,15 +40,15 @@ public class PageAnimators extends MasterListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setListAdapter(new ArrayAdapter<Page>(getActivity(),
-                android.R.layout.simple_list_item_1, PAGES));
+        setListAdapter(new ArrayAdapter<Entry>(getActivity(),
+                android.R.layout.simple_list_item_1, ENTRIES));
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Page page = PAGES.get(position);
-        startFragment(page.request);
+        Entry page = ENTRIES.get(position);
+        startFragment(page.mRequest);
     }
 
     @Configuration(theme = R.style.AppTheme_MasterFragment_Transparent)

@@ -6,5 +6,6 @@
     <string name="pick_your_number">Pick</string>
     <string name="next_button_string">Next</string>
     <string name="vertical_slide_animator_decription">Click empty area above to close this page.</string>
+    <string name="theme_fragment_text">To be, or not to be, that is the question.</string>
 
 </resources>

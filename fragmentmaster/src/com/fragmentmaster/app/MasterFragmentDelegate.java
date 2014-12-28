@@ -90,12 +90,14 @@ public class MasterFragmentDelegate {
         return mActivity == null ? null : mActivity.getFragmentMaster();
     }
 
-    public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
-        mContextThemeWrapper = FragmentThemeHelper.createContextThemeWrapper(mActivity, mMasterFragment.getFragment());
-        return mActivity.getLayoutInflater().cloneInContext(mContextThemeWrapper);
+    public LayoutInflater getLayoutInflater() {
+        return mActivity.getLayoutInflater().cloneInContext(getContextThemeWrapper());
     }
 
     public ContextThemeWrapper getContextThemeWrapper() {
+        if (mContextThemeWrapper == null) {
+            mContextThemeWrapper = FragmentThemeHelper.createContextThemeWrapper(mActivity, mMasterFragment.getFragment());
+        }
         return mContextThemeWrapper;
     }
 
@@ -224,8 +226,11 @@ public class MasterFragmentDelegate {
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        // Use window background as the top level background.
+        // Note: The view is an instance of NoSaveStateFrameLayout,
+        // which is inserted between the Fragment's view and its container by FragmentManager.
         TypedValue outValue = new TypedValue();
-        mContextThemeWrapper.getTheme().resolveAttribute(R.attr.masterFragmentBackground, outValue, true);
+        getContextThemeWrapper().getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
         view.setBackgroundResource(
                 outValue.resourceId);
         // Set the "clickable" of the fragment's root view to true to avoid

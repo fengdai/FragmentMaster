@@ -2,6 +2,5 @@
 <resources>
     <declare-styleable name="FragmentMaster">
         <attr name="masterFragmentTheme" format="reference"/>
-        <attr name="masterFragmentBackground" format="reference"/>
     </declare-styleable>
 </resources>
