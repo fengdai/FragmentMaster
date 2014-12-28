@@ -116,7 +116,7 @@ public class MasterFragment extends Fragment implements IMasterFragment {
 
     @Override
     public LayoutInflater getLayoutInflater(Bundle savedInstanceState) {
-        return mImpl.getLayoutInflater(savedInstanceState);
+        return mImpl.getLayoutInflater();
     }
 
     /**
