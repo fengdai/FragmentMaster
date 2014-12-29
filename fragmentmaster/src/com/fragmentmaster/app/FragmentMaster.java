@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -12,10 +11,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.fragmentmaster.BuildConfig;
 import com.fragmentmaster.animator.PageAnimator;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -42,15 +40,15 @@ public abstract class FragmentMaster {
 
     private PageAnimator mPageAnimator = null;
 
-    // Fragments started by FragmentMaster.
-    private ArrayList<IMasterFragment> mFragments = new ArrayList<>();
-
     private IMasterFragment mPrimaryFragment = null;
 
-    private HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<>();
+    // Use to record Fragments started by FragmentMaster.
+    private final Records mRecords = new Records();
+
+    private final HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<>();
 
     // Event dispatcher
-    private MasterEventDispatcher mEventDispatcher;
+    private final MasterEventDispatcher mEventDispatcher;
 
     FragmentMaster(MasterActivity activity) {
         mActivity = activity;
@@ -58,7 +56,7 @@ public abstract class FragmentMaster {
         mEventDispatcher = new MasterEventDispatcher(activity);
     }
 
-    public FragmentActivity getActivity() {
+    public MasterActivity getActivity() {
         return mActivity;
     }
 
@@ -80,13 +78,11 @@ public abstract class FragmentMaster {
 
         IMasterFragment fragment = newFragment(request.getClassName());
         fragment.setRequest(request);
-        fragment.setTargetFragment(
-                target == null ? null : target.getFragment(), requestCode);
         mFragmentManager.beginTransaction()
                 .add(getFragmentContainerId(), fragment.getFragment())
                 .commitAllowingStateLoss();
         mFragmentManager.executePendingTransactions();
-        mFragments.add(fragment);
+        mRecords.add(fragment, target, requestCode);
         fragment.setPrimary(false);
         setUpAnimator(fragment);
         onFragmentStarted(fragment);
@@ -116,7 +112,7 @@ public abstract class FragmentMaster {
                                      Request data) {
         ensureInstalled();
         throwIfNotInFragmentMaster(fragment);
-        if (!mFinishPendingFragments.contains(fragment)) {
+        if (!isFinishPending(fragment)) {
             mFinishPendingFragments.add(fragment);
         }
         onFinishFragment(fragment, resultCode, data);
@@ -125,7 +121,7 @@ public abstract class FragmentMaster {
     /**
      * Check whether the specific fragment is in FragmentMaster.
      * <p/>
-     * </p> If a fragment is not in FragmentMaster, it may not be started by
+     * If a fragment is not in FragmentMaster, it may not be started by
      * FragmentMaster or has been finished already.
      *
      * @param fragment The fragment to check.
@@ -133,7 +129,7 @@ public abstract class FragmentMaster {
      * false.
      */
     public boolean isInFragmentMaster(IMasterFragment fragment) {
-        return mFragments.indexOf(fragment) >= 0;
+        return mRecords.has(fragment);
     }
 
     /**
@@ -161,8 +157,7 @@ public abstract class FragmentMaster {
     }
 
     protected final void doFinishFragment(IMasterFragment fragment) {
-        int index = mFragments.indexOf(fragment);
-        if (index == 0 && mSticky) {
+        if (mRecords.indexOf(fragment) == 0 && mSticky) {
             mActivity.finish();
             return;
         }
@@ -170,18 +165,8 @@ public abstract class FragmentMaster {
         mFragmentManager.beginTransaction().remove(fragment.getFragment())
                 .commit();
         mFragmentManager.executePendingTransactions();
-        mFragments.remove(index);
+        mRecords.remove(fragment);
         mFinishPendingFragments.remove(fragment);
-
-        IMasterFragment f = null;
-        for (int i = index; i < mFragments.size(); i++) {
-            f = mFragments.get(i);
-            IMasterFragment target = (IMasterFragment) f.getTargetFragment();
-            if (target == fragment) {
-                f.setTargetFragment(null, -1);
-            }
-        }
-
         onFragmentFinished(fragment);
     }
 
@@ -236,7 +221,7 @@ public abstract class FragmentMaster {
     }
 
     public List<IMasterFragment> getFragments() {
-        return Collections.unmodifiableList(mFragments);
+        return mRecords.getFragments();
     }
 
     protected void setPageAnimator(PageAnimator pageAnimator) {
@@ -301,18 +286,7 @@ public abstract class FragmentMaster {
 
     Parcelable saveAllState() {
         FragmentMasterState state = new FragmentMasterState();
-        Bundle fragments = null;
-        for (int i = 0; i < mFragments.size(); i++) {
-            Fragment f = mFragments.get(i).getFragment();
-            if (f != null) {
-                if (fragments == null) {
-                    fragments = new Bundle();
-                }
-                String key = "f" + i;
-                mFragmentManager.putFragment(fragments, key, f);
-            }
-        }
-        state.mFragments = fragments;
+        state.mFragments = mRecords.save(mFragmentManager);
         state.mIsSlideable = mIsSlideable;
         state.mHomeFragmentApplied = mHomeFragmentApplied;
 
@@ -321,6 +295,9 @@ public abstract class FragmentMaster {
     }
 
     private void logState() {
+        if (!BuildConfig.DEBUG) {
+            return;
+        }
         int fragmentsInManagerCount = 0;
         if (mFragmentManager.getFragments() != null) {
             for (Fragment f : mFragmentManager.getFragments()) {
@@ -329,7 +306,7 @@ public abstract class FragmentMaster {
                 }
             }
         }
-        Log.d(TAG, "STATE FragmentMaster[" + mFragments.size()
+        Log.d(TAG, "STATE FragmentMaster[" + mRecords.size()
                 + "], FragmentManager[" + fragmentsInManagerCount
                 + "], mIsSlideable[" + mIsSlideable
                 + "], mHomeFragmentApplied[" + mHomeFragmentApplied + "]");
@@ -338,29 +315,7 @@ public abstract class FragmentMaster {
     void restoreAllState(Parcelable state) {
         if (state != null) {
             FragmentMasterState fms = (FragmentMasterState) state;
-
-            mFragments.clear();
-            Bundle fragments = fms.mFragments;
-            if (fragments != null) {
-                Iterable<String> keys = fragments.keySet();
-                for (String key : keys) {
-                    if (key.startsWith("f")) {
-                        int index = Integer.parseInt(key.substring(1));
-                        IMasterFragment f = (IMasterFragment) mFragmentManager
-                                .getFragment(fragments, key);
-                        if (f != null) {
-                            while (mFragments.size() <= index) {
-                                mFragments.add(null);
-                            }
-                            f.setMenuVisibility(false);
-                            mFragments.set(index, f);
-                        } else {
-                            Log.w(TAG, "Bad fragment at key " + key);
-                        }
-                    }
-                }
-            }
-
+            mRecords.restore(mFragmentManager, fms.mFragments);
             setSlideable(fms.mIsSlideable);
             mHomeFragmentApplied = fms.mHomeFragmentApplied;
         }
@@ -402,7 +357,7 @@ final class FragmentMasterState implements Parcelable {
     public FragmentMasterState() {
     }
 
-    public FragmentMasterState(Parcel in) {
+    private FragmentMasterState(Parcel in) {
         mFragments = in.readBundle();
         mIsSlideable = in.readInt() == 0;
         mHomeFragmentApplied = in.readInt() == 0;

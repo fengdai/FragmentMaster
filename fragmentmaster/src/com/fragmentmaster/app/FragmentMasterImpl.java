@@ -8,7 +8,10 @@ import android.view.ViewGroup;
 
 import com.fragmentmaster.R;
 
-class FragmentMasterImpl extends FragmentMaster {
+import java.util.ArrayList;
+import java.util.List;
+
+public class FragmentMasterImpl extends FragmentMaster {
 
     // The id of fragments' real container.
     public final static int FRAGMENT_CONTAINER_ID = R.id.internal_fragment_container;
@@ -48,7 +51,6 @@ class FragmentMasterImpl extends FragmentMaster {
                 onScrollIdle();
             }
         }
-
     };
 
     private Runnable mCleanUpRunnable = new Runnable() {
@@ -130,18 +132,17 @@ class FragmentMasterImpl extends FragmentMaster {
         return mScrolling;
     }
 
+    /**
+     * check whether there are any fragments above the primary fragment,
+     * and finish them.
+     */
     private void cleanUp() {
-        // check whether there are any fragments above the primary one, and
-        // finish them.
-        IMasterFragment[] fragments = getFragments().toArray(
-                new IMasterFragment[getFragments().size()]);
+        List<IMasterFragment> fragments = new ArrayList<>(getFragments());
         IMasterFragment primaryFragment = getPrimaryFragment();
-        IMasterFragment f;
         // determine whether f is above primary fragment.
         boolean abovePrimary = true;
-        for (int i = fragments.length - 1; i >= 0; i--) {
-            f = fragments[i];
-
+        for (int i = fragments.size() - 1; i >= 0; i--) {
+            IMasterFragment f = fragments.get(i);
             if (f == primaryFragment) {
                 abovePrimary = false;
             }
@@ -196,5 +197,4 @@ class FragmentMasterImpl extends FragmentMaster {
             return ((IMasterFragment) object).getView() == view;
         }
     }
-
 }
