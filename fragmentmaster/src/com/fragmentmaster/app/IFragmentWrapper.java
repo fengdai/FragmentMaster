@@ -1,10 +1,8 @@
 package com.fragmentmaster.app;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.LayoutInflater;
 import android.view.View;
 
 /**
@@ -12,13 +10,11 @@ import android.view.View;
  */
 interface IFragmentWrapper {
 
-    public Bundle getArguments();
-
-    public Fragment getParentFragment();
+    public Fragment getFragment();
 
     public Activity getActivity();
 
-    public FragmentManager getFragmentManager();
+    public Fragment getParentFragment();
 
     public FragmentManager getChildFragmentManager();
 
@@ -35,6 +31,4 @@ interface IFragmentWrapper {
     public boolean isResumed();
 
     public View getView();
-
-    public LayoutInflater getLayoutInflater(Bundle savedInstanceState);
 }

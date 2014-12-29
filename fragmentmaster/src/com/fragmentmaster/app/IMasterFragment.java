@@ -1,6 +1,5 @@
 package com.fragmentmaster.app;
 
-import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -19,6 +18,7 @@ public interface IMasterFragment
      * Standard fragment result: operation canceled.
      */
     public static final int RESULT_CANCELED = 0;
+
     /**
      * Standard fragment result: operation succeeded.
      */
@@ -128,8 +128,6 @@ public interface IMasterFragment
     public void finish();
 
     public boolean isFinishing();
-
-    public Fragment getFragment();
 
     public MasterActivity getMasterActivity();
 

@@ -1,6 +1,5 @@
 package com.fragmentmaster.app;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,7 +38,6 @@ public class MasterFragmentDelegate {
 
     private static final int MSG_USER_ACTIVE = 1;
 
-    @SuppressLint("HandlerLeak")
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
