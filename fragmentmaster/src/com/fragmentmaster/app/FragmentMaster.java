@@ -1,22 +1,19 @@
 package com.fragmentmaster.app;
 
-import com.fragmentmaster.animator.PageAnimator;
-
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.KeyEventCompat2;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
+
+import com.fragmentmaster.animator.PageAnimator;
+import com.fragmentmaster.app.event.EventDispatcher;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,8 +50,9 @@ public abstract class FragmentMaster {
 
     private HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<IMasterFragment>();
 
-    // Events callback
-    private Callback mCallback = null;
+    // Event dispatcher
+    private EventDispatcher mEventDispatcher;
+
 
     public interface Callback {
 
@@ -72,6 +70,7 @@ public abstract class FragmentMaster {
     protected FragmentMaster(MasterActivity activity) {
         mActivity = activity;
         mFragmentManager = activity.getSupportFragmentManager();
+        mEventDispatcher = new EventDispatcher(activity);
     }
 
     public FragmentActivity getActivity() {
@@ -91,7 +90,7 @@ public abstract class FragmentMaster {
     }
 
     public final void startFragmentForResult(IMasterFragment target,
-            Request request, int requestCode) {
+                                             Request request, int requestCode) {
         ensureInstalled();
 
         IMasterFragment fragment = newFragment(request.getClassName());
@@ -129,7 +128,7 @@ public abstract class FragmentMaster {
     }
 
     public final void finishFragment(IMasterFragment fragment, int resultCode,
-            Request data) {
+                                     Request data) {
         ensureInstalled();
         throwIfNotInFragmentMaster(fragment);
         if (!mFinishPendingFragments.contains(fragment)) {
@@ -140,7 +139,7 @@ public abstract class FragmentMaster {
 
     /**
      * Check whether the specific fragment is in FragmentMaster.
-     *
+     * <p/>
      * </p> If a fragment is not in FragmentMaster, it may not be started by
      * FragmentMaster or has been finished already.
      *
@@ -171,7 +170,7 @@ public abstract class FragmentMaster {
     }
 
     protected void onFinishFragment(IMasterFragment fragment, int resultCode,
-            Request data) {
+                                    Request data) {
         doFinishFragment(fragment);
         deliverFragmentResult(fragment, resultCode, data);
     }
@@ -202,7 +201,7 @@ public abstract class FragmentMaster {
     }
 
     protected void deliverFragmentResult(IMasterFragment fragment,
-            int resultCode, Request data) {
+                                         int resultCode, Request data) {
         Fragment targetFragment = fragment.getTargetFragment();
         int requestCode = fragment.getTargetRequestCode();
         if (requestCode != -1 && targetFragment instanceof IMasterFragment) {
@@ -212,7 +211,7 @@ public abstract class FragmentMaster {
     }
 
     private void dispatchFragmentResult(IMasterFragment who, int requestCode,
-            int resultCode, Request data) {
+                                        int resultCode, Request data) {
         if (who.isFinishing()) {
             return;
         }
@@ -268,7 +267,7 @@ public abstract class FragmentMaster {
     }
 
     public final void install(int containerResID, Request homeRequest,
-            boolean sticky) {
+                              boolean sticky) {
         if (isInstalled()) {
             throw new IllegalStateException("Already installed!");
         } else {
@@ -383,11 +382,11 @@ public abstract class FragmentMaster {
     }
 
     public void setCallback(Callback callback) {
-        mCallback = callback;
+        mEventDispatcher.setCallback(callback);
     }
 
     public Callback getCallback() {
-        return mCallback;
+        return mEventDispatcher.getCallback();
     }
 
     // ------------------------------------------------------------------------
@@ -395,108 +394,23 @@ public abstract class FragmentMaster {
     // ------------------------------------------------------------------------
 
     protected boolean dispatchKeyEvent(KeyEvent event) {
-        if (mCallback != null) {
-            return mCallback.dispatchKeyEvent(event);
-        }
-        return mActivity.superDispatchKeyEvent(event);
-    }
-
-    final boolean dispatchKeyEventToWindow(KeyEvent event) {
-        mActivity.onUserInteraction();
-        Window win = mActivity.getWindow();
-        if (win.superDispatchKeyEvent(event)) {
-            return true;
-        }
-        return false;
-    }
-
-    final boolean dispatchKeyEventToActivity(KeyEvent event) {
-        final View decor = mActivity.getWindow().getDecorView();
-        return KeyEventCompat2.dispatch(event, mActivity, decor != null
-                ? KeyEventCompat2.getKeyDispatcherState(decor)
-                : null, mActivity);
+        return mEventDispatcher.dispatchKeyEvent(event);
     }
 
     protected boolean dispatchKeyShortcutEvent(KeyEvent event) {
-        if (mCallback != null) {
-            return mCallback.dispatchKeyShortcutEvent(event);
-        }
-        return mActivity.superDispatchKeyShortcutEvent(event);
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    final boolean dispatchKeyShortcutEventToWindow(KeyEvent event) {
-        mActivity.onUserInteraction();
-        if (mActivity.getWindow().superDispatchKeyShortcutEvent(event)) {
-            return true;
-        }
-        return false;
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    final boolean dispatchKeyShortcutEventToActivity(KeyEvent event) {
-        return mActivity.onKeyShortcut(event.getKeyCode(), event);
+        return mEventDispatcher.dispatchKeyShortcutEvent(event);
     }
 
     protected boolean dispatchTouchEvent(MotionEvent event) {
-        if (mCallback != null) {
-            return mCallback.dispatchTouchEvent(event);
-        }
-        return mActivity.superDispatchTouchEvent(event);
-    }
-
-    final boolean dispatchTouchEventToWindow(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            mActivity.onUserInteraction();
-        }
-        if (mActivity.getWindow().superDispatchTouchEvent(ev)) {
-            return true;
-        }
-        return false;
-    }
-
-    final boolean dispatchTouchEventToActivity(MotionEvent ev) {
-        return mActivity.onTouchEvent(ev);
+        return mEventDispatcher.dispatchTouchEvent(event);
     }
 
     protected boolean dispatchGenericMotionEvent(MotionEvent ev) {
-        if (mCallback != null) {
-            return mCallback.dispatchGenericMotionEvent(ev);
-        }
-        return mActivity.superDispatchGenericMotionEvent(ev);
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
-    final boolean dispatchGenericMotionEventToWindow(MotionEvent ev) {
-        mActivity.onUserInteraction();
-        if (mActivity.getWindow().superDispatchGenericMotionEvent(ev)) {
-            return true;
-        }
-        return false;
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
-    final boolean dispatchGenericMotionEventToActivity(MotionEvent ev) {
-        return mActivity.onGenericMotionEvent(ev);
+        return mEventDispatcher.dispatchGenericMotionEvent(ev);
     }
 
     protected boolean dispatchTrackballEvent(MotionEvent ev) {
-        if (mCallback != null) {
-            return mCallback.dispatchTrackballEvent(ev);
-        }
-        return mActivity.superDispatchTrackballEvent(ev);
-    }
-
-    final boolean dispatchTrackballEventToWindow(MotionEvent ev) {
-        mActivity.onUserInteraction();
-        if (mActivity.getWindow().superDispatchTrackballEvent(ev)) {
-            return true;
-        }
-        return false;
-    }
-
-    final boolean dispatchTrackballEventToActivity(MotionEvent ev) {
-        return mActivity.onTrackballEvent(ev);
+        return mEventDispatcher.dispatchTrackballEvent(ev);
     }
 }
 

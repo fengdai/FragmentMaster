@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.view.KeyEventCompat2;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
@@ -16,7 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.fragmentmaster.R;
+import com.fragmentmaster.app.event.FragmentEventHandler;
 
 public class MasterFragmentDelegate {
 
@@ -68,8 +67,11 @@ public class MasterFragmentDelegate {
 
     private boolean mFinished = false;
 
+    private FragmentEventHandler mEventHandler;
+
     public MasterFragmentDelegate(IMasterFragment masterFragment) {
         mMasterFragment = masterFragment;
+        mEventHandler = new FragmentEventHandler(masterFragment);
     }
 
     public void onAttach(Activity activity) {
@@ -365,62 +367,24 @@ public class MasterFragmentDelegate {
     // ------------------------------------------------------------------------
 
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if (getFragmentMaster().dispatchKeyEventToWindow(event)) {
-            return true;
-        }
-
-        View view = mMasterFragment.getView();
-        boolean handled = KeyEventCompat2.dispatch(event, mMasterFragment,
-                view != null
-                        ? KeyEventCompat2.getKeyDispatcherState(view)
-                        : null, this);
-        if (handled) {
-            return true;
-        }
-
-        return getFragmentMaster().dispatchKeyEventToActivity(event);
+        return mEventHandler.dispatchKeyEvent(event);
     }
 
     public boolean dispatchKeyShortcutEvent(KeyEvent event) {
-        if (getFragmentMaster().dispatchKeyShortcutEventToWindow(event)) {
-            return true;
-        }
-        if (mMasterFragment.onKeyShortcut(event.getKeyCode(), event)) {
-            return true;
-        }
-        return getFragmentMaster().dispatchKeyShortcutEventToActivity(event);
+        return mEventHandler.dispatchKeyShortcutEvent(event);
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (getFragmentMaster().dispatchTouchEventToWindow(ev)) {
-            return true;
-        }
-        if (mMasterFragment.onTouchEvent(ev)) {
-            return true;
-        }
-        return getFragmentMaster().dispatchTouchEventToActivity(ev);
+        return mEventHandler.dispatchTouchEvent(ev);
     }
 
     public boolean dispatchTrackballEvent(MotionEvent ev) {
-        if (getFragmentMaster().dispatchTrackballEventToWindow(ev)) {
-            return true;
-        }
-        if (mMasterFragment.onTrackballEvent(ev)) {
-            return true;
-        }
-        return getFragmentMaster().dispatchTrackballEventToActivity(ev);
+        return mEventHandler.dispatchTrackballEvent(ev);
     }
 
     public boolean dispatchGenericMotionEvent(MotionEvent ev) {
-        if (getFragmentMaster().dispatchGenericMotionEventToWindow(ev)) {
-            return true;
-        }
-        if (mMasterFragment.onGenericMotionEvent(ev)) {
-            return true;
-        }
-        return getFragmentMaster().dispatchGenericMotionEventToActivity(ev);
+        return mEventHandler.dispatchGenericMotionEvent(ev);
     }
-
 }
 
 final class MasterFragmentState implements Parcelable {
