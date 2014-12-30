@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.fragmentmaster.animator.PageAnimator;
 import com.fragmentmaster.app.event.EventDispatcher;
+import com.fragmentmaster.app.event.MasterEventDispatcher;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,26 +52,12 @@ public abstract class FragmentMaster {
     private HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<IMasterFragment>();
 
     // Event dispatcher
-    private EventDispatcher mEventDispatcher;
-
-
-    public interface Callback {
-
-        public boolean dispatchKeyEvent(KeyEvent event);
-
-        public boolean dispatchKeyShortcutEvent(KeyEvent event);
-
-        public boolean dispatchTouchEvent(MotionEvent event);
-
-        public boolean dispatchTrackballEvent(MotionEvent event);
-
-        public boolean dispatchGenericMotionEvent(MotionEvent event);
-    }
+    private MasterEventDispatcher mEventDispatcher;
 
     protected FragmentMaster(MasterActivity activity) {
         mActivity = activity;
         mFragmentManager = activity.getSupportFragmentManager();
-        mEventDispatcher = new EventDispatcher(activity);
+        mEventDispatcher = new MasterEventDispatcher(activity);
     }
 
     public FragmentActivity getActivity() {
@@ -245,8 +232,8 @@ public abstract class FragmentMaster {
                 fragment.setPrimary(true);
             }
             mPrimaryFragment = fragment;
-            // Only the primary fragment can receive events callback.
-            setCallback(fragment);
+            // Only the primary fragment can receive events.
+            mEventDispatcher.setInterceptor(fragment);
         }
     }
 
@@ -379,14 +366,6 @@ public abstract class FragmentMaster {
             setSlideable(fms.mIsSlideable);
             mHomeFragmentApplied = fms.mHomeFragmentApplied;
         }
-    }
-
-    public void setCallback(Callback callback) {
-        mEventDispatcher.setCallback(callback);
-    }
-
-    public Callback getCallback() {
-        return mEventDispatcher.getCallback();
     }
 
     // ------------------------------------------------------------------------

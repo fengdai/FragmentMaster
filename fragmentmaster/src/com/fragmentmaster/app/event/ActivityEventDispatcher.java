@@ -6,13 +6,11 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.fragmentmaster.app.FragmentMaster;
-
-public class ActivityEventHandler implements FragmentMaster.Callback {
+public class ActivityEventDispatcher implements EventDispatcher {
 
     public Activity mActivity;
 
-    public ActivityEventHandler(Activity activity) {
+    public ActivityEventDispatcher(Activity activity) {
         mActivity = activity;
     }
 

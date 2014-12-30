@@ -14,7 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.fragmentmaster.app.event.FragmentEventHandler;
+import com.fragmentmaster.app.event.FragmentEventDispatcher;
 
 public class MasterFragmentDelegate {
 
@@ -65,11 +65,11 @@ public class MasterFragmentDelegate {
 
     private boolean mFinished = false;
 
-    private FragmentEventHandler mEventHandler;
+    private FragmentEventDispatcher mEventDispatcher;
 
     public MasterFragmentDelegate(IMasterFragment masterFragment) {
         mMasterFragment = masterFragment;
-        mEventHandler = new FragmentEventHandler(masterFragment);
+        mEventDispatcher = new FragmentEventDispatcher(masterFragment);
     }
 
     public void onAttach(Activity activity) {
@@ -365,23 +365,23 @@ public class MasterFragmentDelegate {
     // ------------------------------------------------------------------------
 
     public boolean dispatchKeyEvent(KeyEvent event) {
-        return mEventHandler.dispatchKeyEvent(event);
+        return mEventDispatcher.dispatchKeyEvent(event);
     }
 
     public boolean dispatchKeyShortcutEvent(KeyEvent event) {
-        return mEventHandler.dispatchKeyShortcutEvent(event);
+        return mEventDispatcher.dispatchKeyShortcutEvent(event);
     }
 
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        return mEventHandler.dispatchTouchEvent(ev);
+        return mEventDispatcher.dispatchTouchEvent(ev);
     }
 
     public boolean dispatchTrackballEvent(MotionEvent ev) {
-        return mEventHandler.dispatchTrackballEvent(ev);
+        return mEventDispatcher.dispatchTrackballEvent(ev);
     }
 
     public boolean dispatchGenericMotionEvent(MotionEvent ev) {
-        return mEventHandler.dispatchGenericMotionEvent(ev);
+        return mEventDispatcher.dispatchGenericMotionEvent(ev);
     }
 }
 

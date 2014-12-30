@@ -4,6 +4,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.fragmentmaster.animator.PageAnimator;
+import com.fragmentmaster.app.event.EventDispatcher;
 
 /**
  * Common MasterFragment interface.
@@ -11,7 +12,7 @@ import com.fragmentmaster.animator.PageAnimator;
 public interface IMasterFragment
         extends
         IFragmentWrapper,
-        FragmentMaster.Callback,
+        EventDispatcher,
         KeyEvent.Callback {
 
     /**

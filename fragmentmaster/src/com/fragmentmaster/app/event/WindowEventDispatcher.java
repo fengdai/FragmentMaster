@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.fragmentmaster.app.FragmentMaster;
-
-public class WindowEventHandler implements FragmentMaster.Callback {
+public class WindowEventDispatcher implements EventDispatcher {
 
     public Activity mActivity;
 
-    public WindowEventHandler(Activity activity) {
+    public WindowEventDispatcher(Activity activity) {
         mActivity = activity;
     }
 

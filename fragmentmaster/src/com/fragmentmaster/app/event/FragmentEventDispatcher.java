@@ -5,14 +5,13 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.IMasterFragment;
 
-public class FragmentEventHandler implements FragmentMaster.Callback {
+public class FragmentEventDispatcher implements EventDispatcher {
 
     private IMasterFragment mMasterFragment;
 
-    public FragmentEventHandler(IMasterFragment masterFragment) {
+    public FragmentEventDispatcher(IMasterFragment masterFragment) {
         mMasterFragment = masterFragment;
     }
 
