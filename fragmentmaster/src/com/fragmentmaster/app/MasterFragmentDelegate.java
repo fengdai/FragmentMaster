@@ -96,7 +96,7 @@ public class MasterFragmentDelegate {
 
     public ContextThemeWrapper getContextThemeWrapper() {
         if (mContextThemeWrapper == null) {
-            mContextThemeWrapper = FragmentThemeHelper.createContextThemeWrapper(mActivity, mMasterFragment.getFragment());
+            mContextThemeWrapper = FragmentThemeHelper.wrap(mActivity, mMasterFragment);
         }
         return mContextThemeWrapper;
     }
@@ -219,8 +219,7 @@ public class MasterFragmentDelegate {
     public void onCreate(Bundle savedInstanceState) {
         mStateSaved = false;
         if (savedInstanceState != null) {
-            MasterFragmentState state = savedInstanceState
-                    .getParcelable(BUNDLE_KEY_STATE);
+            MasterFragmentState state = savedInstanceState.getParcelable(BUNDLE_KEY_STATE);
             state.restore(this);
         }
     }
@@ -231,8 +230,7 @@ public class MasterFragmentDelegate {
         // which is inserted between the Fragment's view and its container by FragmentManager.
         TypedValue outValue = new TypedValue();
         getContextThemeWrapper().getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
-        view.setBackgroundResource(
-                outValue.resourceId);
+        view.setBackgroundResource(outValue.resourceId);
         // Set the "clickable" of the fragment's root view to true to avoid
         // touch events to be passed to the views behind the fragment.
         view.setClickable(true);
