@@ -1,12 +1,12 @@
 package com.fragmentmaster.app;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -23,7 +23,9 @@ public class MasterFragmentDelegate {
 
     private static final String BUNDLE_KEY_STATE = "FragmentMaster:MASTER_FRAGMENT_STATE";
 
-    private ContextThemeWrapper mContextThemeWrapper;
+    private Context mContext;
+
+    private LayoutInflater mLayoutInflater;
 
     IMasterFragment mMasterFragment;
 
@@ -51,7 +53,8 @@ public class MasterFragmentDelegate {
         }
     };
 
-    private MasterActivity mActivity;
+    private Activity mActivity;
+    private MasterActivity mMasterActivity;
 
     private boolean mStateSaved = false;
 
@@ -74,31 +77,40 @@ public class MasterFragmentDelegate {
 
     public void onAttach(Activity activity) {
         if (activity instanceof MasterActivity) {
-            mActivity = (MasterActivity) activity;
+            mMasterActivity = (MasterActivity) activity;
         }
+        mActivity = activity;
+        mLayoutInflater = activity.getLayoutInflater().cloneInContext(getContext());
     }
 
     public void onDetach() {
+        mMasterActivity = null;
         mActivity = null;
     }
 
     public MasterActivity getMasterActivity() {
-        return mActivity;
+        return mMasterActivity;
     }
 
     public FragmentMaster getFragmentMaster() {
-        return mActivity == null ? null : mActivity.getFragmentMaster();
+        return mMasterActivity == null ? null : mMasterActivity.getFragmentMaster();
     }
 
     public LayoutInflater getLayoutInflater() {
-        return mActivity.getLayoutInflater().cloneInContext(getContextThemeWrapper());
+        return mLayoutInflater;
     }
 
-    public ContextThemeWrapper getContextThemeWrapper() {
-        if (mContextThemeWrapper == null) {
-            mContextThemeWrapper = FragmentThemeHelper.wrap(mActivity, mMasterFragment);
+    public Context getContext() {
+        if (mContext == null) {
+            mContext = createMasterFragmentContext(mActivity, mMasterFragment);
         }
-        return mContextThemeWrapper;
+        return mContext;
+    }
+
+    private static Context createMasterFragmentContext(Context activity, IMasterFragment fragment) {
+        int masterFragmentTheme = ThemeHelper.getMasterFragmentTheme(activity, fragment);
+        return masterFragmentTheme != -1 ? new ContextThemeWrapper(activity, masterFragmentTheme) :
+                activity;
     }
 
     /**
@@ -135,7 +147,7 @@ public class MasterFragmentDelegate {
     }
 
     private void checkState() {
-        if (mActivity == null) {
+        if (mMasterActivity == null) {
             throw new IllegalStateException(
                     "Can not perform this action. Fragment "
                             + this.mMasterFragment
@@ -228,9 +240,7 @@ public class MasterFragmentDelegate {
         // Use window background as the top level background.
         // Note: The view is an instance of NoSaveStateFrameLayout,
         // which is inserted between the Fragment's view and its container by FragmentManager.
-        TypedValue outValue = new TypedValue();
-        getContextThemeWrapper().getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
-        view.setBackgroundResource(outValue.resourceId);
+        view.setBackgroundResource(ThemeHelper.getMasterFragmentBackground(getContext()));
         // Set the "clickable" of the fragment's root view to true to avoid
         // touch events to be passed to the views behind the fragment.
         view.setClickable(true);

@@ -1,20 +1,14 @@
 package com.fragmentmaster.app;
 
+import android.content.Context;
 import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
 
 import com.fragmentmaster.R;
 import com.fragmentmaster.annotation.Configuration;
 
-public class FragmentThemeHelper {
+public class ThemeHelper {
 
-    public static ContextThemeWrapper wrap(ContextThemeWrapper activity, IMasterFragment fragment) {
-        int masterFragmentTheme = getMasterFragmentTheme(activity, fragment);
-        return masterFragmentTheme != -1 ? new ContextThemeWrapper(activity, masterFragmentTheme) :
-                activity;
-    }
-
-    public static int getMasterFragmentTheme(ContextThemeWrapper activity, IMasterFragment fragment) {
+    public static int getMasterFragmentTheme(Context context, IMasterFragment fragment) {
         int masterFragmentTheme = -1;
         Class clazz = fragment.getClass();
         // Get theme from Configuration annotation.
@@ -25,9 +19,15 @@ public class FragmentThemeHelper {
         // Get theme from Theme attrs.
         if (masterFragmentTheme == -1) {
             TypedValue outValue = new TypedValue();
-            activity.getTheme().resolveAttribute(R.attr.masterFragmentTheme, outValue, true);
+            context.getTheme().resolveAttribute(R.attr.masterFragmentTheme, outValue, true);
             masterFragmentTheme = outValue.resourceId;
         }
         return masterFragmentTheme;
+    }
+
+    public static int getMasterFragmentBackground(Context context) {
+        TypedValue outValue = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
+        return outValue.resourceId;
     }
 }
