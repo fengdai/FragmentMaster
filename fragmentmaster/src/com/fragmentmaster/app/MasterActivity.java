@@ -2,6 +2,7 @@ package com.fragmentmaster.app;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -41,17 +42,17 @@ public abstract class MasterActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
+    public boolean dispatchKeyEvent(@NonNull KeyEvent event) {
         return mFragmentMaster.dispatchKeyEvent(event);
     }
 
     @Override
-    public boolean dispatchKeyShortcutEvent(KeyEvent event) {
+    public boolean dispatchKeyShortcutEvent(@NonNull KeyEvent event) {
         return mFragmentMaster.dispatchKeyShortcutEvent(event);
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
+    public boolean dispatchTouchEvent(@NonNull MotionEvent ev) {
         return mFragmentMaster.dispatchTouchEvent(ev);
     }
 

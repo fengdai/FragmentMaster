@@ -43,11 +43,11 @@ public abstract class FragmentMaster {
     private PageAnimator mPageAnimator = null;
 
     // Fragments started by FragmentMaster.
-    private ArrayList<IMasterFragment> mFragments = new ArrayList<IMasterFragment>();
+    private ArrayList<IMasterFragment> mFragments = new ArrayList<>();
 
     private IMasterFragment mPrimaryFragment = null;
 
-    private HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<IMasterFragment>();
+    private HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<>();
 
     // Event dispatcher
     private MasterEventDispatcher mEventDispatcher;

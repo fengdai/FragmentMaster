@@ -564,7 +564,7 @@ public class ViewPagerCompat extends ViewGroup {
     public void setPageTransformer(boolean reverseDrawingOrder,
             PageTransformer transformer) {
         final boolean hasTransformer = transformer != null;
-        final boolean needsPopulate = hasTransformer != (mPageTransformer != null);
+        final boolean needsPopulate = hasTransformer == (mPageTransformer == null);
         mPageTransformer = transformer;
         setChildrenDrawingOrderEnabledCompat(hasTransformer);
         if (hasTransformer) {

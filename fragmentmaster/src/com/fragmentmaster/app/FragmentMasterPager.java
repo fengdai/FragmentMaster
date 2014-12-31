@@ -82,7 +82,7 @@ class FragmentMasterPager extends ViewPagerCompat {
 
         @Override
         public void onPageScrolled(int position, float positionOffset,
-                int positionOffsetPixels) {
+                                   int positionOffsetPixels) {
             if (mWrappedOnPageChangeListener != null) {
                 mWrappedOnPageChangeListener.onPageScrolled(position,
                         positionOffset, positionOffsetPixels);
@@ -109,20 +109,12 @@ class FragmentMasterPager extends ViewPagerCompat {
     @Override
     @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mFragmentMasterImpl.isSlideable()
-                && !mFragmentMasterImpl.isScrolling()) {
-            return super.onTouchEvent(ev);
-        }
-        return false;
+        return mFragmentMasterImpl.isSlideable() && !mFragmentMasterImpl.isScrolling() && super.onTouchEvent(ev);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mFragmentMasterImpl.isSlideable()
-                && !mFragmentMasterImpl.isScrolling()) {
-            return super.onInterceptTouchEvent(ev);
-        }
-        return false;
+        return mFragmentMasterImpl.isSlideable() && !mFragmentMasterImpl.isScrolling() && super.onInterceptTouchEvent(ev);
     }
 
     @Override

@@ -68,9 +68,8 @@ public class ReceiveResult extends MasterFragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(
+            return inflater.inflate(
                     R.layout.receive_result_child_fragment, container, false);
-            return rootView;
         }
 
         @Override
