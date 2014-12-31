@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fragmentmaster.animator.PageAnimator;
-import com.fragmentmaster.app.event.EventDispatcher;
-import com.fragmentmaster.app.event.MasterEventDispatcher;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,7 +52,7 @@ public abstract class FragmentMaster {
     // Event dispatcher
     private MasterEventDispatcher mEventDispatcher;
 
-    protected FragmentMaster(MasterActivity activity) {
+    FragmentMaster(MasterActivity activity) {
         mActivity = activity;
         mFragmentManager = activity.getSupportFragmentManager();
         mEventDispatcher = new MasterEventDispatcher(activity);

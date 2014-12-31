@@ -1,4 +1,4 @@
-package com.fragmentmaster.internal;
+package com.fragmentmaster.app;
 
 import com.nineoldandroids.view.ViewHelper;
 

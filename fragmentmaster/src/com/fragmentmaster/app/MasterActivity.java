@@ -6,8 +6,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
-import com.fragmentmaster.internal.FragmentMasterImpl;
-
 /**
  * Host activity of MasterFragment.
  */

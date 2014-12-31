@@ -1,4 +1,4 @@
-package com.fragmentmaster.internal;
+package com.fragmentmaster.app;
 
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -7,12 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.fragmentmaster.R;
-import com.fragmentmaster.app.FragmentMaster;
-import com.fragmentmaster.app.IMasterFragment;
-import com.fragmentmaster.app.MasterActivity;
-import com.fragmentmaster.app.Request;
 
-public class FragmentMasterImpl extends FragmentMaster {
+class FragmentMasterImpl extends FragmentMaster {
 
     // The id of fragments' real container.
     public final static int FRAGMENT_CONTAINER_ID = R.id.internal_fragment_container;
@@ -62,7 +58,7 @@ public class FragmentMasterImpl extends FragmentMaster {
         }
     };
 
-    public FragmentMasterImpl(MasterActivity activity) {
+    FragmentMasterImpl(MasterActivity activity) {
         super(activity);
     }
 

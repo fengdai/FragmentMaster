@@ -15,9 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.fragmentmaster.app.event.FragmentEventDispatcher;
-
-public class MasterFragmentDelegate {
+class MasterFragmentDelegate {
 
     private static final String BUNDLE_KEY_TARGET_CHILD_FRAGMENT
             = "FragmentMaster:TARGET_CHILD_FRAGMENT";
@@ -71,7 +69,7 @@ public class MasterFragmentDelegate {
 
     private FragmentEventDispatcher mEventDispatcher;
 
-    public MasterFragmentDelegate(IMasterFragment masterFragment) {
+    MasterFragmentDelegate(IMasterFragment masterFragment) {
         mMasterFragment = masterFragment;
         mEventDispatcher = new FragmentEventDispatcher(masterFragment);
     }

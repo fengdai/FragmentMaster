@@ -4,7 +4,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.fragmentmaster.animator.PageAnimator;
-import com.fragmentmaster.app.event.EventDispatcher;
 
 /**
  * Common MasterFragment interface.
