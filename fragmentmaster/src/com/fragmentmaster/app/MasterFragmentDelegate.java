@@ -2,6 +2,7 @@ package com.fragmentmaster.app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -390,6 +391,29 @@ public class MasterFragmentDelegate {
 
     public boolean dispatchGenericMotionEvent(MotionEvent ev) {
         return mEventDispatcher.dispatchGenericMotionEvent(ev);
+    }
+
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+                mMasterFragment.onBackPressed();
+                return true;
+            }
+        } else {
+            event.startTracking();
+        }
+        return false;
+    }
+
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
+                    && !event.isCanceled()) {
+                mMasterFragment.onBackPressed();
+                return true;
+            }
+        }
+        return false;
     }
 }
 

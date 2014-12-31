@@ -1,8 +1,6 @@
 package com.fragmentmaster.app;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
@@ -63,16 +61,10 @@ public class MasterFragment extends Fragment implements IMasterFragment {
         mImpl.onResume();
     }
 
-    /**
-     * Called when user has come to this fragment.
-     */
     @Override
     public void onUserActive() {
     }
 
-    /**
-     * Called when user has left this fragment.
-     */
     @Override
     public void onUserLeave() {
     }
@@ -119,19 +111,11 @@ public class MasterFragment extends Fragment implements IMasterFragment {
         return mImpl.getLayoutInflater();
     }
 
-    /**
-     * Starts a specific fragment.
-     */
     @Override
     public void startFragment(Class<? extends IMasterFragment> clazz) {
         mImpl.startFragment(clazz);
     }
 
-    /**
-     * Starts a fragment.
-     *
-     * @param request The request.
-     */
     @Override
     public void startFragment(Request request) {
         mImpl.startFragment(request);
@@ -154,17 +138,11 @@ public class MasterFragment extends Fragment implements IMasterFragment {
         mImpl.startFragmentFromChild(childFragment, request, requestCode);
     }
 
-    /**
-     * Call this to set the result that your fragment will return to its caller.
-     */
     @Override
     public final void setResult(int resultCode) {
         mImpl.setResult(resultCode);
     }
 
-    /**
-     * Call this to set the result that your fragment will return to its caller.
-     */
     @Override
     public final void setResult(int resultCode, Request data) {
         mImpl.setResult(resultCode, data);
@@ -190,9 +168,6 @@ public class MasterFragment extends Fragment implements IMasterFragment {
         mImpl.setRequest(newRequest);
     }
 
-    /**
-     * Whether the state have been saved by system.
-     */
     @Override
     public boolean hasStateSaved() {
         return mImpl.hasStateSaved();
@@ -247,11 +222,6 @@ public class MasterFragment extends Fragment implements IMasterFragment {
         mImpl.setTargetChildFragment(targetChildFragment);
     }
 
-    /**
-     * Called when the fragment has detected the user's press of the back key.
-     * The default implementation simply finishes the current fragment, but you
-     * can override this to do whatever you want.
-     */
     @Override
     public void onBackPressed() {
         mImpl.onBackPressed();
@@ -291,30 +261,13 @@ public class MasterFragment extends Fragment implements IMasterFragment {
     // ------------------------------------------------------------------------
 
     @Override
-    @TargetApi(Build.VERSION_CODES.ECLAIR)
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
-            if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-                onBackPressed();
-                return true;
-            }
-        } else {
-            event.startTracking();
-        }
-        return false;
+        return mImpl.onKeyDown(keyCode, event);
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.ECLAIR)
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
-            if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
-                    && !event.isCanceled()) {
-                onBackPressed();
-                return true;
-            }
-        }
-        return false;
+        return mImpl.onKeyUp(keyCode, event);
     }
 
     @Override
@@ -351,5 +304,4 @@ public class MasterFragment extends Fragment implements IMasterFragment {
     public PageAnimator onCreatePageAnimator() {
         return DefaultPageAnimator.INSTANCE;
     }
-
 }

@@ -167,6 +167,11 @@ public interface IMasterFragment
 
     public void onFragmentResult(int requestCode, int resultCode, Request data);
 
+    /**
+     * Called when the fragment has detected the user's press of the back key.
+     * The default implementation simply finishes the current fragment, but you
+     * can override this to do whatever you want.
+     */
     public void onBackPressed();
 
     public boolean onTouchEvent(MotionEvent ev);
