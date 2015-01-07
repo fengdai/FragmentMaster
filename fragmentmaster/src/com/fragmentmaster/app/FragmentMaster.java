@@ -45,7 +45,7 @@ public abstract class FragmentMaster {
     // Use to record Fragments started by FragmentMaster.
     private final Records mRecords = new Records();
 
-    private final HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<>();
+    private final HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<IMasterFragment>();
 
     // Event dispatcher
     private final MasterEventDispatcher mEventDispatcher;
@@ -64,12 +64,12 @@ public abstract class FragmentMaster {
         return mFragmentManager;
     }
 
-    public int getContainerResID() {
+    public int getContainerResId() {
         return mContainerResID;
     }
 
     protected int getFragmentContainerId() {
-        return getContainerResID();
+        return getContainerResId();
     }
 
     public final void startFragmentForResult(IMasterFragment target,

@@ -21,7 +21,7 @@ import java.util.List;
 
 public class PageAnimators extends MasterListFragment {
 
-    private static final List<Entry> ENTRIES = new ArrayList<>();
+    private static final List<Entry> ENTRIES = new ArrayList<Entry>();
 
     static {
         ENTRIES.add(new Entry("StackAnimator", new Request(StackPage.class)));

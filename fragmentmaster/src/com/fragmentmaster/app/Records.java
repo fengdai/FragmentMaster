@@ -13,14 +13,13 @@ class Records {
 
     private static final String TAG = "Records";
 
-    private ArrayList<IMasterFragment> mFragments = new ArrayList<>();
+    private ArrayList<IMasterFragment> mFragments = new ArrayList<IMasterFragment>();
 
     public void add(IMasterFragment fragment, IMasterFragment target, int requestCode) {
         fragment.setTargetFragment(
                 target == null ? null : target.getFragment(), requestCode);
         mFragments.add(fragment);
     }
-
 
     public void remove(IMasterFragment fragment) {
         int index = mFragments.indexOf(fragment);

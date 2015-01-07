@@ -20,7 +20,7 @@ public class Home extends MasterListFragment {
 
     private static final String TAG = "Home";
 
-    private static final List<Entry> ENTRIES = new ArrayList<>();
+    private static final List<Entry> ENTRIES = new ArrayList<Entry>();
 
     static {
         ENTRIES.add(new Entry("Pass Data", new Request(PassData.class)));
@@ -42,7 +42,7 @@ public class Home extends MasterListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        setListAdapter(new ArrayAdapter<>(getActivity(),
+        setListAdapter(new ArrayAdapter<Entry>(getActivity(),
                 android.R.layout.simple_list_item_1, ENTRIES));
     }
 

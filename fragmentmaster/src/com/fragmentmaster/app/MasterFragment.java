@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.fragmentmaster.animator.DefaultPageAnimator;
 import com.fragmentmaster.animator.PageAnimator;
 
 /**
@@ -272,36 +271,36 @@ public class MasterFragment extends Fragment implements IMasterFragment {
 
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        return false;
+        return mImpl.onKeyLongPress(keyCode, event);
     }
 
     @Override
     public boolean onKeyMultiple(int keyCode, int repeatCount, KeyEvent event) {
-        return false;
+        return mImpl.onKeyMultiple(keyCode, repeatCount, event);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        return false;
+        return mImpl.onTouchEvent(ev);
     }
 
     @Override
     public boolean onKeyShortcut(int keyCode, KeyEvent event) {
-        return false;
+        return mImpl.onKeyShortcut(keyCode, event);
     }
 
     @Override
     public boolean onTrackballEvent(MotionEvent event) {
-        return false;
+        return mImpl.onTrackballEvent(event);
     }
 
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        return false;
+        return mImpl.onGenericMotionEvent(event);
     }
 
     @Override
     public PageAnimator onCreatePageAnimator() {
-        return DefaultPageAnimator.INSTANCE;
+        return mImpl.onCreatePageAnimator();
     }
 }

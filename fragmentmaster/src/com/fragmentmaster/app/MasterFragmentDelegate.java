@@ -15,6 +15,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.fragmentmaster.animator.DefaultPageAnimator;
+import com.fragmentmaster.animator.PageAnimator;
+
 class MasterFragmentDelegate {
 
     private static final String BUNDLE_KEY_TARGET_CHILD_FRAGMENT
@@ -391,6 +394,10 @@ class MasterFragmentDelegate {
         return mEventDispatcher.dispatchGenericMotionEvent(ev);
     }
 
+    // ------------------------------------------------------------------------
+    // Handle events
+    // ------------------------------------------------------------------------
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
             if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
@@ -412,6 +419,34 @@ class MasterFragmentDelegate {
             }
         }
         return false;
+    }
+
+    public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+        return false;
+    }
+
+    public boolean onKeyMultiple(int keyCode, int repeatCount, KeyEvent event) {
+        return false;
+    }
+
+    public boolean onTouchEvent(MotionEvent ev) {
+        return false;
+    }
+
+    public boolean onKeyShortcut(int keyCode, KeyEvent event) {
+        return false;
+    }
+
+    public boolean onTrackballEvent(MotionEvent event) {
+        return false;
+    }
+
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        return false;
+    }
+
+    public PageAnimator onCreatePageAnimator() {
+        return DefaultPageAnimator.INSTANCE;
     }
 }
 

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Themes extends MasterListFragment {
-    private static final List<Entry> ENTRIES = new ArrayList<>();
+    private static final List<Entry> ENTRIES = new ArrayList<Entry>();
 
     static {
         ENTRIES.add(new Entry("Dark Theme", new Request(
@@ -31,7 +31,7 @@ public class Themes extends MasterListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setListAdapter(new ArrayAdapter<>(getActivity(),
+        setListAdapter(new ArrayAdapter<Entry>(getActivity(),
                 android.R.layout.simple_list_item_1, ENTRIES));
     }
 

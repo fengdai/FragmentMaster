@@ -137,7 +137,7 @@ public class FragmentMasterImpl extends FragmentMaster {
      * and finish them.
      */
     private void cleanUp() {
-        List<IMasterFragment> fragments = new ArrayList<>(getFragments());
+        List<IMasterFragment> fragments = new ArrayList<IMasterFragment>(getFragments());
         IMasterFragment primaryFragment = getPrimaryFragment();
         // determine whether f is above primary fragment.
         boolean abovePrimary = true;
