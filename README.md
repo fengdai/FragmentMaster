@@ -29,7 +29,7 @@ Usage
    ```
    The **Request** class is similar to the Android's **Intent** which is an abstract description of your operation. The difference is that **Request** is used to start a **MasterFragment**.
 
-   2. You can pass data within two MasterFragments:
+   2. You can pass data within two MasterFragments. Put extra data into your request and start YourMasterFragment:
    ```Java
    // pass data.
    Request request = new Request(YourMasterFragment.class);
@@ -46,16 +46,15 @@ Usage
 2. Install FragmentMaster
 
    Subclass **MasterActivity**, it is the host of all MasterFragments. And in its ```onCreate()``` add the codes below after ```setContentView()``` method:
-   
    ```Java
    setContentView(R.layout.master_activity);
    FragmentMaster fragmentMaster = getFragmentMaster();
    fragmentMaster.install(R.id.container, new Request(Home.class), true);
    ```
 
-   The first parameter of ```install()``` is the id your MasterFragment's container. All started MasterFragment will be added to this container.
+   The first parameter of ```install()``` is the id of your MasterFragment's container. All started MasterFragment will be added to this container.
    The second parameter is a **Request** object which describes your home MasterFragment. The home MasterFragment will be started once the host MasterActivity is started.
-   If the third parameter is true, the host MasterActivity will be finished when the home MasterFragment is Finished.
+   If the third parameter is true, the host MasterActivity will be finished when the home MasterFragment is finished.
 
 3. PageAnimator
 
@@ -67,7 +66,7 @@ Usage
    protected abstract void transformBackgroundPage(View page, float position,
 boolean enter);
    ```
-   
+
    ```Java
    // Transform the foreground page.
    protected abstract void transformForegroundPage(View page, float position,
@@ -82,7 +81,7 @@ boolean enter);
        return YOUR_CUSTOM_ANIMATOR;
    }
    ```
-   There are some custom PageAnimators in [the Sample project.](https://github.com/fengdai/FragmentMaster/tree/master/fragmentmaster-samples/src/com/fragmentmaster/sample/pageanimator)
+   There are some custom PageAnimators in [the Sample project.][Sample]
 
 
 
@@ -102,3 +101,6 @@ License
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
+
+
+ [Sample]: https://github.com/fengdai/FragmentMaster/tree/master/fragmentmaster-samples/src/main/java/com/fragmentmaster/sample/pageanimator
