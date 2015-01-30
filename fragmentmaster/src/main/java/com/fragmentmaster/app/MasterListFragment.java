@@ -95,6 +95,18 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        mImpl.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mImpl.onDestroy();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mImpl.onDetach();

@@ -17,7 +17,6 @@
 package com.fragmentmaster.sample;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Home extends MasterListFragment {
-
-    private static final String TAG = "Home";
-
     private static final List<Entry> ENTRIES = new ArrayList<Entry>();
 
     static {
@@ -65,34 +61,6 @@ public class Home extends MasterListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         startFragment(ENTRIES.get(position).mRequest);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "[onResume] " + this.toString());
-    }
-
-    @Override
-    public void onUserActive() {
-        super.onUserActive();
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "[onUserActive] " + this.toString());
-    }
-
-    @Override
-    public void onUserLeave() {
-        super.onUserLeave();
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "[onUserLeave] " + this.toString());
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        if (BuildConfig.DEBUG)
-            Log.d(TAG, "[onPause] " + this.toString());
     }
 
     @Override

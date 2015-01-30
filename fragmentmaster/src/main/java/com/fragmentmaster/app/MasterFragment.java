@@ -26,9 +26,6 @@ import android.view.View;
 
 import com.fragmentmaster.animator.PageAnimator;
 
-/**
- * The base fragment
- */
 public class MasterFragment extends Fragment implements IMasterFragment {
 
     private MasterFragmentDelegate mImpl = new MasterFragmentDelegate(this);
@@ -94,6 +91,18 @@ public class MasterFragment extends Fragment implements IMasterFragment {
     public void onPause() {
         super.onPause();
         mImpl.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mImpl.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mImpl.onDestroy();
     }
 
     @Override

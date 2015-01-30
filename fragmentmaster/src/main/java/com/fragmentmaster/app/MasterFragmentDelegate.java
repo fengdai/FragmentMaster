@@ -99,11 +99,105 @@ class MasterFragmentDelegate {
         }
         mActivity = activity;
         mLayoutInflater = activity.getLayoutInflater().cloneInContext(getContext());
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentAttached(mMasterFragment);
+        }
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        if (mTargetChildFragment != null) {
+            mMasterFragment.getChildFragmentManager().putFragment(outState,
+                    BUNDLE_KEY_TARGET_CHILD_FRAGMENT,
+                    mTargetChildFragment.getFragment());
+        }
+        outState.putParcelable(BUNDLE_KEY_STATE, new MasterFragmentState(this));
+        mStateSaved = true;
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentSaveInstanceState(mMasterFragment, outState);
+        }
+    }
+
+    public void onCreate(Bundle savedInstanceState) {
+        mStateSaved = false;
+        if (savedInstanceState != null) {
+            MasterFragmentState state = savedInstanceState.getParcelable(BUNDLE_KEY_STATE);
+            state.restore(this);
+        }
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentCreated(mMasterFragment, savedInstanceState);
+        }
+    }
+
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        // Use window background as the top level background.
+        // Note: The view is an instance of NoSaveStateFrameLayout,
+        // which is inserted between the Fragment's view and its container by FragmentManager.
+        view.setBackgroundResource(ThemeHelper.getMasterFragmentBackground(getContext()));
+        // Set the "clickable" of the fragment's root view to true to avoid
+        // touch events to be passed to the views behind the fragment.
+        view.setClickable(true);
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentViewCreated(mMasterFragment);
+        }
+    }
+
+    public void onActivityCreated(Bundle savedInstanceState) {
+        mStateSaved = false;
+        if (savedInstanceState != null) {
+            mTargetChildFragment = (IMasterFragment) mMasterFragment
+                    .getChildFragmentManager().getFragment(savedInstanceState,
+                            BUNDLE_KEY_TARGET_CHILD_FRAGMENT);
+        }
+    }
+
+    public void onStart() {
+        mStateSaved = false;
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentStarted(mMasterFragment);
+        }
+    }
+
+    public void onResume() {
+        mStateSaved = false;
+        if (isPrimary()) {
+            mHandler.sendEmptyMessage(MSG_USER_ACTIVE);
+        }
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentResumed(mMasterFragment);
+        }
+    }
+
+    public void onPause() {
+        if (mHandler.hasMessages(MSG_USER_ACTIVE)) {
+            mHandler.removeMessages(MSG_USER_ACTIVE);
+            this.performUserActive();
+        }
+        if (isPrimary()) {
+            performUserLeave();
+        }
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentPaused(mMasterFragment);
+        }
+    }
+
+    public void onStop() {
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentStopped(mMasterFragment);
+        }
+    }
+
+    public void onDestroy() {
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentDestroyed(mMasterFragment);
+        }
     }
 
     public void onDetach() {
         mMasterActivity = null;
         mActivity = null;
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentDetached(mMasterFragment);
+        }
     }
 
     public MasterActivity getMasterActivity() {
@@ -236,66 +330,6 @@ class MasterFragmentDelegate {
         mRequest = newRequest;
     }
 
-    public void onSaveInstanceState(Bundle outState) {
-        if (mTargetChildFragment != null) {
-            mMasterFragment.getChildFragmentManager().putFragment(outState,
-                    BUNDLE_KEY_TARGET_CHILD_FRAGMENT,
-                    mTargetChildFragment.getFragment());
-        }
-        outState.putParcelable(BUNDLE_KEY_STATE, new MasterFragmentState(this));
-        mStateSaved = true;
-    }
-
-    public void onCreate(Bundle savedInstanceState) {
-        mStateSaved = false;
-        if (savedInstanceState != null) {
-            MasterFragmentState state = savedInstanceState.getParcelable(BUNDLE_KEY_STATE);
-            state.restore(this);
-        }
-    }
-
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        // Use window background as the top level background.
-        // Note: The view is an instance of NoSaveStateFrameLayout,
-        // which is inserted between the Fragment's view and its container by FragmentManager.
-        view.setBackgroundResource(ThemeHelper.getMasterFragmentBackground(getContext()));
-        // Set the "clickable" of the fragment's root view to true to avoid
-        // touch events to be passed to the views behind the fragment.
-        view.setClickable(true);
-    }
-
-    public void onActivityCreated(Bundle savedInstanceState) {
-        mStateSaved = false;
-        if (savedInstanceState != null) {
-            mTargetChildFragment = (IMasterFragment) mMasterFragment
-                    .getChildFragmentManager().getFragment(savedInstanceState,
-                            BUNDLE_KEY_TARGET_CHILD_FRAGMENT);
-        }
-    }
-
-    public void onStart() {
-        mStateSaved = false;
-    }
-
-    public void onResume() {
-        mStateSaved = false;
-        if (isPrimary()) {
-            mHandler.sendEmptyMessage(MSG_USER_ACTIVE);
-        }
-    }
-
-    public void onPause() {
-
-        if (mHandler.hasMessages(MSG_USER_ACTIVE)) {
-            mHandler.removeMessages(MSG_USER_ACTIVE);
-            this.performUserActive();
-        }
-
-        if (isPrimary()) {
-            performUserLeave();
-        }
-    }
-
     /**
      * Whether the state have been saved by system.
      */
@@ -363,11 +397,17 @@ class MasterFragmentDelegate {
     private void performUserActive() {
         mIsUserActive = true;
         mMasterFragment.onUserActive();
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentUserActed(mMasterFragment);
+        }
     }
 
     private void performUserLeave() {
         mIsUserActive = false;
         mMasterFragment.onUserLeave();
+        if (getFragmentMaster() != null) {
+            getFragmentMaster().dispatchFragmentUserLeft(mMasterFragment);
+        }
     }
 
     public boolean isUserActive() {

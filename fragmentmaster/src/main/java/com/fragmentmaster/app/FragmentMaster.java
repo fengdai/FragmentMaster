@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import com.fragmentmaster.BuildConfig;
 import com.fragmentmaster.animator.PageAnimator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
@@ -65,6 +66,9 @@ public abstract class FragmentMaster {
 
     // Event dispatcher
     private final MasterEventDispatcher mEventDispatcher;
+
+    private final ArrayList<FragmentLifecycleCallbacks> mFragmentLifecycleCallbackses =
+            new ArrayList<FragmentLifecycleCallbacks>();
 
     FragmentMaster(MasterActivity activity) {
         mActivity = activity;
@@ -333,28 +337,192 @@ public abstract class FragmentMaster {
         }
     }
 
+    public void registerFragmentLifecycleCallbacks(FragmentLifecycleCallbacks callback) {
+        synchronized (mFragmentLifecycleCallbackses) {
+            mFragmentLifecycleCallbackses.add(callback);
+        }
+    }
+
+    public void unregisterFragmentLifecycleCallbacks(FragmentLifecycleCallbacks callback) {
+        synchronized (mFragmentLifecycleCallbackses) {
+            mFragmentLifecycleCallbackses.remove(callback);
+        }
+    }
+
     // ------------------------------------------------------------------------
     // Dispatch events
     // ------------------------------------------------------------------------
 
-    protected boolean dispatchKeyEvent(KeyEvent event) {
+    boolean dispatchKeyEvent(KeyEvent event) {
         return mEventDispatcher.dispatchKeyEvent(event);
     }
 
-    protected boolean dispatchKeyShortcutEvent(KeyEvent event) {
+    boolean dispatchKeyShortcutEvent(KeyEvent event) {
         return mEventDispatcher.dispatchKeyShortcutEvent(event);
     }
 
-    protected boolean dispatchTouchEvent(MotionEvent event) {
+    boolean dispatchTouchEvent(MotionEvent event) {
         return mEventDispatcher.dispatchTouchEvent(event);
     }
 
-    protected boolean dispatchGenericMotionEvent(MotionEvent ev) {
+    boolean dispatchGenericMotionEvent(MotionEvent ev) {
         return mEventDispatcher.dispatchGenericMotionEvent(ev);
     }
 
-    protected boolean dispatchTrackballEvent(MotionEvent ev) {
+    boolean dispatchTrackballEvent(MotionEvent ev) {
         return mEventDispatcher.dispatchTrackballEvent(ev);
+    }
+
+    // ------------------------------------------------------------------------
+    // Dispatch MasterFragment's lifecycle
+    // ------------------------------------------------------------------------
+
+    void dispatchFragmentAttached(IMasterFragment fragment) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentAttached(fragment);
+            }
+        }
+    }
+
+    void dispatchFragmentCreated(IMasterFragment fragment, Bundle savedInstanceState) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentCreated(fragment, savedInstanceState);
+            }
+        }
+    }
+
+    void dispatchFragmentViewCreated(IMasterFragment fragment) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentViewCreated(fragment);
+            }
+        }
+    }
+
+    void dispatchFragmentStarted(IMasterFragment fragment) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentStarted(fragment);
+            }
+        }
+    }
+
+    void dispatchFragmentResumed(IMasterFragment fragment) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentResumed(fragment);
+            }
+        }
+    }
+
+    void dispatchFragmentUserActed(IMasterFragment fragment) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentUserActed(fragment);
+            }
+        }
+    }
+
+    void dispatchFragmentUserLeft(IMasterFragment fragment) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentUserLeft(fragment);
+            }
+        }
+    }
+
+    void dispatchFragmentPaused(IMasterFragment fragment) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentPaused(fragment);
+            }
+        }
+    }
+
+    void dispatchFragmentStopped(IMasterFragment fragment) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentStopped(fragment);
+            }
+        }
+    }
+
+    void dispatchFragmentSaveInstanceState(IMasterFragment fragment, Bundle outState) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentSaveInstanceState(fragment, outState);
+            }
+        }
+    }
+
+    void dispatchFragmentDestroyed(IMasterFragment fragment) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentDestroyed(fragment);
+            }
+        }
+    }
+
+    void dispatchFragmentDetached(IMasterFragment fragment) {
+        Object[] callbacks = collectFragmentLifecycleCallbacks();
+        if (callbacks != null) {
+            for (Object callback : callbacks) {
+                ((FragmentLifecycleCallbacks) callback).onFragmentDetached(fragment);
+            }
+        }
+    }
+
+    private Object[] collectFragmentLifecycleCallbacks() {
+        Object[] callbacks = null;
+        synchronized (mFragmentLifecycleCallbackses) {
+            if (mFragmentLifecycleCallbackses.size() > 0) {
+                callbacks = mFragmentLifecycleCallbackses.toArray();
+            }
+        }
+        return callbacks;
+    }
+
+    public interface FragmentLifecycleCallbacks {
+        void onFragmentAttached(IMasterFragment fragment);
+        void onFragmentCreated(IMasterFragment fragment, Bundle savedInstanceState);
+        void onFragmentViewCreated(IMasterFragment fragment);
+        void onFragmentStarted(IMasterFragment fragment);
+        void onFragmentResumed(IMasterFragment fragment);
+        void onFragmentUserActed(IMasterFragment fragment);
+        void onFragmentUserLeft(IMasterFragment fragment);
+        void onFragmentPaused(IMasterFragment fragment);
+        void onFragmentStopped(IMasterFragment fragment);
+        void onFragmentSaveInstanceState(IMasterFragment fragment, Bundle outState);
+        void onFragmentDestroyed(IMasterFragment fragment);
+        void onFragmentDetached(IMasterFragment fragment);
+    }
+
+    public static class SimpleFragmentLifecycleCallbacks implements FragmentLifecycleCallbacks {
+        public void onFragmentAttached(IMasterFragment fragment){}
+        public void onFragmentCreated(IMasterFragment fragment, Bundle savedInstanceState){}
+        public void onFragmentViewCreated(IMasterFragment fragment){}
+        public void onFragmentStarted(IMasterFragment fragment){}
+        public void onFragmentResumed(IMasterFragment fragment){}
+        public void onFragmentUserActed(IMasterFragment fragment){}
+        public void onFragmentUserLeft(IMasterFragment fragment){}
+        public void onFragmentPaused(IMasterFragment fragment){}
+        public void onFragmentStopped(IMasterFragment fragment){}
+        public void onFragmentSaveInstanceState(IMasterFragment fragment, Bundle outState){}
+        public void onFragmentDestroyed(IMasterFragment fragment){}
+        public void onFragmentDetached(IMasterFragment fragment){}
     }
 }
 
