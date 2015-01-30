@@ -32,25 +32,25 @@ public class MainActivity extends MasterActivity {
                 @Override
                 public void onFragmentResumed(IMasterFragment fragment) {
                     if (BuildConfig.DEBUG)
-                        Log.d(TAG, "[onResume]    " + fragment.toString());
+                        Log.d(TAG, "[onResume]     " + fragment.toString());
                 }
 
                 @Override
-                public void onFragmentUserActed(IMasterFragment fragment) {
+                public void onFragmentActivated(IMasterFragment fragment) {
                     if (BuildConfig.DEBUG)
-                        Log.d(TAG, "[onUserActive]" + fragment.toString());
+                        Log.d(TAG, "[onActivated]  " + fragment.toString());
                 }
 
                 @Override
-                public void onFragmentUserLeft(IMasterFragment fragment) {
+                public void onFragmentDeactivated(IMasterFragment fragment) {
                     if (BuildConfig.DEBUG)
-                        Log.d(TAG, "[onUserLeft]  " + fragment.toString());
+                        Log.d(TAG, "[onDeactivated]" + fragment.toString());
                 }
 
                 @Override
                 public void onFragmentPaused(IMasterFragment fragment) {
                     if (BuildConfig.DEBUG)
-                        Log.d(TAG, "[onPaused]    " + fragment.toString());
+                        Log.d(TAG, "[onPaused]     " + fragment.toString());
                 }
             };
 

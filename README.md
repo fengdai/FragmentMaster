@@ -85,12 +85,6 @@ boolean enter);
    There are some custom PageAnimators in [the Sample project.](https://github.com/fengdai/FragmentMaster/tree/master/fragmentmaster-samples/src/com/fragmentmaster/sample/pageanimator)
 
 
-Still missing
-=============
-
-   * An inner fragment ActionBar.
-
-
 
 License
 =======

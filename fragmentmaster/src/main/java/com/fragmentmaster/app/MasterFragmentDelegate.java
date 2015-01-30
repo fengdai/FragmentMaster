@@ -63,7 +63,7 @@ class MasterFragmentDelegate {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_USER_ACTIVE:
-                    performUserActive();
+                    performActivate();
                     break;
                 default:
                     super.handleMessage(msg);
@@ -170,10 +170,10 @@ class MasterFragmentDelegate {
     public void onPause() {
         if (mHandler.hasMessages(MSG_USER_ACTIVE)) {
             mHandler.removeMessages(MSG_USER_ACTIVE);
-            this.performUserActive();
+            performActivate();
         }
         if (isPrimary()) {
-            performUserLeave();
+            performDeactivate();
         }
         if (getFragmentMaster() != null) {
             getFragmentMaster().dispatchFragmentPaused(mMasterFragment);
@@ -385,28 +385,28 @@ class MasterFragmentDelegate {
             invalidateWindowConfiguration();
             invalidateMasterConfiguration();
             if (mMasterFragment.isResumed()) {
-                performUserActive();
+                performActivate();
             }
         } else if (oldPrimaryState && !isPrimary) {
             if (mMasterFragment.isResumed()) {
-                performUserLeave();
+                performDeactivate();
             }
         }
     }
 
-    private void performUserActive() {
+    private void performActivate() {
         mIsUserActive = true;
-        mMasterFragment.onUserActive();
+        mMasterFragment.onActivate();
         if (getFragmentMaster() != null) {
-            getFragmentMaster().dispatchFragmentUserActed(mMasterFragment);
+            getFragmentMaster().dispatchFragmentActivated(mMasterFragment);
         }
     }
 
-    private void performUserLeave() {
+    private void performDeactivate() {
         mIsUserActive = false;
-        mMasterFragment.onUserLeave();
+        mMasterFragment.onDeactivate();
         if (getFragmentMaster() != null) {
-            getFragmentMaster().dispatchFragmentUserLeft(mMasterFragment);
+            getFragmentMaster().dispatchFragmentDeactivated(mMasterFragment);
         }
     }
 

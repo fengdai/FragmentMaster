@@ -162,7 +162,7 @@ public interface IMasterFragment
 
     public boolean isPrimary();
 
-    public boolean isUserActive();
+    public boolean isActive();
 
     public void setSlideable(boolean slideable);
 
@@ -173,12 +173,12 @@ public interface IMasterFragment
     /**
      * Called when user has come to this fragment.
      */
-    public void onUserActive();
+    public void onActivate();
 
     /**
      * Called when user has left this fragment.
      */
-    public void onUserLeave();
+    public void onDeactivate();
 
     public void onFragmentResult(int requestCode, int resultCode, Request data);
 

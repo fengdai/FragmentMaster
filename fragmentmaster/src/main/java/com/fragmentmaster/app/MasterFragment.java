@@ -74,11 +74,11 @@ public class MasterFragment extends Fragment implements IMasterFragment {
     }
 
     @Override
-    public void onUserActive() {
+    public void onActivate() {
     }
 
     @Override
-    public void onUserLeave() {
+    public void onDeactivate() {
     }
 
     @Override
@@ -213,7 +213,7 @@ public class MasterFragment extends Fragment implements IMasterFragment {
     }
 
     @Override
-    public boolean isUserActive() {
+    public boolean isActive() {
         return mImpl.isUserActive();
     }
 

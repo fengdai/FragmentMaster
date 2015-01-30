@@ -422,20 +422,20 @@ public abstract class FragmentMaster {
         }
     }
 
-    void dispatchFragmentUserActed(IMasterFragment fragment) {
+    void dispatchFragmentActivated(IMasterFragment fragment) {
         Object[] callbacks = collectFragmentLifecycleCallbacks();
         if (callbacks != null) {
             for (Object callback : callbacks) {
-                ((FragmentLifecycleCallbacks) callback).onFragmentUserActed(fragment);
+                ((FragmentLifecycleCallbacks) callback).onFragmentActivated(fragment);
             }
         }
     }
 
-    void dispatchFragmentUserLeft(IMasterFragment fragment) {
+    void dispatchFragmentDeactivated(IMasterFragment fragment) {
         Object[] callbacks = collectFragmentLifecycleCallbacks();
         if (callbacks != null) {
             for (Object callback : callbacks) {
-                ((FragmentLifecycleCallbacks) callback).onFragmentUserLeft(fragment);
+                ((FragmentLifecycleCallbacks) callback).onFragmentDeactivated(fragment);
             }
         }
     }
@@ -497,32 +497,66 @@ public abstract class FragmentMaster {
 
     public interface FragmentLifecycleCallbacks {
         void onFragmentAttached(IMasterFragment fragment);
+
         void onFragmentCreated(IMasterFragment fragment, Bundle savedInstanceState);
+
         void onFragmentViewCreated(IMasterFragment fragment);
+
         void onFragmentStarted(IMasterFragment fragment);
+
         void onFragmentResumed(IMasterFragment fragment);
-        void onFragmentUserActed(IMasterFragment fragment);
-        void onFragmentUserLeft(IMasterFragment fragment);
+
+        void onFragmentActivated(IMasterFragment fragment);
+
+        void onFragmentDeactivated(IMasterFragment fragment);
+
         void onFragmentPaused(IMasterFragment fragment);
+
         void onFragmentStopped(IMasterFragment fragment);
+
         void onFragmentSaveInstanceState(IMasterFragment fragment, Bundle outState);
+
         void onFragmentDestroyed(IMasterFragment fragment);
+
         void onFragmentDetached(IMasterFragment fragment);
     }
 
     public static class SimpleFragmentLifecycleCallbacks implements FragmentLifecycleCallbacks {
-        public void onFragmentAttached(IMasterFragment fragment){}
-        public void onFragmentCreated(IMasterFragment fragment, Bundle savedInstanceState){}
-        public void onFragmentViewCreated(IMasterFragment fragment){}
-        public void onFragmentStarted(IMasterFragment fragment){}
-        public void onFragmentResumed(IMasterFragment fragment){}
-        public void onFragmentUserActed(IMasterFragment fragment){}
-        public void onFragmentUserLeft(IMasterFragment fragment){}
-        public void onFragmentPaused(IMasterFragment fragment){}
-        public void onFragmentStopped(IMasterFragment fragment){}
-        public void onFragmentSaveInstanceState(IMasterFragment fragment, Bundle outState){}
-        public void onFragmentDestroyed(IMasterFragment fragment){}
-        public void onFragmentDetached(IMasterFragment fragment){}
+        public void onFragmentAttached(IMasterFragment fragment) {
+        }
+
+        public void onFragmentCreated(IMasterFragment fragment, Bundle savedInstanceState) {
+        }
+
+        public void onFragmentViewCreated(IMasterFragment fragment) {
+        }
+
+        public void onFragmentStarted(IMasterFragment fragment) {
+        }
+
+        public void onFragmentResumed(IMasterFragment fragment) {
+        }
+
+        public void onFragmentActivated(IMasterFragment fragment) {
+        }
+
+        public void onFragmentDeactivated(IMasterFragment fragment) {
+        }
+
+        public void onFragmentPaused(IMasterFragment fragment) {
+        }
+
+        public void onFragmentStopped(IMasterFragment fragment) {
+        }
+
+        public void onFragmentSaveInstanceState(IMasterFragment fragment, Bundle outState) {
+        }
+
+        public void onFragmentDestroyed(IMasterFragment fragment) {
+        }
+
+        public void onFragmentDetached(IMasterFragment fragment) {
+        }
     }
 }
 
