@@ -16,8 +16,6 @@
 
 package com.fragmentmaster.app;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -28,7 +26,7 @@ import java.util.ArrayList;
 /**
  * Description of your request to start a MasterFragment.
  */
-public class Request implements Parcelable {
+public class Request implements Parcelable, Cloneable {
 
     private String mFragmentName;
 
@@ -51,6 +49,18 @@ public class Request implements Parcelable {
 
     }
 
+    public Request(Request o) {
+        this.mFragmentName = o.mFragmentName;
+        if (o.mExtras != null) {
+            this.mExtras = new Bundle(o.mExtras);
+        }
+    }
+
+    @Override
+    protected Object clone() {
+        return new Request(this);
+    }
+
     public Request(Class<? extends IMasterFragment> clazz) {
         mFragmentName = clazz.getName();
     }
@@ -69,6 +79,14 @@ public class Request implements Parcelable {
 
     public String getClassName() {
         return mFragmentName;
+    }
+
+    /**
+     * Sets fragment's class name.
+     */
+    public void setClassName(String className) {
+        if (className == null) throw new NullPointerException("class name is null");
+        this.mFragmentName = className;
     }
 
     /**
@@ -312,19 +330,6 @@ public class Request implements Parcelable {
      *
      * @param name The name of the desired item.
      * @return the value of an item that previously added with putExtra() or
-     * null if no ArrayList<CharSequence> value was found.
-     * @see #putCharSequenceArrayListExtra(String, ArrayList)
-     */
-    @TargetApi(Build.VERSION_CODES.FROYO)
-    public ArrayList<CharSequence> getCharSequenceArrayListExtra(String name) {
-        return mExtras == null ? null : mExtras.getCharSequenceArrayList(name);
-    }
-
-    /**
-     * Retrieve extended data from the request.
-     *
-     * @param name The name of the desired item.
-     * @return the value of an item that previously added with putExtra() or
      * null if no boolean array value was found.
      * @see #putExtra(String, boolean[])
      */
@@ -426,19 +431,6 @@ public class Request implements Parcelable {
      */
     public String[] getStringArrayExtra(String name) {
         return mExtras == null ? null : mExtras.getStringArray(name);
-    }
-
-    /**
-     * Retrieve extended data from the request.
-     *
-     * @param name The name of the desired item.
-     * @return the value of an item that previously added with putExtra() or
-     * null if no CharSequence array value was found.
-     * @see #putExtra(String, CharSequence[])
-     */
-    @TargetApi(Build.VERSION_CODES.FROYO)
-    public CharSequence[] getCharSequenceArrayExtra(String name) {
-        return mExtras == null ? null : mExtras.getCharSequenceArray(name);
     }
 
     /**
@@ -744,27 +736,6 @@ public class Request implements Parcelable {
      * Add extended data to the extra.
      *
      * @param name  The name of the extra data, with package prefix.
-     * @param value The ArrayList<CharSequence> data value.
-     * @return Returns the same extra object, for chaining multiple calls into a
-     * single statement.
-     * @see #putExtras
-     * @see #removeExtra
-     * @see #getCharSequenceArrayListExtra(String)
-     */
-    @TargetApi(Build.VERSION_CODES.FROYO)
-    public Request putCharSequenceArrayListExtra(String name,
-            ArrayList<CharSequence> value) {
-        if (mExtras == null) {
-            mExtras = new Bundle();
-        }
-        mExtras.putCharSequenceArrayList(name, value);
-        return this;
-    }
-
-    /**
-     * Add extended data to the extra.
-     *
-     * @param name  The name of the extra data, with package prefix.
      * @param value The Serializable data value.
      * @return Returns the same extra object, for chaining multiple calls into a
      * single statement.
@@ -955,26 +926,6 @@ public class Request implements Parcelable {
      * Add extended data to the extra.
      *
      * @param name  The name of the extra data, with package prefix.
-     * @param value The CharSequence array data value.
-     * @return Returns the same extra object, for chaining multiple calls into a
-     * single statement.
-     * @see #putExtras
-     * @see #removeExtra
-     * @see #getCharSequenceArrayExtra(String)
-     */
-    @TargetApi(Build.VERSION_CODES.FROYO)
-    public Request putExtra(String name, CharSequence[] value) {
-        if (mExtras == null) {
-            mExtras = new Bundle();
-        }
-        mExtras.putCharSequenceArray(name, value);
-        return this;
-    }
-
-    /**
-     * Add extended data to the extra.
-     *
-     * @param name  The name of the extra data, with package prefix.
      * @param value The Bundle data value.
      * @return Returns the same extra object, for chaining multiple calls into a
      * single statement.
@@ -1027,7 +978,7 @@ public class Request implements Parcelable {
      * Request.
      *
      * @param src The exact extras contained in this Request are copied into the
-     *            target intent, replacing any that were previously there.
+     *            target request, replacing any that were previously there.
      */
     public Request replaceExtras(Request src) {
         mExtras = src.mExtras != null ? new Bundle(src.mExtras) : null;

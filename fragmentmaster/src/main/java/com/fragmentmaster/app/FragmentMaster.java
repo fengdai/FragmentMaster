@@ -97,7 +97,7 @@ public abstract class FragmentMaster {
         ensureInstalled();
 
         IMasterFragment fragment = newFragment(request.getClassName());
-        fragment.setRequest(request);
+        fragment.setRequest((Request) request.clone());
         mFragmentManager.beginTransaction()
                 .add(getFragmentContainerId(), fragment.getFragment())
                 .commitAllowingStateLoss();
