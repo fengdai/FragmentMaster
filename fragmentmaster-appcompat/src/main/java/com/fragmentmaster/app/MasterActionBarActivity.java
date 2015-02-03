@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Feng Dai
+ * Copyright 2015 Feng Dai
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,13 +20,14 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 /**
  * Host activity of MasterFragment.
  */
-public abstract class MasterActivity extends FragmentActivity {
+public abstract class MasterActionBarActivity extends ActionBarActivity {
 
     /**
      * Persistence key for FragmentMaster

@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.2'
     compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.android.support:support-v4:21.0.3'
 }
 
 android {
@@ -10,7 +10,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        minSdkVersion 7
+        minSdkVersion 4
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"

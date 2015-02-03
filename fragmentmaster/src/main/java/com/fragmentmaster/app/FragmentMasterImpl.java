@@ -16,6 +16,8 @@
 
 package com.fragmentmaster.app;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -76,7 +78,7 @@ public class FragmentMasterImpl extends FragmentMaster {
         }
     };
 
-    FragmentMasterImpl(MasterActivity activity) {
+    FragmentMasterImpl(FragmentActivity activity) {
         super(activity);
     }
 

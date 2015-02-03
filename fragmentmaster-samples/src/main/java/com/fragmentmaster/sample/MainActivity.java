@@ -21,10 +21,10 @@ import android.util.Log;
 
 import com.fragmentmaster.app.FragmentMaster;
 import com.fragmentmaster.app.IMasterFragment;
-import com.fragmentmaster.app.MasterActivity;
+import com.fragmentmaster.app.MasterActionBarActivity;
 import com.fragmentmaster.app.Request;
 
-public class MainActivity extends MasterActivity {
+public class MainActivity extends MasterActionBarActivity {
     public static final String TAG = "MainActivity";
 
     private FragmentMaster.FragmentLifecycleCallbacks mLifecycleCallbacks =

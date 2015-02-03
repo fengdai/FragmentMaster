@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -39,7 +40,7 @@ public abstract class FragmentMaster {
     private static final String TAG = "FragmentMaster";
 
     // The host activity.
-    private final MasterActivity mActivity;
+    private final FragmentActivity mActivity;
 
     private final FragmentManager mFragmentManager;
 
@@ -70,13 +71,13 @@ public abstract class FragmentMaster {
     private final ArrayList<FragmentLifecycleCallbacks> mFragmentLifecycleCallbackses =
             new ArrayList<FragmentLifecycleCallbacks>();
 
-    FragmentMaster(MasterActivity activity) {
+    FragmentMaster(FragmentActivity activity) {
         mActivity = activity;
         mFragmentManager = activity.getSupportFragmentManager();
         mEventDispatcher = new MasterEventDispatcher(activity);
     }
 
-    public MasterActivity getActivity() {
+    public FragmentActivity getActivity() {
         return mActivity;
     }
 

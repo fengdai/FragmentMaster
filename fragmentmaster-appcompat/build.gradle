@@ -1,7 +1,8 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 dependencies {
-    compile project(':fragmentmaster-appcompat')
+    compile project(':fragmentmaster')
+    compile 'com.android.support:appcompat-v7:21.0.3'
 }
 
 android {
