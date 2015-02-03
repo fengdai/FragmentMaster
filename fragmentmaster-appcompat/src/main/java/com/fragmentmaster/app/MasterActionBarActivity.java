@@ -17,9 +17,7 @@
 package com.fragmentmaster.app;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -27,59 +25,48 @@ import android.view.MotionEvent;
 /**
  * Host activity of MasterFragment.
  */
-public abstract class MasterActionBarActivity extends ActionBarActivity {
+public abstract class MasterActionBarActivity extends ActionBarActivity implements IMasterActivity {
 
-    /**
-     * Persistence key for FragmentMaster
-     */
-    private static final String FRAGMENTS_TAG = "FragmentMaster:fragments";
-
-    private FragmentMaster mFragmentMaster = new FragmentMasterImpl(this);
+    private final MasterActivityDelegate mImpl = new MasterActivityDelegate(this);
 
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        if (bundle != null) {
-            Parcelable p = bundle.getParcelable(FRAGMENTS_TAG);
-            mFragmentMaster.restoreAllState(p);
-        }
+        mImpl.onCreate(bundle);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Parcelable p = mFragmentMaster.saveAllState();
-        if (p != null) {
-            outState.putParcelable(FRAGMENTS_TAG, p);
-        }
+        mImpl.onSaveInstanceState(outState);
     }
 
     public FragmentMaster getFragmentMaster() {
-        return mFragmentMaster;
+        return mImpl.getFragmentMaster();
     }
 
     @Override
     public boolean dispatchKeyEvent(@NonNull KeyEvent event) {
-        return mFragmentMaster.dispatchKeyEvent(event);
+        return mImpl.dispatchKeyEvent(event);
     }
 
     @Override
     public boolean dispatchKeyShortcutEvent(@NonNull KeyEvent event) {
-        return mFragmentMaster.dispatchKeyShortcutEvent(event);
+        return mImpl.dispatchKeyShortcutEvent(event);
     }
 
     @Override
     public boolean dispatchTouchEvent(@NonNull MotionEvent ev) {
-        return mFragmentMaster.dispatchTouchEvent(ev);
+        return mImpl.dispatchTouchEvent(ev);
     }
 
     @Override
     public boolean dispatchGenericMotionEvent(MotionEvent ev) {
-        return mFragmentMaster.dispatchGenericMotionEvent(ev);
+        return mImpl.dispatchGenericMotionEvent(ev);
     }
 
     @Override
     public boolean dispatchTrackballEvent(MotionEvent ev) {
-        return mFragmentMaster.dispatchTrackballEvent(ev);
+        return mImpl.dispatchTrackballEvent(ev);
     }
 }

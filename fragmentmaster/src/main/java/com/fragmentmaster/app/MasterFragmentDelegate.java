@@ -72,7 +72,7 @@ class MasterFragmentDelegate {
     };
 
     private Activity mActivity;
-    private MasterActivity mMasterActivity;
+    private IMasterActivity mMasterActivity;
 
     private boolean mStateSaved = false;
 
@@ -94,8 +94,8 @@ class MasterFragmentDelegate {
     }
 
     public void onAttach(Activity activity) {
-        if (activity instanceof MasterActivity) {
-            mMasterActivity = (MasterActivity) activity;
+        if (activity instanceof IMasterActivity) {
+            mMasterActivity = (IMasterActivity) activity;
         }
         mActivity = activity;
         mLayoutInflater = activity.getLayoutInflater().cloneInContext(getContext());
@@ -198,10 +198,6 @@ class MasterFragmentDelegate {
         if (getFragmentMaster() != null) {
             getFragmentMaster().dispatchFragmentDetached(mMasterFragment);
         }
-    }
-
-    public MasterActivity getMasterActivity() {
-        return mMasterActivity;
     }
 
     public FragmentMaster getFragmentMaster() {

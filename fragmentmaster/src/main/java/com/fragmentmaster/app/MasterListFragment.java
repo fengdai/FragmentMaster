@@ -122,11 +122,6 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
     }
 
     @Override
-    public MasterActivity getMasterActivity() {
-        return mImpl.getMasterActivity();
-    }
-
-    @Override
     public FragmentMaster getFragmentMaster() {
         return mImpl.getFragmentMaster();
     }

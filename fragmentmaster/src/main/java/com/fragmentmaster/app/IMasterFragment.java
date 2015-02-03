@@ -145,8 +145,6 @@ public interface IMasterFragment
 
     public boolean isFinishing();
 
-    public MasterActivity getMasterActivity();
-
     public FragmentMaster getFragmentMaster();
 
     /**
