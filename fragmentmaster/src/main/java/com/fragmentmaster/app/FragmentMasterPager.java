@@ -16,8 +16,6 @@
 
 package com.fragmentmaster.app;
 
-import com.nineoldandroids.view.ViewHelper;
-
 import android.annotation.SuppressLint;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
@@ -25,6 +23,8 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.ViewPagerCompat;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.nineoldandroids.view.ViewHelper;
 
 /**
  * Real container of fragments.
@@ -77,8 +77,8 @@ class FragmentMasterPager extends ViewPagerCompat {
             ViewHelper.setRotation(page, 0);
             ViewHelper.setRotationX(page, 0);
             ViewHelper.setRotationY(page, 0);
-            ViewHelper.setPivotX(page, page.getWidth() / 2);
-            ViewHelper.setPivotY(page, page.getHeight() / 2);
+            ViewHelper.setPivotX(page, page.getWidth() / 2f);
+            ViewHelper.setPivotY(page, page.getHeight() / 2f);
         }
 
     };

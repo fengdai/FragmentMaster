@@ -24,7 +24,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.view.ContextThemeWrapper;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -41,9 +41,7 @@ class MasterFragmentDelegate {
 
     private static final String BUNDLE_KEY_STATE = "FragmentMaster:MASTER_FRAGMENT_STATE";
 
-    private Context mContext;
-
-    private LayoutInflater mLayoutInflater;
+    private FragmentContext mFragmentContext;
 
     IMasterFragment mMasterFragment;
 
@@ -98,7 +96,7 @@ class MasterFragmentDelegate {
             mMasterActivity = (IMasterActivity) activity;
         }
         mActivity = activity;
-        mLayoutInflater = activity.getLayoutInflater().cloneInContext(getContext());
+        mFragmentContext = new FragmentContext(mMasterFragment);
         if (getFragmentMaster() != null) {
             getFragmentMaster().dispatchFragmentAttached(mMasterFragment);
         }
@@ -132,7 +130,9 @@ class MasterFragmentDelegate {
         // Use window background as the top level background.
         // Note: The view is an instance of NoSaveStateFrameLayout,
         // which is inserted between the Fragment's view and its container by FragmentManager.
-        view.setBackgroundResource(ThemeHelper.getMasterFragmentBackground(getContext()));
+        TypedValue outValue = new TypedValue();
+        getFragmentContext().getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
+        view.setBackgroundResource(outValue.resourceId);
         // Set the "clickable" of the fragment's root view to true to avoid
         // touch events to be passed to the views behind the fragment.
         view.setClickable(true);
@@ -205,20 +205,11 @@ class MasterFragmentDelegate {
     }
 
     public LayoutInflater getLayoutInflater() {
-        return mLayoutInflater;
+        return (LayoutInflater) mFragmentContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public Context getContext() {
-        if (mContext == null) {
-            mContext = createMasterFragmentContext(mActivity, mMasterFragment);
-        }
-        return mContext;
-    }
-
-    private static Context createMasterFragmentContext(Context activity, IMasterFragment fragment) {
-        int masterFragmentTheme = ThemeHelper.getMasterFragmentTheme(activity, fragment);
-        return masterFragmentTheme != -1 ? new ContextThemeWrapper(activity, masterFragmentTheme) :
-                activity;
+    public FragmentContext getFragmentContext() {
+        return mFragmentContext;
     }
 
     /**

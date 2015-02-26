@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Feng Dai
+ * Copyright 2015 Feng Dai
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,34 +16,33 @@
 
 package com.fragmentmaster.app;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 
 import com.fragmentmaster.R;
 import com.fragmentmaster.annotation.Configuration;
 
-public class ThemeHelper {
+public class FragmentContext extends ContextThemeWrapper {
 
-    public static int getMasterFragmentTheme(Context context, IMasterFragment fragment) {
-        int masterFragmentTheme = -1;
+    FragmentContext(IMasterFragment fragment) {
+        super(fragment.getActivity(), getMasterFragmentThemeRes(fragment.getActivity(), fragment));
+    }
+
+    private static int getMasterFragmentThemeRes(Activity context, IMasterFragment fragment) {
+        int themeRes = -1;
         Class clazz = fragment.getClass();
         // Get theme from Configuration annotation.
         if (clazz.isAnnotationPresent(Configuration.class)) {
             Configuration configuration = (Configuration) clazz.getAnnotation(Configuration.class);
-            masterFragmentTheme = configuration.theme();
+            themeRes = configuration.theme();
         }
         // Get theme from Theme attrs.
-        if (masterFragmentTheme == -1) {
+        if (themeRes == -1) {
             TypedValue outValue = new TypedValue();
             context.getTheme().resolveAttribute(R.attr.masterFragmentTheme, outValue, true);
-            masterFragmentTheme = outValue.resourceId;
+            themeRes = outValue.resourceId;
         }
-        return masterFragmentTheme;
-    }
-
-    public static int getMasterFragmentBackground(Context context) {
-        TypedValue outValue = new TypedValue();
-        context.getTheme().resolveAttribute(android.R.attr.windowBackground, outValue, true);
-        return outValue.resourceId;
+        return themeRes;
     }
 }
