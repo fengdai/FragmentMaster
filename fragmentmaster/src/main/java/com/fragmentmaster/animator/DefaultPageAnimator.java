@@ -31,6 +31,7 @@ public class DefaultPageAnimator extends PageAnimator {
     @Override
     protected void transformBackgroundPage(View page, float position,
             boolean enter) {
+        page.setVisibility(position == -1 ? View.INVISIBLE : View.VISIBLE);
         int pageWidth = page.getWidth();
 
         // Counteract the default slide transition
