@@ -24,15 +24,15 @@ import android.view.View;
 
 interface EventDispatcher {
 
-    public boolean dispatchKeyEvent(KeyEvent event);
+    boolean dispatchKeyEvent(KeyEvent event);
 
-    public boolean dispatchKeyShortcutEvent(KeyEvent event);
+    boolean dispatchKeyShortcutEvent(KeyEvent event);
 
-    public boolean dispatchTouchEvent(MotionEvent event);
+    boolean dispatchTouchEvent(MotionEvent event);
 
-    public boolean dispatchTrackballEvent(MotionEvent event);
+    boolean dispatchTrackballEvent(MotionEvent event);
 
-    public boolean dispatchGenericMotionEvent(MotionEvent event);
+    boolean dispatchGenericMotionEvent(MotionEvent event);
 }
 
 /**

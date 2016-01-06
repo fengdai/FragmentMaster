@@ -33,12 +33,12 @@ public interface IMasterFragment
     /**
      * Standard fragment result: operation canceled.
      */
-    public static final int RESULT_CANCELED = 0;
+    int RESULT_CANCELED = 0;
 
     /**
      * Standard fragment result: operation succeeded.
      */
-    public static final int RESULT_OK = -1;
+    int RESULT_OK = -1;
 
     /**
      * Start a new IMasterFragment.
@@ -47,7 +47,7 @@ public interface IMasterFragment
      * @see #startFragment(Class)
      * @see #startFragmentForResult(Request, int)
      */
-    public void startFragment(Request request);
+    void startFragment(Request request);
 
     /**
      * Same as calling {@link #startFragment(Request)}
@@ -56,7 +56,7 @@ public interface IMasterFragment
      * @see #startFragment(Request)
      * @see #startFragmentForResult(Request, int)
      */
-    public void startFragment(Class<? extends IMasterFragment> clazz);
+    void startFragment(Class<? extends IMasterFragment> clazz);
 
     /**
      * Start an IMasterFragment for which you would like a result when it finished.
@@ -71,7 +71,7 @@ public interface IMasterFragment
      * @see #startFragment(Request)
      * @see #startFragmentForResult(Class, int)
      */
-    public void startFragmentForResult(Request request, int requestCode);
+    void startFragmentForResult(Request request, int requestCode);
 
     /**
      * Same as calling {@link #startFragmentForResult(Request, int)}.
@@ -81,8 +81,8 @@ public interface IMasterFragment
      *                    onFragmentResult() when the IMasterFragment exits.
      * @see #startFragmentForResult(Request, int)
      */
-    public void startFragmentForResult(Class<? extends IMasterFragment> clazz,
-                                       int requestCode);
+    void startFragmentForResult(Class<? extends IMasterFragment> clazz,
+                                int requestCode);
 
     /**
      * This is called when a child IMasterFragment of this one calls its
@@ -95,13 +95,13 @@ public interface IMasterFragment
      * @see #startFragment
      * @see #startFragmentForResult
      */
-    public void startFragmentFromChild(IMasterFragment child,
-                                       Request request, int requestCode);
+    void startFragmentFromChild(IMasterFragment child,
+                                Request request, int requestCode);
 
     /**
      * Return the request that started this IMasterFragment.
      */
-    public Request getRequest();
+    Request getRequest();
 
     /**
      * Change the intent returned by {@link #getRequest()}.
@@ -109,11 +109,11 @@ public interface IMasterFragment
      * @param request The new Request object to return from getRequest
      * @see #getRequest()
      */
-    public void setRequest(Request request);
+    void setRequest(Request request);
 
-    public void setTargetChildFragment(IMasterFragment targetChildFragment);
+    void setTargetChildFragment(IMasterFragment targetChildFragment);
 
-    public IMasterFragment getTargetChildFragment();
+    IMasterFragment getTargetChildFragment();
 
     /**
      * Call this to set the result that your fragment will return to its caller.
@@ -124,7 +124,7 @@ public interface IMasterFragment
      * @see #RESULT_OK
      * @see #setResult(int, Request)
      */
-    public void setResult(int resultCode);
+    void setResult(int resultCode);
 
     /**
      * Call this to set the result that your fragment will return to its caller.
@@ -136,62 +136,62 @@ public interface IMasterFragment
      * @see #RESULT_OK
      * @see #setResult(int)
      */
-    public void setResult(int resultCode, Request data);
+    void setResult(int resultCode, Request data);
 
     /**
      * Finish this fragment.
      */
-    public void finish();
+    void finish();
 
-    public boolean isFinishing();
+    boolean isFinishing();
 
-    public FragmentMaster getFragmentMaster();
+    FragmentMaster getFragmentMaster();
 
     /**
      * Whether the state have been saved by system.
      */
-    public boolean hasStateSaved();
+    boolean hasStateSaved();
 
-    public void setSoftInputMode(int mode);
+    void setSoftInputMode(int mode);
 
-    public int getSoftInputMode();
+    int getSoftInputMode();
 
-    public void setPrimary(boolean isPrimary);
+    void setPrimary(boolean isPrimary);
 
-    public boolean isPrimary();
+    boolean isPrimary();
 
-    public boolean isActive();
+    boolean isActive();
 
-    public void setSlideable(boolean slideable);
+    void setSlideable(boolean slideable);
 
-    public boolean isSlideable();
+    boolean isSlideable();
 
-    public PageAnimator onCreatePageAnimator();
+    PageAnimator onCreatePageAnimator();
 
     /**
      * Called when user has come to this fragment.
      */
-    public void onActivate();
+    void onActivate();
 
     /**
      * Called when user has left this fragment.
      */
-    public void onDeactivate();
+    void onDeactivate();
 
-    public void onFragmentResult(int requestCode, int resultCode, Request data);
+    void onFragmentResult(int requestCode, int resultCode, Request data);
 
     /**
      * Called when the fragment has detected the user's press of the back key.
      * The default implementation simply finishes the current fragment, but you
      * can override this to do whatever you want.
      */
-    public void onBackPressed();
+    void onBackPressed();
 
-    public boolean onTouchEvent(MotionEvent ev);
+    boolean onTouchEvent(MotionEvent ev);
 
-    public boolean onKeyShortcut(int keyCode, KeyEvent event);
+    boolean onKeyShortcut(int keyCode, KeyEvent event);
 
-    public boolean onTrackballEvent(MotionEvent event);
+    boolean onTrackballEvent(MotionEvent event);
 
-    public boolean onGenericMotionEvent(MotionEvent event);
+    boolean onGenericMotionEvent(MotionEvent event);
 }

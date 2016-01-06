@@ -602,7 +602,7 @@ public class ViewPagerCompat extends ViewGroup {
                     mSetChildrenDrawingOrderEnabled = ViewGroup.class
                             .getDeclaredMethod(
                                     "setChildrenDrawingOrderEnabled",
-                                    new Class[]{Boolean.TYPE});
+                                    Boolean.TYPE);
                 } catch (NoSuchMethodException e) {
                     Log.e(TAG, "Can't find setChildrenDrawingOrderEnabled", e);
                 }
@@ -1007,7 +1007,7 @@ public class ViewPagerCompat extends ViewGroup {
                         mAdapter.destroyItem(this, pos, ii.object);
                         if (DEBUG) {
                             Log.i(TAG, "populate() - destroyItem() with pos: "
-                                    + pos + " view: " + ((View) ii.object));
+                                    + pos + " view: " + ii.object);
                         }
                         itemIndex--;
                         curIndex--;
@@ -1044,7 +1044,7 @@ public class ViewPagerCompat extends ViewGroup {
                                 Log.i(TAG,
                                         "populate() - destroyItem() with pos: "
                                                 + pos + " view: "
-                                                + ((View) ii.object));
+                                                + ii.object);
                             }
                             ii = itemIndex < mItems.size() ? mItems
                                     .get(itemIndex) : null;
@@ -1634,7 +1634,7 @@ public class ViewPagerCompat extends ViewGroup {
                                 (int) (childWidth * lp.widthFactor),
                                 MeasureSpec.EXACTLY);
                         final int heightSpec = MeasureSpec.makeMeasureSpec(
-                                (int) (height - paddingTop - paddingBottom),
+                                height - paddingTop - paddingBottom,
                                 MeasureSpec.EXACTLY);
                         child.measure(widthSpec, heightSpec);
                     }

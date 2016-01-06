@@ -26,25 +26,25 @@ import android.view.View;
  */
 interface IFragmentWrapper {
 
-    public Fragment getFragment();
+    Fragment getFragment();
 
-    public Activity getActivity();
+    Activity getActivity();
 
-    public Fragment getParentFragment();
+    Fragment getParentFragment();
 
-    public FragmentManager getChildFragmentManager();
+    FragmentManager getChildFragmentManager();
 
-    public void setTargetFragment(Fragment target, int requestCode);
+    void setTargetFragment(Fragment target, int requestCode);
 
-    public Fragment getTargetFragment();
+    Fragment getTargetFragment();
 
-    public int getTargetRequestCode();
+    int getTargetRequestCode();
 
-    public void setMenuVisibility(boolean isPrimary);
+    void setMenuVisibility(boolean isPrimary);
 
-    public void setUserVisibleHint(boolean isPrimary);
+    void setUserVisibleHint(boolean isPrimary);
 
-    public boolean isResumed();
+    boolean isResumed();
 
-    public View getView();
+    View getView();
 }
