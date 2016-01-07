@@ -63,13 +63,13 @@ public abstract class FragmentMaster {
     // Use to record Fragments started by FragmentMaster.
     private final Records mRecords = new Records();
 
-    private final HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<IMasterFragment>();
+    private final HashSet<IMasterFragment> mFinishPendingFragments = new HashSet<>();
 
     // Event dispatcher
     private final MasterEventDispatcher mEventDispatcher;
 
-    private final ArrayList<FragmentLifecycleCallbacks> mFragmentLifecycleCallbackses =
-            new ArrayList<FragmentLifecycleCallbacks>();
+    private final ArrayList<FragmentLifecycleCallbacks> mFragmentLifecycleCallbacks =
+            new ArrayList<>();
 
     FragmentMaster(FragmentActivity activity) {
         mActivity = activity;
@@ -339,14 +339,14 @@ public abstract class FragmentMaster {
     }
 
     public void registerFragmentLifecycleCallbacks(FragmentLifecycleCallbacks callback) {
-        synchronized (mFragmentLifecycleCallbackses) {
-            mFragmentLifecycleCallbackses.add(callback);
+        synchronized (mFragmentLifecycleCallbacks) {
+            mFragmentLifecycleCallbacks.add(callback);
         }
     }
 
     public void unregisterFragmentLifecycleCallbacks(FragmentLifecycleCallbacks callback) {
-        synchronized (mFragmentLifecycleCallbackses) {
-            mFragmentLifecycleCallbackses.remove(callback);
+        synchronized (mFragmentLifecycleCallbacks) {
+            mFragmentLifecycleCallbacks.remove(callback);
         }
     }
 
@@ -488,9 +488,9 @@ public abstract class FragmentMaster {
 
     private Object[] collectFragmentLifecycleCallbacks() {
         Object[] callbacks = null;
-        synchronized (mFragmentLifecycleCallbackses) {
-            if (mFragmentLifecycleCallbackses.size() > 0) {
-                callbacks = mFragmentLifecycleCallbackses.toArray();
+        synchronized (mFragmentLifecycleCallbacks) {
+            if (mFragmentLifecycleCallbacks.size() > 0) {
+                callbacks = mFragmentLifecycleCallbacks.toArray();
             }
         }
         return callbacks;
@@ -573,7 +573,7 @@ final class FragmentMasterState implements Parcelable {
     }
 
     private FragmentMasterState(Parcel in) {
-        mFragments = in.readBundle();
+        mFragments = in.readBundle(getClass().getClassLoader());
         mIsSlideable = in.readInt() == 0;
         mHomeFragmentApplied = in.readInt() == 0;
     }

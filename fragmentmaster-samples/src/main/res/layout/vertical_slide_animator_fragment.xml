@@ -29,6 +29,6 @@
         android:background="@android:color/white"
         android:clickable="true"
         android:padding="16dp"
-        android:text="@string/vertical_slide_animator_decription" />
+        android:text="@string/vertical_slide_animator_description" />
 
 </LinearLayout>

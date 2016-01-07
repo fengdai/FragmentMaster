@@ -74,7 +74,7 @@ public class Request implements Parcelable, Cloneable {
 
     private void readFromParcel(Parcel in) {
         mFragmentName = in.readString();
-        mExtras = in.readBundle();
+        mExtras = in.readBundle(getClass().getClassLoader());
     }
 
     public String getClassName() {

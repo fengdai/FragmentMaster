@@ -23,7 +23,7 @@ import android.view.ContextThemeWrapper;
 import com.fragmentmaster.R;
 import com.fragmentmaster.annotation.Configuration;
 
-public class FragmentContext extends ContextThemeWrapper {
+class FragmentContext extends ContextThemeWrapper {
 
     FragmentContext(IMasterFragment fragment) {
         super(fragment.getActivity(), getMasterFragmentThemeRes(fragment.getActivity(), fragment));

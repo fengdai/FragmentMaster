@@ -29,7 +29,7 @@ class Records {
 
     private static final String TAG = "Records";
 
-    private ArrayList<IMasterFragment> mFragments = new ArrayList<IMasterFragment>();
+    private ArrayList<IMasterFragment> mFragments = new ArrayList<>();
 
     public void add(IMasterFragment fragment, IMasterFragment target, int requestCode) {
         fragment.setTargetFragment(

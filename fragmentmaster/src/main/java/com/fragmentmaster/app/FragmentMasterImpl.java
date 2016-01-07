@@ -28,7 +28,7 @@ import com.fragmentmaster.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentMasterImpl extends FragmentMaster {
+class FragmentMasterImpl extends FragmentMaster {
 
     // The id of fragments' real container.
     public final static int FRAGMENT_CONTAINER_ID = R.id.internal_fragment_container;
@@ -154,7 +154,7 @@ public class FragmentMasterImpl extends FragmentMaster {
      * and finish them.
      */
     private void cleanUp() {
-        List<IMasterFragment> fragments = new ArrayList<IMasterFragment>(getFragments());
+        List<IMasterFragment> fragments = new ArrayList<>(getFragments());
         IMasterFragment primaryFragment = getPrimaryFragment();
         // determine whether f is above primary fragment.
         boolean abovePrimary = true;
@@ -190,7 +190,8 @@ public class FragmentMasterImpl extends FragmentMaster {
 
         @Override
         public int getItemPosition(Object object) {
-            int position = getFragments().indexOf(object);
+            IMasterFragment fragment = (IMasterFragment) object;
+            int position = getFragments().indexOf(fragment);
             return position == -1 ? POSITION_NONE : position;
         }
 

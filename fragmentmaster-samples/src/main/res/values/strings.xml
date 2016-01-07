@@ -18,10 +18,10 @@
 <resources>
 
     <string name="app_name">FragmentMaster Demos</string>
-    <string name="receive_result_discription">Click "Pick" button to get a result, which will be diplayed here:</string>
+    <string name="receive_result_description">Click "Pick" button to get a result, which will be displayed here:</string>
     <string name="pick_your_number">Pick</string>
     <string name="next_button_string">Next</string>
-    <string name="vertical_slide_animator_decription">Click empty area above to close this page.</string>
+    <string name="vertical_slide_animator_description">Click empty area above to close this page.</string>
     <string name="theme_fragment_text">To be, or not to be, that is the question.</string>
 
 </resources>
