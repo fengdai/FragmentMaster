@@ -83,10 +83,6 @@ class FragmentMasterPager extends ViewPager {
     private OnPageChangeListener mOnPageChangeListener = new OnPageChangeListener() {
         @Override
         public void onPageScrollStateChanged(int state) {
-            if (mWrappedOnPageChangeListener != null) {
-                mWrappedOnPageChangeListener.onPageScrollStateChanged(state);
-            }
-
             if (state == ViewPager.SCROLL_STATE_IDLE) {
                 post(mIdleRunnable);
             }
@@ -95,26 +91,17 @@ class FragmentMasterPager extends ViewPager {
         @Override
         public void onPageScrolled(int position, float positionOffset,
                                    int positionOffsetPixels) {
-            if (mWrappedOnPageChangeListener != null) {
-                mWrappedOnPageChangeListener.onPageScrolled(position,
-                        positionOffset, positionOffsetPixels);
-            }
         }
 
         @Override
         public void onPageSelected(int position) {
-            if (mWrappedOnPageChangeListener != null) {
-                mWrappedOnPageChangeListener.onPageSelected(position);
-            }
         }
     };
-
-    private OnPageChangeListener mWrappedOnPageChangeListener;
 
     public FragmentMasterPager(FragmentMasterImpl fragmentMaster) {
         super(fragmentMaster.getActivity());
         mFragmentMasterImpl = fragmentMaster;
-        super.setOnPageChangeListener(mOnPageChangeListener);
+        addOnPageChangeListener(mOnPageChangeListener);
         setPageTransformer(false, mPageTransformer);
     }
 
@@ -127,11 +114,6 @@ class FragmentMasterPager extends ViewPager {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         return mFragmentMasterImpl.isSlideable() && !mFragmentMasterImpl.isScrolling() && super.onInterceptTouchEvent(ev);
-    }
-
-    @Override
-    public void setOnPageChangeListener(OnPageChangeListener listener) {
-        mWrappedOnPageChangeListener = listener;
     }
 
     @Override
