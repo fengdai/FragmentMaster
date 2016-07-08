@@ -19,7 +19,6 @@ package com.fragmentmaster.sample.pageanimator;
 import android.view.View;
 
 import com.fragmentmaster.animator.PageAnimator;
-import com.nineoldandroids.view.ViewHelper;
 
 public class StackAnimator extends PageAnimator {
     private static final float MIN_ALPHA = 0.5f;
@@ -30,17 +29,16 @@ public class StackAnimator extends PageAnimator {
                                            boolean enter) {
         page.setVisibility(position == -1 ? View.INVISIBLE : View.VISIBLE);
         int pageWidth = page.getWidth();
-        ViewHelper.setTranslationX(page, pageWidth
-                * (TRANSLATION_FACTOR * -position));
+        page.setTranslationX(pageWidth * (TRANSLATION_FACTOR * -position));
         // Fade the page out (between MIN_ALPHA and 1)
-        ViewHelper.setAlpha(page, MIN_ALPHA + (1 - MIN_ALPHA) * (1 + position));
+        page.setAlpha(MIN_ALPHA + (1 - MIN_ALPHA) * (1 + position));
     }
 
     @Override
     protected void transformForegroundPage(View page, float position,
                                            boolean enter) {
-        ViewHelper.setTranslationX(page, 0);
-        ViewHelper.setAlpha(page, 1);
+        page.setTranslationX(0);
+        page.setAlpha(1);
     }
 
 }

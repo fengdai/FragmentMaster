@@ -19,17 +19,13 @@ package com.fragmentmaster.app;
 import android.annotation.SuppressLint;
 import android.os.Parcelable;
 import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v4.view.ViewPagerCompat;
 import android.view.MotionEvent;
 import android.view.View;
-
-import com.nineoldandroids.view.ViewHelper;
 
 /**
  * Real container of fragments.
  */
-class FragmentMasterPager extends ViewPagerCompat {
+class FragmentMasterPager extends ViewPager {
 
     private FragmentMasterImpl mFragmentMasterImpl;
 
@@ -69,16 +65,16 @@ class FragmentMasterPager extends ViewPagerCompat {
         }
 
         private void resetPage(View page, float position) {
-            ViewHelper.setAlpha(page, 1);
-            ViewHelper.setTranslationX(page, 0);
-            ViewHelper.setTranslationY(page, 0);
-            ViewHelper.setScaleX(page, 1);
-            ViewHelper.setScaleY(page, 1);
-            ViewHelper.setRotation(page, 0);
-            ViewHelper.setRotationX(page, 0);
-            ViewHelper.setRotationY(page, 0);
-            ViewHelper.setPivotX(page, page.getWidth() / 2f);
-            ViewHelper.setPivotY(page, page.getHeight() / 2f);
+            page.setAlpha(1);
+            page.setTranslationX(0);
+            page.setTranslationY(0);
+            page.setScaleX(1);
+            page.setScaleY(1);
+            page.setRotation(0);
+            page.setRotationX(0);
+            page.setRotationY(0);
+            page.setPivotX(page.getWidth() / 2f);
+            page.setPivotY(page.getHeight() / 2f);
         }
 
     };
