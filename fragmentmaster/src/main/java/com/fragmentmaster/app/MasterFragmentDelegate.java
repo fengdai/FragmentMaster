@@ -442,19 +442,21 @@ class MasterFragmentDelegate {
     // ------------------------------------------------------------------------
 
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.ECLAIR) {
-            if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-                mMasterFragment.onBackPressed();
-                return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (mFragmentContext.getApplicationInfo().targetSdkVersion
+                    >= Build.VERSION_CODES.ECLAIR) {
+                event.startTracking();
+            } else {
+                onBackPressed();
             }
-        } else {
-            event.startTracking();
+            return true;
         }
         return false;
     }
 
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ECLAIR) {
+        if (mFragmentContext.getApplicationInfo().targetSdkVersion
+                >= Build.VERSION_CODES.ECLAIR) {
             if (keyCode == KeyEvent.KEYCODE_BACK && event.isTracking()
                     && !event.isCanceled()) {
                 mMasterFragment.onBackPressed();
