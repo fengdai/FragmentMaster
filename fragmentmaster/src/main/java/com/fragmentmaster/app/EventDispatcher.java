@@ -17,7 +17,6 @@
 package com.fragmentmaster.app;
 
 import android.app.Activity;
-import android.support.v4.view.KeyEventCompat2;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -150,9 +149,7 @@ class ActivityEventDispatcher implements EventDispatcher {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         final View decor = mActivity.getWindow().getDecorView();
-        return KeyEventCompat2.dispatch(event, mActivity, decor != null
-                ? KeyEventCompat2.getKeyDispatcherState(decor)
-                : null, mActivity);
+        return event.dispatch(mActivity, decor != null ? decor.getKeyDispatcherState() : null, mActivity);
     }
 
     @Override
@@ -187,10 +184,7 @@ class FragmentEventDispatcher implements EventDispatcher {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         View view = mMasterFragment.getView();
-        return KeyEventCompat2.dispatch(event, mMasterFragment,
-                view != null
-                        ? KeyEventCompat2.getKeyDispatcherState(view)
-                        : null, this);
+        return event.dispatch(mMasterFragment, view != null ? view.getKeyDispatcherState() : null, this);
     }
 
     @Override
