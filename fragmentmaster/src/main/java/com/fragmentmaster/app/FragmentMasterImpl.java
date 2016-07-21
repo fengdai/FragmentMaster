@@ -37,8 +37,6 @@ class FragmentMasterImpl extends FragmentMaster {
 
     private FragmentMasterPager mViewPager;
 
-    private boolean mScrolling = false;
-
     private int mState = ViewPager.SCROLL_STATE_IDLE;
 
     private OnPageChangeListener mOnPageChangeListener = new OnPageChangeListener() {
@@ -88,8 +86,7 @@ class FragmentMasterImpl extends FragmentMaster {
         mViewPager.setId(FRAGMENT_CONTAINER_ID);
         mViewPager.setOffscreenPageLimit(Integer.MAX_VALUE);
         mViewPager.setAdapter(mAdapter);
-        mViewPager.setOnPageChangeListener(mOnPageChangeListener);
-
+        mViewPager.addOnPageChangeListener(mOnPageChangeListener);
         container.addView(mViewPager);
     }
 
@@ -106,9 +103,6 @@ class FragmentMasterImpl extends FragmentMaster {
         // one item.
         boolean smoothScroll = hasPageAnimator() && nextItem > 0;
         mViewPager.setCurrentItem(nextItem, smoothScroll);
-        if (smoothScroll) {
-            mScrolling = true;
-        }
     }
 
     @Override
@@ -123,9 +117,6 @@ class FragmentMasterImpl extends FragmentMaster {
             // When scrolling is stopped, real finish will be done by
             // cleanUp method.
             mViewPager.setCurrentItem(index - 1, true);
-            mScrolling = true;
-        }
-        if (mScrolling) {
             // If pager is scrolling, do real finish when cleanUp.
             deliverFragmentResult(fragment, resultCode, data);
             return;
@@ -139,14 +130,9 @@ class FragmentMasterImpl extends FragmentMaster {
     }
 
     private void onScrollIdle() {
-        mScrolling = false;
         // When scrolling stopped, do cleanup.
         mViewPager.removeCallbacks(mCleanUpRunnable);
         mViewPager.post(mCleanUpRunnable);
-    }
-
-    boolean isScrolling() {
-        return mScrolling;
     }
 
     /**
@@ -174,7 +160,7 @@ class FragmentMasterImpl extends FragmentMaster {
                     }
                 }
             } else {
-                if (isFinishPending(f) && !mScrolling) {
+                if (isFinishPending(f) && !mViewPager.isScrolling()) {
                     doFinishFragment(f);
                 }
             }

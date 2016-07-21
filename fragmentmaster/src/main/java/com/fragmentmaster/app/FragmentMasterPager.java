@@ -47,10 +47,12 @@ class FragmentMasterPager extends ViewPager {
         }
     };
 
+    private int mCurScrollState = SCROLL_STATE_IDLE;
+
     private ViewPager.PageTransformer mPageTransformer = new ViewPager.PageTransformer() {
         @Override
         public void transformPage(View page, float position) {
-            resetPage(page, position);
+            resetPage(page);
             if (mFragmentMasterImpl.hasPageAnimator()) {
                 if (position < -1 || position > 1) {
                     page.setVisibility(INVISIBLE);
@@ -64,7 +66,7 @@ class FragmentMasterPager extends ViewPager {
             }
         }
 
-        private void resetPage(View page, float position) {
+        private void resetPage(View page) {
             page.setAlpha(1);
             page.setTranslationX(0);
             page.setTranslationY(0);
@@ -80,21 +82,13 @@ class FragmentMasterPager extends ViewPager {
     };
 
     // Internal listener
-    private OnPageChangeListener mOnPageChangeListener = new OnPageChangeListener() {
+    private OnPageChangeListener mOnPageChangeListener = new SimpleOnPageChangeListener() {
         @Override
         public void onPageScrollStateChanged(int state) {
-            if (state == ViewPager.SCROLL_STATE_IDLE) {
+            mCurScrollState = state;
+            if (state == SCROLL_STATE_IDLE) {
                 post(mIdleRunnable);
             }
-        }
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset,
-                                   int positionOffsetPixels) {
-        }
-
-        @Override
-        public void onPageSelected(int position) {
         }
     };
 
@@ -105,15 +99,23 @@ class FragmentMasterPager extends ViewPager {
         setPageTransformer(false, mPageTransformer);
     }
 
+    public boolean isScrolling() {
+        return mCurScrollState != SCROLL_STATE_IDLE;
+    }
+
+    private boolean interceptTouch() {
+        return mCurScrollState == SCROLL_STATE_SETTLING;
+    }
+
     @Override
     @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent ev) {
-        return mFragmentMasterImpl.isSlideable() && !mFragmentMasterImpl.isScrolling() && super.onTouchEvent(ev);
+        return mFragmentMasterImpl.isSlideable() && !interceptTouch() && super.onTouchEvent(ev);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mFragmentMasterImpl.isSlideable() && !mFragmentMasterImpl.isScrolling() && super.onInterceptTouchEvent(ev);
+        return mFragmentMasterImpl.isSlideable() && (interceptTouch() || super.onInterceptTouchEvent(ev));
     }
 
     @Override
