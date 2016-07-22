@@ -22,6 +22,9 @@ import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.fragmentmaster.animator.NoAnimator;
+import com.fragmentmaster.animator.PageAnimator;
+
 /**
  * Real container of fragments.
  */
@@ -52,33 +55,10 @@ class FragmentMasterPager extends ViewPager {
     private ViewPager.PageTransformer mPageTransformer = new ViewPager.PageTransformer() {
         @Override
         public void transformPage(View page, float position) {
-            resetPage(page);
-            if (mFragmentMasterImpl.hasPageAnimator()) {
-                if (position < -1 || position > 1) {
-                    page.setVisibility(INVISIBLE);
-                } else {
-                    page.setVisibility(VISIBLE);
-                    mFragmentMasterImpl.getPageAnimator().transformPage(page,
-                            position, mAnimationState == ANIMATION_ENTER);
-                }
-            } else {
-                page.setVisibility(VISIBLE);
-            }
+            PageAnimator animator = mFragmentMasterImpl.getPageAnimator();
+            animator = animator != null ? animator : NoAnimator.INSTANCE;
+            animator.transformPage(page, position, mAnimationState == ANIMATION_ENTER);
         }
-
-        private void resetPage(View page) {
-            page.setAlpha(1);
-            page.setTranslationX(0);
-            page.setTranslationY(0);
-            page.setScaleX(1);
-            page.setScaleY(1);
-            page.setRotation(0);
-            page.setRotationX(0);
-            page.setRotationY(0);
-            page.setPivotX(page.getWidth() / 2f);
-            page.setPivotY(page.getHeight() / 2f);
-        }
-
     };
 
     // Internal listener

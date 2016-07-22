@@ -28,13 +28,10 @@ public class VerticalSlideAnimator extends PageAnimator {
     protected void transformBackgroundPage(View page, float position,
                                            boolean enter) {
         int pageWidth = page.getWidth();
-
         // Counteract the default slide transition
         page.setTranslationX(pageWidth * -position);
-
         // Fade the page out (between MIN_ALPHA and 1)
         page.setAlpha(MIN_ALPHA + (1 - MIN_ALPHA) * (1 + position));
-
         // Scale the page down (between MIN_SCALE and 1)
         float scaleFactor = MIN_SCALE + (1 - MIN_SCALE) * (1 + position);
         page.setScaleX(scaleFactor);
@@ -51,5 +48,10 @@ public class VerticalSlideAnimator extends PageAnimator {
         page.setAlpha(1);
         page.setScaleX(1);
         page.setScaleY(1);
+    }
+
+    @Override
+    protected void transformUnderlyingPage(View page, float position, boolean enter) {
+        transformBackgroundPage(page, position, enter);
     }
 }

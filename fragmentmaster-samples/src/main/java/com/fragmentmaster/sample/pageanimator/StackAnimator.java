@@ -27,7 +27,6 @@ public class StackAnimator extends PageAnimator {
     @Override
     protected void transformBackgroundPage(View page, float position,
                                            boolean enter) {
-        page.setVisibility(position == -1 ? View.INVISIBLE : View.VISIBLE);
         int pageWidth = page.getWidth();
         page.setTranslationX(pageWidth * (TRANSLATION_FACTOR * -position));
         // Fade the page out (between MIN_ALPHA and 1)

@@ -32,15 +32,11 @@ public class EnterOvershootAnimator extends PageAnimator {
     @Override
     protected void transformBackgroundPage(View page, float position,
                                            boolean enter) {
-        page.setVisibility(position == -1 ? View.INVISIBLE : View.VISIBLE);
         int pageWidth = page.getWidth();
-
         // Counteract the default slide transition
         page.setTranslationX(pageWidth * -position);
-
         // Fade the page out (between MIN_ALPHA and 1)
         page.setAlpha(MIN_ALPHA + (1 - MIN_ALPHA) * (1 + position));
-
         // Scale the page down (between MIN_SCALE and 1)
         float scaleFactor = MIN_SCALE + (1 - MIN_SCALE) * (1 + position);
         page.setScaleX(scaleFactor);
