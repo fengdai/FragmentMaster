@@ -58,6 +58,10 @@ public abstract class FragmentMaster {
 
     private PageAnimator mPageAnimator = null;
 
+    private boolean mRestoreAnimator = false;
+
+    private int mPendingSetUpAnimatorIndex = -1;
+
     private IMasterFragment mPrimaryFragment = null;
 
     // Use to record Fragments started by FragmentMaster.
@@ -132,6 +136,7 @@ public abstract class FragmentMaster {
         if (!isFinishPending(fragment)) {
             mFinishPendingFragments.add(fragment);
         }
+        resolvePendingSetUpAnimator();
         onFinishFragment(fragment, resultCode, data);
     }
 
@@ -174,11 +179,11 @@ public abstract class FragmentMaster {
     }
 
     protected final void doFinishFragment(IMasterFragment fragment) {
-        if (mRecords.indexOf(fragment) == 0 && mSticky) {
+        if (indexOf(fragment) == 0 && mSticky) {
             mActivity.finish();
             return;
         }
-
+        resolvePendingSetUpAnimator();
         mFragmentManager.beginTransaction().remove(fragment.getFragment())
                 .commit();
         mFragmentManager.executePendingTransactions();
@@ -219,26 +224,52 @@ public abstract class FragmentMaster {
 
     protected abstract void onFragmentFinished(IMasterFragment fragment);
 
+    public boolean isPrimaryFragment(IMasterFragment fragment) {
+        return mPrimaryFragment == fragment;
+    }
+
     public IMasterFragment getPrimaryFragment() {
         return mPrimaryFragment;
     }
 
     protected final void setPrimaryFragment(IMasterFragment fragment) {
         if (fragment != mPrimaryFragment) {
+            int preIndex = -1;
+            int curIndex = -1;
             if (mPrimaryFragment != null) {
                 mPrimaryFragment.setPrimary(false);
+                preIndex = indexOf(mPrimaryFragment);
             }
             if (fragment != null) {
                 fragment.setPrimary(true);
+                curIndex = indexOf(fragment);
             }
+            boolean backward = curIndex == preIndex - 1;
+            mPendingSetUpAnimatorIndex = backward ? curIndex : -1;
             mPrimaryFragment = fragment;
             // Only the primary fragment can receive events.
             mEventDispatcher.setInterceptor(fragment);
+            if (mRestoreAnimator) {
+                setUpAnimator(fragment);
+                mRestoreAnimator = false;
+            }
         }
     }
 
     public List<IMasterFragment> getFragments() {
         return mRecords.getFragments();
+    }
+
+    public int indexOf(IMasterFragment fragment) {
+        return mRecords.indexOf(fragment);
+    }
+
+    private void resolvePendingSetUpAnimator() {
+        IMasterFragment fragment = getPrimaryFragment();
+        if (mPendingSetUpAnimatorIndex == indexOf(fragment)) {
+            setUpAnimator(fragment);
+            mPendingSetUpAnimatorIndex = -1;
+        }
     }
 
     protected void setPageAnimator(PageAnimator pageAnimator) {
@@ -335,6 +366,7 @@ public abstract class FragmentMaster {
             mRecords.restore(mFragmentManager, fms.mFragments);
             setSlideable(fms.mIsSlideable);
             mHomeFragmentApplied = fms.mHomeFragmentApplied;
+            mRestoreAnimator = true;
         }
     }
 

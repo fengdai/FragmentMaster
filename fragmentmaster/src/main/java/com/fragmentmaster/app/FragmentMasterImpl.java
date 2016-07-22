@@ -37,32 +37,10 @@ class FragmentMasterImpl extends FragmentMaster {
 
     private FragmentMasterPager mViewPager;
 
-    private int mState = ViewPager.SCROLL_STATE_IDLE;
-
-    private OnPageChangeListener mOnPageChangeListener = new OnPageChangeListener() {
-
-        @Override
-        public void onPageSelected(int position) {
-        }
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset,
-                                   int positionOffsetPixels) {
-            if (mState == ViewPager.SCROLL_STATE_IDLE) {
-                setUpAnimator(getPrimaryFragment());
-            }
-        }
-
+    private OnPageChangeListener mOnPageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageScrollStateChanged(int state) {
-            mState = state;
             if (state == ViewPager.SCROLL_STATE_IDLE) {
-                mViewPager.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        setUpAnimator(getPrimaryFragment());
-                    }
-                });
                 onScrollIdle();
             }
         }
@@ -108,18 +86,32 @@ class FragmentMasterImpl extends FragmentMaster {
     @Override
     protected void onFinishFragment(final IMasterFragment fragment,
                                     final int resultCode, final Request data) {
-        final int index = getFragments().indexOf(fragment);
-        int curItem = mViewPager.getCurrentItem();
-
-        if (hasPageAnimator() && curItem == index && index != 0) {
+        final int index = indexOf(fragment);
+        if (index != 0 && isPrimaryFragment(fragment)) {
             // If there's a PageAnimator, and the fragment to finish is the
             // primary fragment, scroll back smoothly.
             // When scrolling is stopped, real finish will be done by
             // cleanUp method.
-            mViewPager.setCurrentItem(index - 1, true);
-            // If pager is scrolling, do real finish when cleanUp.
-            deliverFragmentResult(fragment, resultCode, data);
-            return;
+            if (hasPageAnimator()) {
+                mViewPager.setCurrentItem(index - 1, true);
+                // If pager is scrolling, do real finish when cleanUp.
+                deliverFragmentResult(fragment, resultCode, data);
+                return;
+            }
+            // If there isn't a PageAnimator, this fragment will be finished immediately.
+            // Before finish this fragment, finish fragments above it.
+            List<IMasterFragment> fragments = new ArrayList<>(getFragments());
+            for (int i = fragments.size() - 1; i > index; i--) {
+                IMasterFragment f = fragments.get(i);
+                if (isInFragmentMaster(f)) {
+                    if (isFinishPending(f)) {
+                        doFinishFragment(f);
+                    } else {
+                        f.finish();
+                    }
+                }
+            }
+            mViewPager.setCurrentItem(index - 1, false);
         }
         super.onFinishFragment(fragment, resultCode, data);
     }
@@ -177,7 +169,7 @@ class FragmentMasterImpl extends FragmentMaster {
         @Override
         public int getItemPosition(Object object) {
             IMasterFragment fragment = (IMasterFragment) object;
-            int position = getFragments().indexOf(fragment);
+            int position = indexOf(fragment);
             return position == -1 ? POSITION_NONE : position;
         }
 
