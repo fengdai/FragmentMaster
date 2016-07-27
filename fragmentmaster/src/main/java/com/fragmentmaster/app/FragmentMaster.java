@@ -48,7 +48,7 @@ public abstract class FragmentMaster {
 
     private ViewGroup mContainer;
 
-    private boolean mIsSlideable = false;
+    private boolean mAllowSwipeBack = false;
 
     private boolean mIsInstalled = false;
 
@@ -272,7 +272,7 @@ public abstract class FragmentMaster {
         }
     }
 
-    protected void setPageAnimator(PageAnimator pageAnimator) {
+    public void setPageAnimator(PageAnimator pageAnimator) {
         mPageAnimator = pageAnimator;
     }
 
@@ -324,18 +324,18 @@ public abstract class FragmentMaster {
         return mIsInstalled;
     }
 
-    public final void setSlideable(boolean slideable) {
-        mIsSlideable = slideable;
+    public void allowSwipeBack(boolean allowSwipeBack) {
+        mAllowSwipeBack = allowSwipeBack;
     }
 
-    public boolean isSlideable() {
-        return hasPageAnimator() && mIsSlideable;
+    public boolean allowSwipeBack() {
+        return mAllowSwipeBack;
     }
 
     Parcelable saveAllState() {
         FragmentMasterState state = new FragmentMasterState();
         state.mFragments = mRecords.save(mFragmentManager);
-        state.mIsSlideable = mIsSlideable;
+        state.mAllowSwipeBack = mAllowSwipeBack;
         state.mHomeFragmentApplied = mHomeFragmentApplied;
 
         logState();
@@ -356,7 +356,7 @@ public abstract class FragmentMaster {
         }
         Log.d(TAG, "STATE FragmentMaster[" + mRecords.size()
                 + "], FragmentManager[" + fragmentsInManagerCount
-                + "], mIsSlideable[" + mIsSlideable
+                + "], mAllowSwipeBack[" + mAllowSwipeBack
                 + "], mHomeFragmentApplied[" + mHomeFragmentApplied + "]");
     }
 
@@ -364,7 +364,7 @@ public abstract class FragmentMaster {
         if (state != null) {
             FragmentMasterState fms = (FragmentMasterState) state;
             mRecords.restore(mFragmentManager, fms.mFragments);
-            setSlideable(fms.mIsSlideable);
+            allowSwipeBack(fms.mAllowSwipeBack);
             mHomeFragmentApplied = fms.mHomeFragmentApplied;
             mRestoreAnimator = true;
         }
@@ -597,7 +597,7 @@ final class FragmentMasterState implements Parcelable {
 
     Bundle mFragments;
 
-    boolean mIsSlideable;
+    boolean mAllowSwipeBack;
 
     boolean mHomeFragmentApplied;
 
@@ -606,7 +606,7 @@ final class FragmentMasterState implements Parcelable {
 
     private FragmentMasterState(Parcel in) {
         mFragments = in.readBundle(getClass().getClassLoader());
-        mIsSlideable = in.readInt() == 0;
+        mAllowSwipeBack = in.readInt() == 0;
         mHomeFragmentApplied = in.readInt() == 0;
     }
 
@@ -618,7 +618,7 @@ final class FragmentMasterState implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeBundle(mFragments);
-        dest.writeInt(mIsSlideable ? 0 : 1);
+        dest.writeInt(mAllowSwipeBack ? 0 : 1);
         dest.writeInt(mHomeFragmentApplied ? 0 : 1);
     }
 

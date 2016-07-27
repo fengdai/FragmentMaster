@@ -50,7 +50,7 @@ class MasterFragmentDelegate {
     // SoftInputMode, SOFT_INPUT_ADJUST_UNSPECIFIED is default.
     int mSoftInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_UNSPECIFIED;
 
-    boolean mIsSlideable = true;
+    boolean mAllowSwipeBack = true;
 
     private IMasterFragment mTargetChildFragment;
 
@@ -342,21 +342,21 @@ class MasterFragmentDelegate {
         }
     }
 
-    public void setSlideable(boolean slideable) {
-        if (mIsSlideable != slideable) {
-            mIsSlideable = slideable;
+    public void allowSwipeBack(boolean allowSwipeBack) {
+        if (mAllowSwipeBack != allowSwipeBack) {
+            mAllowSwipeBack = allowSwipeBack;
             invalidateMasterConfiguration();
         }
     }
 
-    public boolean isSlideable() {
-        return mIsSlideable;
+    public boolean allowSwipeBack() {
+        return mAllowSwipeBack;
     }
 
     void invalidateMasterConfiguration() {
         checkState();
         FragmentMaster fragmentMaster = getFragmentMaster();
-        fragmentMaster.setSlideable(mIsSlideable);
+        fragmentMaster.allowSwipeBack(mAllowSwipeBack);
     }
 
     public void setPrimary(boolean isPrimary) {
@@ -501,19 +501,19 @@ final class MasterFragmentState implements Parcelable {
 
     int mSoftInputMode;
 
-    boolean mIsSlideable;
+    boolean mAllowSwipeBack;
 
     public MasterFragmentState(MasterFragmentDelegate mfd) {
         mRequest = mfd.mRequest;
         mSoftInputMode = mfd.mSoftInputMode;
-        mIsSlideable = mfd.mIsSlideable;
+        mAllowSwipeBack = mfd.mAllowSwipeBack;
     }
 
     public MasterFragmentState(Parcel in) {
         mRequest = in
                 .readParcelable(MasterFragmentState.class.getClassLoader());
         mSoftInputMode = in.readInt();
-        mIsSlideable = in.readInt() != 0;
+        mAllowSwipeBack = in.readInt() != 0;
     }
 
     @Override
@@ -525,7 +525,7 @@ final class MasterFragmentState implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(mRequest, flags);
         dest.writeInt(mSoftInputMode);
-        dest.writeInt(mIsSlideable ? 1 : 0);
+        dest.writeInt(mAllowSwipeBack ? 1 : 0);
     }
 
     public static final Parcelable.Creator<MasterFragmentState> CREATOR

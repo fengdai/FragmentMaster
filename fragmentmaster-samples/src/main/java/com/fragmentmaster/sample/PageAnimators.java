@@ -93,7 +93,7 @@ public class PageAnimators extends MasterListFragment {
             super.onActivityCreated(savedInstanceState);
             // As this fragment performs vertical slide animation. Don't let
             // this kind of fragment to be horizontally slideable;
-            setSlideable(false);
+            allowSwipeBack(false);
         }
 
         @Override

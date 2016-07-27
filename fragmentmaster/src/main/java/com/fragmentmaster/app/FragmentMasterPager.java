@@ -18,6 +18,7 @@ package com.fragmentmaster.app;
 
 import android.annotation.SuppressLint;
 import android.os.Parcelable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,7 +31,7 @@ import com.fragmentmaster.animator.PageAnimator;
  */
 class FragmentMasterPager extends ViewPager {
 
-    private FragmentMasterImpl mFragmentMasterImpl;
+    private PagerController mPagerController;
 
     private static final int ANIMATION_NONE = 0;
 
@@ -55,7 +56,7 @@ class FragmentMasterPager extends ViewPager {
     private ViewPager.PageTransformer mPageTransformer = new ViewPager.PageTransformer() {
         @Override
         public void transformPage(View page, float position) {
-            PageAnimator animator = mFragmentMasterImpl.getPageAnimator();
+            PageAnimator animator = mPagerController.getPageAnimator();
             animator = animator != null ? animator : NoAnimator.INSTANCE;
             animator.transformPage(page, position, mAnimationState == ANIMATION_ENTER);
         }
@@ -72,9 +73,9 @@ class FragmentMasterPager extends ViewPager {
         }
     };
 
-    public FragmentMasterPager(FragmentMasterImpl fragmentMaster) {
-        super(fragmentMaster.getActivity());
-        mFragmentMasterImpl = fragmentMaster;
+    public FragmentMasterPager(FragmentActivity activity, PagerController pagerController) {
+        super(activity);
+        mPagerController = pagerController;
         addOnPageChangeListener(mOnPageChangeListener);
         setPageTransformer(false, mPageTransformer);
     }
@@ -90,12 +91,12 @@ class FragmentMasterPager extends ViewPager {
     @Override
     @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent ev) {
-        return mFragmentMasterImpl.isSlideable() && !interceptTouch() && super.onTouchEvent(ev);
+        return canScroll() && !interceptTouch() && super.onTouchEvent(ev);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return mFragmentMasterImpl.isSlideable() && (interceptTouch() || super.onInterceptTouchEvent(ev));
+        return canScroll() && (interceptTouch() || super.onInterceptTouchEvent(ev));
     }
 
     @Override
@@ -120,4 +121,7 @@ class FragmentMasterPager extends ViewPager {
         mAnimationState = state;
     }
 
+    private boolean canScroll() {
+        return mPagerController.allowSwipeBack() && mPagerController.hasPageAnimator();
+    }
 }

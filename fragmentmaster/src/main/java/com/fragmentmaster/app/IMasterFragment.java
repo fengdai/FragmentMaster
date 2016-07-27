@@ -162,9 +162,9 @@ public interface IMasterFragment
 
     boolean isActive();
 
-    void setSlideable(boolean slideable);
+    void allowSwipeBack(boolean allowSwipeBack);
 
-    boolean isSlideable();
+    boolean allowSwipeBack();
 
     PageAnimator onCreatePageAnimator();
 

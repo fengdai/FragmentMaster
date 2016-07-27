@@ -28,7 +28,7 @@ import com.fragmentmaster.R;
 import java.util.ArrayList;
 import java.util.List;
 
-class FragmentMasterImpl extends FragmentMaster {
+class FragmentMasterImpl extends FragmentMaster implements PagerController {
 
     // The id of fragments' real container.
     public final static int FRAGMENT_CONTAINER_ID = R.id.internal_fragment_container;
@@ -60,7 +60,7 @@ class FragmentMasterImpl extends FragmentMaster {
     @Override
     protected void performInstall(ViewGroup container) {
         mAdapter = new FragmentsAdapter();
-        mViewPager = new FragmentMasterPager(this);
+        mViewPager = new FragmentMasterPager(getActivity(), this);
         mViewPager.setId(FRAGMENT_CONTAINER_ID);
         mViewPager.setOffscreenPageLimit(Integer.MAX_VALUE);
         mViewPager.setAdapter(mAdapter);

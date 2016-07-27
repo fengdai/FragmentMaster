@@ -83,6 +83,6 @@ public class Slideable extends MasterFragment implements OnPageChangeListener {
 
     @Override
     public void onPageSelected(int position) {
-        setSlideable(position == 0);
+        allowSwipeBack(position == 0);
     }
 }

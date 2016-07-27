@@ -219,13 +219,13 @@ public class MasterListFragment extends ListFragment implements IMasterFragment 
     }
 
     @Override
-    public void setSlideable(boolean slideable) {
-        mImpl.setSlideable(slideable);
+    public void allowSwipeBack(boolean allowSwipeBack) {
+        mImpl.allowSwipeBack(allowSwipeBack);
     }
 
     @Override
-    public boolean isSlideable() {
-        return mImpl.isSlideable();
+    public boolean allowSwipeBack() {
+        return mImpl.allowSwipeBack();
     }
 
     @Override
