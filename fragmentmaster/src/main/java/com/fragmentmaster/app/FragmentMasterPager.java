@@ -16,7 +16,6 @@
 
 package com.fragmentmaster.app;
 
-import android.annotation.SuppressLint;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -31,25 +30,17 @@ import com.fragmentmaster.animator.PageAnimator;
  */
 class FragmentMasterPager extends ViewPager {
 
+    private static final int FROWARD = 0;
+
+    private static final int BACKWARD = 1;
+
     private PagerController mPagerController;
 
-    private static final int ANIMATION_NONE = 0;
+    private int mScrollDirection = FROWARD;
 
-    private static final int ANIMATION_ENTER = 1;
+    private int mLastPosition = 0;
 
-    private static final int ANIMATION_EXIT = 2;
-
-    private int mAnimationState = ANIMATION_NONE;
-
-    // The position of primary item in the latest SCROLL_STATE_IDLE state.
-    private int mLatestIdleItem = 0;
-
-    private Runnable mIdleRunnable = new Runnable() {
-        public void run() {
-            mLatestIdleItem = getCurrentItem();
-            setAnimationState(ANIMATION_NONE);
-        }
-    };
+    private float mLastScrollOffset = 0f;
 
     private int mCurScrollState = SCROLL_STATE_IDLE;
 
@@ -58,7 +49,8 @@ class FragmentMasterPager extends ViewPager {
         public void transformPage(View page, float position) {
             PageAnimator animator = mPagerController.getPageAnimator();
             animator = animator != null ? animator : NoAnimator.INSTANCE;
-            animator.transformPage(page, position, mAnimationState == ANIMATION_ENTER);
+            boolean enter = (mScrollDirection == FROWARD) && (mCurScrollState != SCROLL_STATE_DRAGGING);
+            animator.transformPage(page, position, enter);
         }
     };
 
@@ -67,9 +59,6 @@ class FragmentMasterPager extends ViewPager {
         @Override
         public void onPageScrollStateChanged(int state) {
             mCurScrollState = state;
-            if (state == SCROLL_STATE_IDLE) {
-                post(mIdleRunnable);
-            }
         }
     };
 
@@ -89,7 +78,6 @@ class FragmentMasterPager extends ViewPager {
     }
 
     @Override
-    @SuppressLint("ClickableViewAccessibility")
     public boolean onTouchEvent(MotionEvent ev) {
         return canScroll() && !interceptTouch() && super.onTouchEvent(ev);
     }
@@ -101,24 +89,25 @@ class FragmentMasterPager extends ViewPager {
 
     @Override
     protected void onPageScrolled(int position, float offset, int offsetPixels) {
-        if (mLatestIdleItem > position) {
+        float prePosition = mLastPosition + mLastScrollOffset;
+        float curPosition = position + offset;
+        if (prePosition > curPosition) {
             // The ViewPager is performing exiting.
-            setAnimationState(ANIMATION_EXIT);
-        } else if (mLatestIdleItem <= position) {
+            mScrollDirection = BACKWARD;
+        } else if (prePosition < curPosition) {
             // The ViewPager is performing entering.
-            setAnimationState(ANIMATION_ENTER);
+            mScrollDirection = FROWARD;
         }
+        mLastScrollOffset = offset;
+        mLastPosition = position;
         super.onPageScrolled(position, offset, offsetPixels);
     }
 
     @Override
     public void onRestoreInstanceState(Parcelable state) {
         super.onRestoreInstanceState(state);
-        mLatestIdleItem = getCurrentItem();
-    }
-
-    private void setAnimationState(int state) {
-        mAnimationState = state;
+        mLastPosition = getCurrentItem();
+        mLastScrollOffset = 0f;
     }
 
     private boolean canScroll() {
