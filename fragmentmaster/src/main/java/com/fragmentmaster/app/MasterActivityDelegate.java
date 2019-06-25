@@ -18,8 +18,8 @@ package com.fragmentmaster.app;
 
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 

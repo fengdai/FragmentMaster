@@ -1,17 +1,16 @@
 apply plugin: 'com.android.library'
 
 dependencies {
-    compile project(':fragmentmaster')
-    compile 'com.android.support:appcompat-v7:24.0.0'
+    api project(':fragmentmaster')
+    api 'androidx.appcompat:appcompat:1.0.2'
 }
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }

@@ -16,10 +16,10 @@
 
 package com.fragmentmaster.app;
 
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.ViewGroup;
 

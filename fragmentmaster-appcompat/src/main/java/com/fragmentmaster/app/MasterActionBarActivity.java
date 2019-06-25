@@ -17,15 +17,15 @@
 package com.fragmentmaster.app;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.ActionBarActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 /**
  * Host activity of MasterFragment.
  */
-public abstract class MasterActionBarActivity extends ActionBarActivity implements IMasterActivity {
+public abstract class MasterActionBarActivity extends AppCompatActivity implements IMasterActivity {
 
     private final MasterActivityDelegate mImpl = new MasterActivityDelegate(this);
 
